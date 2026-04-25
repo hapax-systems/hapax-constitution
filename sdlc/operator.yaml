@@ -1,0 +1,22 @@
+# Operator identity for repo-presentation render.
+#
+# This file ships a placeholder so CI can render against the registry
+# deterministically. Production renders supply real values via either:
+#
+#   - `sdlc/operator.local.yaml` (gitignored; same schema; takes precedence)
+#   - environment-variable overrides in render CLI (future)
+#
+# Schema:
+#   full_name:      Operator's legal full name. Used ONLY in formal-address
+#                   contexts: CITATION.cff `authors:`, codemeta.json
+#                   `author:`, .zenodo.json `creators:`. Never in body text.
+#   orcid:          ORCID iD URL (https://orcid.org/0000-...). Optional;
+#                   omitted if null.
+#   contact_url:    Operator-public URL for security disclosure (Sigstore
+#                   path), NOT email. Constitutional requirement —
+#                   operator does not publish email on repository surfaces.
+#   omg_lol_address: weblog.lol subdomain prefix (default "hapax").
+full_name: "<operator-name-unset>"
+orcid: null
+contact_url: "https://example.invalid/contact"
+omg_lol_address: hapax

@@ -1,0 +1,238 @@
+# Single source of truth for the constellation graph.
+#
+# Edits here are governance-protected per CODEOWNERS. The renderer reads
+# this file via `sdlc.render.repo_registry.load_registry()`.
+#
+# Schema:
+#   repos.<id>:
+#     name:                 GitHub repository name (string)
+#     description:          schema.org-aligned, refusal-stance opener (≤350 chars)
+#     repo_type:            runtime | spec | library | android | wear-os | fork
+#     role_in_constellation: 1-sentence locator in the dependency graph
+#     license_class:        PolyForm-Strict-1.0.0 | CC-BY-NC-ND-4.0 | MIT |
+#                           Apache-2.0 | CC-BY-SA-4.0 | upstream
+#     dependencies:         [<id>, ...] — other repos this depends on
+#     topics:               [<topic>, ...] — sparse, schema.org-aligned;
+#                           NEVER `ai`/`agents`/`framework`/`tool`/`library`/`awesome`
+#     is_first_party:       true | false
+#     zenodo_concept_doi:   "10.5281/zenodo.<n>" | null (pre-mint)
+#     related_identifiers:  [{identifier, relation, scheme}, ...] — DataCite RelatedIdentifier graph
+
+repos:
+  hapax-council:
+    name: hapax-council
+    description: >-
+      Constituent of the Hapax operating environment. Single-operator
+      research apparatus for externalised executive function. Not a
+      product, not seeking contributors. Research infrastructure
+      published as artifact.
+    repo_type: runtime
+    role_in_constellation: >-
+      Primary research artifact. 200+ agents, voice daemon, studio
+      compositor, reactive engine. Consumes the constitution via the
+      hapax-sdlc package.
+    license_class: PolyForm-Strict-1.0.0
+    dependencies: [hapax-constitution]
+    topics:
+      - research-software
+      - single-operator
+      - philosophy-of-science
+      - governance
+      - infrastructure-as-argument
+    is_first_party: true
+    zenodo_concept_doi: null
+    related_identifiers:
+      - identifier: https://github.com/ryanklee/hapax-constitution
+        relation: isPartOf
+        scheme: url
+      - identifier: https://hapax.weblog.lol/hapax-manifesto-v0
+        relation: isSupplementTo
+        scheme: url
+
+  hapax-constitution:
+    name: hapax-constitution
+    description: >-
+      Governance specification for the Hapax operating environment.
+      Spec-only, no runtime code. Publishes the hapax-sdlc package
+      consumed by hapax-council and hapax-officium. Not seeking
+      contributors.
+    repo_type: spec
+    role_in_constellation: >-
+      Anchor of the dependency graph. Defines axioms, derived
+      implications, interpretive canons, and precedent store. Other
+      first-party repos depend on this via `hapax-sdlc`.
+    license_class: CC-BY-NC-ND-4.0
+    dependencies: []
+    topics:
+      - research-software
+      - single-operator
+      - philosophy-of-science
+      - governance
+      - infrastructure-as-argument
+    is_first_party: true
+    zenodo_concept_doi: null
+    related_identifiers:
+      - identifier: https://hapax.weblog.lol/hapax-manifesto-v0
+        relation: isSupplementTo
+        scheme: url
+
+  hapax-officium:
+    name: hapax-officium
+    description: >-
+      Constituent of the Hapax operating environment. Management
+      decision-support apparatus for a single operator's professional
+      practice. Filesystem-as-bus data model. Research infrastructure
+      published as artifact.
+    repo_type: runtime
+    role_in_constellation: >-
+      Management-domain runtime. Logos API on :8050. Consumes the
+      constitution and the management_governance + management_safety
+      domain axioms.
+    license_class: PolyForm-Strict-1.0.0
+    dependencies: [hapax-constitution]
+    topics:
+      - research-software
+      - single-operator
+      - philosophy-of-science
+      - governance
+      - infrastructure-as-argument
+    is_first_party: true
+    zenodo_concept_doi: null
+    related_identifiers:
+      - identifier: https://github.com/ryanklee/hapax-constitution
+        relation: isPartOf
+        scheme: url
+
+  hapax-watch:
+    name: hapax-watch
+    description: >-
+      Constituent of the Hapax operating environment. Wear OS
+      companion that streams biometric sensor data (heart rate, HRV,
+      skin temperature, sleep) to the council logos API. Single
+      operator, single device.
+    repo_type: wear-os
+    role_in_constellation: >-
+      Wear OS biometric source. Streams to council logos API
+      (:8051) over Tailscale.
+    license_class: PolyForm-Strict-1.0.0
+    dependencies: [hapax-council]
+    topics:
+      - research-software
+      - single-operator
+      - infrastructure-as-argument
+    is_first_party: true
+    zenodo_concept_doi: null
+    related_identifiers:
+      - identifier: https://github.com/ryanklee/hapax-council
+        relation: isRequiredBy
+        scheme: url
+
+  hapax-phone:
+    name: hapax-phone
+    description: >-
+      Constituent of the Hapax operating environment. Android
+      companion that streams daily health summary and 60-second phone
+      context to the council logos API. Kotlin/Compose.
+    repo_type: android
+    role_in_constellation: >-
+      Android phone-side context source. Streams to council logos API
+      over Tailscale.
+    license_class: PolyForm-Strict-1.0.0
+    dependencies: [hapax-council]
+    topics:
+      - research-software
+      - single-operator
+      - infrastructure-as-argument
+    is_first_party: true
+    zenodo_concept_doi: null
+    related_identifiers:
+      - identifier: https://github.com/ryanklee/hapax-council
+        relation: isRequiredBy
+        scheme: url
+
+  hapax-mcp:
+    name: hapax-mcp
+    description: >-
+      Constituent of the Hapax operating environment. Model Context
+      Protocol server bridging the logos APIs to Claude Code.
+      Single-operator MCP surface; not a general-purpose MCP library.
+    repo_type: library
+    role_in_constellation: >-
+      MCP bridge. Consumes the council and officium logos APIs over
+      HTTP and presents 36 tools to Claude Code. The MCP ecosystem
+      norm is MIT; this repo carries MIT explicitly per operator
+      divergence (every other runtime repo is PolyForm Strict).
+    license_class: MIT
+    dependencies: [hapax-council, hapax-officium]
+    topics:
+      - research-software
+      - single-operator
+      - infrastructure-as-argument
+    is_first_party: true
+    zenodo_concept_doi: null
+    related_identifiers:
+      - identifier: https://github.com/ryanklee/hapax-council
+        relation: isRequiredBy
+        scheme: url
+      - identifier: https://github.com/ryanklee/hapax-officium
+        relation: isRequiredBy
+        scheme: url
+
+  hapax-assets:
+    name: hapax-assets
+    description: >-
+      Public CDN of aesthetic assets used by the Hapax operating
+      environment (BitchX splash/quotes/palette, Px437 IBM VGA 8x16
+      font). GitHub Pages mirror; SHA-pinned, integrity-verified.
+    repo_type: library
+    role_in_constellation: >-
+      CDN-only public mirror of aesthetic-library asset bundle. Source
+      of truth lives in hapax-council `assets/aesthetic-library/`.
+      Existing license blend (CC-BY-SA-4.0 / BSD-3-Clause) preserved
+      for upstream attribution compatibility.
+    license_class: CC-BY-SA-4.0
+    dependencies: [hapax-council]
+    topics:
+      - research-software
+      - single-operator
+      - infrastructure-as-argument
+    is_first_party: true
+    zenodo_concept_doi: null
+    related_identifiers:
+      - identifier: https://github.com/ryanklee/hapax-council
+        relation: isRequiredBy
+        scheme: url
+
+  tabbyAPI:
+    name: tabbyAPI
+    description: >-
+      Local fork of theroyallab/tabbyAPI. Upstream serves as the
+      Hapax operating environment's local LLM inference backend
+      (Command-R 35B EXL3 5.0bpw). Local commits stay local; NOTICE.md
+      gitignored via `.git/info/exclude`.
+    repo_type: fork
+    role_in_constellation: >-
+      Upstream clone. Render mechanism is inert here.
+    license_class: upstream
+    dependencies: []
+    topics: []
+    is_first_party: false
+    zenodo_concept_doi: null
+    related_identifiers: []
+
+  atlas-voice-training:
+    name: atlas-voice-training
+    description: >-
+      Local fork of briankelley/atlas-voice-training. Upstream
+      Docker-based openWakeWord fine-tuning pipeline used by the
+      Hapax voice daemon. Local commits stay local; NOTICE.md
+      gitignored via `.git/info/exclude`.
+    repo_type: fork
+    role_in_constellation: >-
+      Upstream clone. Render mechanism is inert here.
+    license_class: upstream
+    dependencies: []
+    topics: []
+    is_first_party: false
+    zenodo_concept_doi: null
+    related_identifiers: []
