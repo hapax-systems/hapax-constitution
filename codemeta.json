@@ -1,0 +1,29 @@
+{
+  "@context": "https://w3id.org/codemeta/3.0",
+  "@type": "SoftwareSourceCode",
+  "name": "hapax-constitution",
+  "description": "Governance specification for the Hapax operating environment. Spec-only, no runtime code. Publishes the hapax-sdlc package consumed by hapax-council and hapax-officium. Not seeking contributors.",
+  "codeRepository": "https://github.com/ryanklee/hapax-constitution",
+  "url": "https://github.com/ryanklee/hapax-constitution",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Ryan",
+      "familyName": "Kleeberger"
+    }
+  ],
+  "applicationCategory": "Specification",
+  "developmentStatus": "active",
+  "isAccessibleForFree": true,
+  "keywords": [
+    "research-software",
+    "single-operator",
+    "philosophy-of-science",
+    "governance",
+    "infrastructure-as-argument"
+  ],
+  "relatedLink": [
+    "https://hapax.weblog.lol/hapax-manifesto-v0"
+  ]
+}

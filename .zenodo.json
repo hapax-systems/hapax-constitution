@@ -1,0 +1,32 @@
+{
+  "title": "hapax-constitution",
+  "description": "Governance specification for the Hapax operating environment. Spec-only, no runtime code. Publishes the hapax-sdlc package consumed by hapax-council and hapax-officium. Not seeking contributors.",
+  "creators": [
+    {
+      "name": "Ryan Kleeberger"
+    }
+  ],
+  "license": "CC-BY-NC-ND-4.0",
+  "access_right": "open",
+  "upload_type": "publication",
+  "keywords": [
+    "research-software",
+    "single-operator",
+    "philosophy-of-science",
+    "governance",
+    "infrastructure-as-argument"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://hapax.weblog.lol/hapax-manifesto-v0",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ],
+  "communities": [
+    {
+      "identifier": "hapax-publications"
+    }
+  ],
+  "publication_type": "other"
+}

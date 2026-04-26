@@ -1,21 +1,19 @@
 cff-version: 1.2.0
-message: "If you use this software in your research, please cite it as below."
+message: If you use this software in your research, please cite it as below.
 type: software
-title: "hapax-constitution"
-abstract: >-
-  Constitutional governance architecture for autonomous AI agents. Defines
-  axioms, derived implications, interpretive canons, and a precedent store.
-  Publishes the hapax-sdlc package for governance-aware software lifecycle
-  management. Spec-only — no runtime code.
+title: hapax-constitution
+abstract: Governance specification for the Hapax operating environment. Spec-only,
+  no runtime code. Publishes the hapax-sdlc package consumed by hapax-council and
+  hapax-officium. Not seeking contributors.
 authors:
-  - given-names: Ryan
-    family-names: Kleeberger
-repository-code: "https://github.com/ryanklee/hapax-constitution"
-url: "https://github.com/ryanklee/hapax-constitution"
-license: Apache-2.0
+- given-names: Ryan
+  family-names: Kleeberger
+repository-code: https://github.com/ryanklee/hapax-constitution
+url: https://github.com/ryanklee/hapax-constitution
+license: CC-BY-NC-ND-4.0
 keywords:
-  - constitutional-governance
-  - ai-safety
-  - axiom-enforcement
-  - sdlc
-  - agent-governance
+- research-software
+- single-operator
+- philosophy-of-science
+- governance
+- infrastructure-as-argument
