@@ -15,6 +15,7 @@ from sdlc.render import (
     operator_referent,
     readme_section,
     repo_registry,
+    repo_settings,
     security_md,
     zenodo_json,
 )
@@ -26,15 +27,25 @@ from sdlc.render.repo_registry import (
     load_operator_identity,
     load_registry,
 )
+from sdlc.render.repo_settings import (
+    DriftReport,
+    RepoSettings,
+    detect_drift,
+    first_party_repos,
+)
 
 __all__ = [
+    "DriftReport",
     "LicenseClass",
     "OperatorIdentity",
+    "RepoSettings",
     "RepoSpec",
     "citation_cff",
     "cli",
     "codemeta_json",
     "contributing_md",
+    "detect_drift",
+    "first_party_repos",
     "governance_md",
     "load_operator_identity",
     "load_registry",
@@ -43,6 +54,7 @@ __all__ = [
     "operator_referent",
     "readme_section",
     "repo_registry",
+    "repo_settings",
     "security_md",
     "zenodo_json",
 ]
