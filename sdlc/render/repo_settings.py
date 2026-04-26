@@ -50,15 +50,34 @@ def desired_settings(repo: RepoSpec) -> RepoSettings:
     )
 
 
+class RepoNotBootstrapped(RuntimeError):
+    """Raised when a registry-declared repo doesn't exist on GitHub yet.
+
+    Some registry entries (e.g. ``hapax-assets`` pre-CDN-bootstrap) point
+    at repos the operator hasn't created yet. The drift-checker should
+    skip and warn, not fail.
+    """
+
+
 def current_settings(owner: str, repo_name: str) -> RepoSettings:
-    """Read live settings from GitHub via the ``gh`` CLI."""
+    """Read live settings from GitHub via the ``gh`` CLI.
+
+    Raises :class:`RepoNotBootstrapped` on 404 so callers can skip-and-
+    warn for registry-declared repos the operator hasn't created yet.
+    """
     result = subprocess.run(
         ["gh", "api", f"repos/{owner}/{repo_name}"],
         capture_output=True,
         text=True,
-        check=True,
+        check=False,
         timeout=30,
     )
+    if result.returncode != 0:
+        if "HTTP 404" in result.stderr or "Not Found" in result.stderr:
+            raise RepoNotBootstrapped(f"{owner}/{repo_name} does not exist on GitHub")
+        raise subprocess.CalledProcessError(
+            result.returncode, result.args, output=result.stdout, stderr=result.stderr
+        )
     data = json.loads(result.stdout)
     return RepoSettings(
         has_wiki=bool(data.get("has_wiki")),
@@ -112,17 +131,30 @@ class DriftReport:
         return self.desired != self.observed
 
 
-def detect_drift(owner: str, repos: list[RepoSpec] | None = None) -> list[DriftReport]:
-    """Compare desired vs observed for every first-party repo (or the supplied list)."""
+def detect_drift(
+    owner: str, repos: list[RepoSpec] | None = None
+) -> tuple[list[DriftReport], list[str]]:
+    """Compare desired vs observed for every first-party repo.
+
+    Returns ``(reports, skipped)`` where ``skipped`` lists repo names
+    that don't yet exist on GitHub (registry-declared but not
+    bootstrapped). The drift-check workflow surfaces these as warnings.
+    """
     repos = repos if repos is not None else first_party_repos()
-    return [
-        DriftReport(
-            repo_name=r.name,
-            desired=desired_settings(r),
-            observed=current_settings(owner, r.name),
+    reports: list[DriftReport] = []
+    skipped: list[str] = []
+    for r in repos:
+        try:
+            observed = current_settings(owner, r.name)
+        except RepoNotBootstrapped:
+            skipped.append(r.name)
+            continue
+        reports.append(
+            DriftReport(
+                repo_name=r.name, desired=desired_settings(r), observed=observed
+            )
         )
-        for r in repos
-    ]
+    return reports, skipped
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -137,7 +169,7 @@ def main(argv: list[str] | None = None) -> int:
     mode.add_argument("--enforce", action="store_true", help="Apply policy where drift exists")
     args = parser.parse_args(argv)
 
-    reports = detect_drift(args.owner)
+    reports, skipped = detect_drift(args.owner)
     drifted = [r for r in reports if r.has_drift]
 
     for r in reports:
@@ -148,6 +180,8 @@ def main(argv: list[str] | None = None) -> int:
             f"projects={r.observed.has_projects!s:5s} (want {r.desired.has_projects!s}) "
             f"discussions={r.observed.has_discussions!s:5s} (want {r.desired.has_discussions!s})"
         )
+    for name in skipped:
+        print(f"SKIP  {args.owner}/{name:25s} (not yet bootstrapped on GitHub)")
 
     if not drifted:
         return 0
@@ -164,6 +198,7 @@ def main(argv: list[str] | None = None) -> int:
 
 __all__ = [
     "DriftReport",
+    "RepoNotBootstrapped",
     "RepoSettings",
     "WIKI_REPURPOSED",
     "apply_settings",
