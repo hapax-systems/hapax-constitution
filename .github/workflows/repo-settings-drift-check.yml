@@ -1,0 +1,42 @@
+name: Repo Settings Drift Check
+
+# Family-wide drift detection for the refusal-shaped UI-affordance policy
+# enforced by `sdlc.render.repo_settings`. Runs daily and on demand. Uses
+# the operator's HAPAX_CROSS_REPO_PAT secret because the default
+# GITHUB_TOKEN is repo-scoped and cannot read settings on sibling repos.
+#
+# cc-task: repo-pres-issues. Operator-physical bootstrap (one-time):
+# create a fine-grained PAT with `Metadata: Read-only` on all 7 first-
+# party repos and store as `HAPAX_CROSS_REPO_PAT` repo secret on
+# hapax-constitution. Without the secret, the workflow no-ops with a
+# warning rather than failing.
+
+on:
+  schedule:
+    - cron: "37 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install pyyaml
+      - name: Detect drift
+        env:
+          GH_TOKEN: ${{ secrets.HAPAX_CROSS_REPO_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::HAPAX_CROSS_REPO_PAT secret unset; skipping drift check"
+            echo "Bootstrap: create fine-grained PAT with Metadata:Read on all 7 first-party repos."
+            exit 0
+          fi
+          python -m sdlc.render.repo_settings --check

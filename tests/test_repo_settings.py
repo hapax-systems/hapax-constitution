@@ -12,6 +12,7 @@ from unittest.mock import patch
 from sdlc.render.repo_registry import LicenseClass, RepoSpec
 from sdlc.render.repo_settings import (
     DriftReport,
+    RepoNotBootstrapped,
     RepoSettings,
     WIKI_REPURPOSED,
     desired_settings,
@@ -75,10 +76,11 @@ def test_detect_drift_reports_per_repo_when_observed_matches() -> None:
         return desired_council if name == "hapax-council" else desired_constitution
 
     with patch("sdlc.render.repo_settings.current_settings", side_effect=fake_current):
-        reports = detect_drift("ryanklee", repos)
+        reports, skipped = detect_drift("ryanklee", repos)
 
     assert all(isinstance(r, DriftReport) for r in reports)
     assert all(not r.has_drift for r in reports)
+    assert skipped == []
 
 
 def test_detect_drift_reports_drift_when_observed_differs() -> None:
@@ -86,12 +88,32 @@ def test_detect_drift_reports_drift_when_observed_differs() -> None:
     bad_observed = RepoSettings(has_wiki=True, has_projects=True, has_discussions=True)
 
     with patch("sdlc.render.repo_settings.current_settings", return_value=bad_observed):
-        reports = detect_drift("ryanklee", [repo])
+        reports, skipped = detect_drift("ryanklee", [repo])
 
     assert len(reports) == 1
     assert reports[0].has_drift
     assert reports[0].desired == RepoSettings(False, False, False)
     assert reports[0].observed == bad_observed
+    assert skipped == []
+
+
+def test_detect_drift_skips_unbootstrapped_repos() -> None:
+    """Registry-declared repos that don't yet exist on GitHub (e.g.
+    hapax-assets pre-CDN-bootstrap) are skipped, not failed."""
+    repos = [_stub_repo("hapax-council"), _stub_repo("hapax-assets")]
+    council_settings = desired_settings(repos[0])
+
+    def fake_current(_owner: str, name: str) -> RepoSettings:
+        if name == "hapax-assets":
+            raise RepoNotBootstrapped(f"ryanklee/{name} does not exist on GitHub")
+        return council_settings
+
+    with patch("sdlc.render.repo_settings.current_settings", side_effect=fake_current):
+        reports, skipped = detect_drift("ryanklee", repos)
+
+    assert len(reports) == 1
+    assert reports[0].repo_name == "hapax-council"
+    assert skipped == ["hapax-assets"]
 
 
 def test_repo_settings_is_hashable_for_set_dedup() -> None:
