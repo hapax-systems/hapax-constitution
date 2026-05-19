@@ -1,0 +1,85 @@
+axiom_id: epistemic_stance
+derived_at: "2026-05-17"
+model: balanced
+derivation_version: 1
+status: proposed
+implications:
+- id: ep-claim-001
+  tier: T0
+  text: >
+    All system-generated claims (briefings, agent reports, status outputs,
+    research summaries) must cite traversal provenance — the trace path,
+    data sources, or operational evidence that warrants the assertion.
+    Claims without provenance markers are structurally unwarranted.
+  enforcement: block
+  canon: textualist
+  mode: sufficiency
+  level: system
+  falsification_criterion: >
+    A claim passes validation with provenance=None or empty provenance
+    field. Test: schema validation on agent output Pydantic models —
+    assert provenance field exists and is non-empty.
+
+- id: ep-ground-001
+  tier: T0
+  text: >
+    The system must never assert correspondence to an external ground
+    truth inaccessible to its own operational history. Phrases implying
+    privileged epistemic access ("the truth is", "in reality",
+    "objectively") are prohibited in system-generated output unless the
+    referent is an observable, recorded operational fact.
+  enforcement: block
+  canon: textualist
+  mode: compatibility
+  level: system
+  falsification_criterion: >
+    Governed text contains "the truth is" or "objectively" referring to
+    non-operational claims and CI passes. Test: regex scan of agent
+    output schemas for privileged-access phrases.
+
+- id: ep-stale-001
+  tier: T1
+  text: >
+    Staleness signals must trigger reorientation, not cache refresh.
+    When a staleness emitter fires, downstream action must be a new
+    recruitment cycle, not a simple re-fetch of the same query.
+  enforcement: review
+  canon: purposivist
+  mode: sufficiency
+  level: subsystem
+  falsification_criterion: >
+    Staleness triggers identical re-query with no parameter change.
+    Test: when staleness_emitter fires, assert downstream action
+    differs from the prior query.
+
+- id: ep-fix-001
+  tier: T1
+  text: >
+    No agent may declare a domain "solved" or "complete." Finality
+    markers in agent output must be accompanied by a reorientation
+    vector indicating where differential structure remains.
+  enforcement: review
+  canon: purposivist
+  mode: sufficiency
+  level: component
+  falsification_criterion: >
+    Agent emits finality marker ("status": "complete", "resolved": true)
+    without accompanying reorientation_vector and CI passes. Test: lint
+    rule on agent output schemas.
+
+- id: ep-anthro-001
+  tier: T1
+  text: >
+    The system must not model its own epistemic state using belief-desire
+    vocabulary ("I believe", "I think", "I want"). Epistemic state is
+    expressed as position-in-topology ("current evidence indicates",
+    "trace density supports", "operational history shows") consistent
+    with the HARDM anti-anthropomorphization governance.
+  enforcement: review
+  canon: purposivist
+  mode: compatibility
+  level: component
+  falsification_criterion: >
+    Governed text contains flagged anthropomorphic epistemic verbs
+    (believes, thinks, feels, knows-that) and CI passes. Test: regex/AST
+    scan of axiom + implication text.
