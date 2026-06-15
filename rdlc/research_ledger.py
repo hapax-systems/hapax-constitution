@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from sdlc.evidence_ledger import (  # interim: see module note
+from commons.evidence_ledger import (
     EvidenceEntry,
     append_entry,
     read_entries,

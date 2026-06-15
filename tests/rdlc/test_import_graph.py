@@ -2,8 +2,7 @@
 from convention to a test):
 
 - commons is tier-0 PURE: it imports nothing from a lifecycle (sdlc/rdlc) or a model (ndcvb).
-- rdlc never RUNTIME-imports sdlc EXCEPT the two sanctioned interim primitives
-  (risk_tier in research_case, evidence_ledger in research_ledger).
+- rdlc never RUNTIME-imports sdlc (rdlc imports only commons).
 - ndcvb is RUNTIME-imported only by rdlc/m_binding.py (so importing rdlc never requires
   the research repo; type-only imports under TYPE_CHECKING are allowed anywhere).
 - sdlc never imports rdlc (siblings do not depend on each other).
@@ -62,17 +61,11 @@ def test_commons_is_tier0_pure():
             )
 
 
-def test_rdlc_runtime_sdlc_imports_are_only_sanctioned_primitives():
-    sanctioned = {
-        "research_case.py": {"sdlc.risk_tier"},
-        "research_ledger.py": {"sdlc.evidence_ledger"},
-    }
+def test_rdlc_does_not_import_sdlc():
     for f in _pkg_files("rdlc"):
         sdlc_imports = {m for m in _runtime_imports(f) if m == "sdlc" or m.startswith("sdlc.")}
-        allowed = sanctioned.get(f.name, set())
-        assert sdlc_imports <= allowed, (
-            f"rdlc/{f.name} runtime-imports {sdlc_imports - allowed}; "
-            f"only {allowed} are sanctioned (interim)"
+        assert not sdlc_imports, (
+            f"rdlc/{f.name} runtime-imports {sdlc_imports}; rdlc imports only commons, never sdlc"
         )
 
 

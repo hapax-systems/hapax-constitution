@@ -23,8 +23,8 @@ from __future__ import annotations
 from pydantic import Field
 
 from commons.governance_case import BaseGovernanceCase
+from commons.risk_tier import RiskTier
 from rdlc.r_stage import RStage
-from sdlc.risk_tier import RiskTier  # interim: see module note
 
 RESEARCH_NO_GO_FIELDS = ("assertion_authorized",)
 

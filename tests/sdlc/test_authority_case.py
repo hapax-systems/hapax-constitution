@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from sdlc.authority_case import AuthorityCase, _extract_frontmatter
+from sdlc.authority_case import AuthorityCase
 from sdlc.evidence_ledger import EvidenceEntry, append_entry, read_entries, record_transition
 from sdlc.risk_tier import RiskTier
 from sdlc.stage_taxonomy import Stage
@@ -241,13 +241,6 @@ axiom_compliance_checked: true
         with pytest.raises(ValueError, match="No YAML frontmatter"):
             AuthorityCase.from_yaml("# Just a heading")
 
-    def test_extract_frontmatter(self) -> None:
-        fm = _extract_frontmatter("---\nfoo: bar\n---\nbody")
-        assert fm == {"foo": "bar"}
-
-    def test_extract_frontmatter_none(self) -> None:
-        assert _extract_frontmatter("no frontmatter here") is None
-
 
 # --- Evidence ledger ---
 
@@ -272,12 +265,8 @@ class TestEvidenceLedger:
 
     def test_filter_by_case_id(self, tmp_path: Path) -> None:
         ledger = tmp_path / "ledger.jsonl"
-        record_transition(
-            "CASE-A", "S0", "S1", "alpha", "init", "started", ledger_path=ledger
-        )
-        record_transition(
-            "CASE-B", "S0", "S1", "beta", "init", "started", ledger_path=ledger
-        )
+        record_transition("CASE-A", "S0", "S1", "alpha", "init", "started", ledger_path=ledger)
+        record_transition("CASE-B", "S0", "S1", "beta", "init", "started", ledger_path=ledger)
         a_entries = read_entries(case_id="CASE-A", ledger_path=ledger)
         assert len(a_entries) == 1
         assert a_entries[0].case_id == "CASE-A"
@@ -350,18 +339,14 @@ _SDLC_REFORM_ISAP = _RELAY_DIR / "isap-slice1-spec-schema-20260508.md"
 
 
 class TestCanary:
-    @pytest.mark.skipif(
-        not _SDLC_REFORM_PLAN.exists(), reason="SDLC reform plan not on disk"
-    )
+    @pytest.mark.skipif(not _SDLC_REFORM_PLAN.exists(), reason="SDLC reform plan not on disk")
     def test_sdlc_reform_plan_parses(self) -> None:
         case = AuthorityCase.from_file(str(_SDLC_REFORM_PLAN))
         assert case.case_id == "CASE-SDLC-REFORM-001"
         assert not case.source_mutation_authorized
         assert not case.implementation_authorized
 
-    @pytest.mark.skipif(
-        not _SDLC_REFORM_ISAP.exists(), reason="ISAP Slice 1 not on disk"
-    )
+    @pytest.mark.skipif(not _SDLC_REFORM_ISAP.exists(), reason="ISAP Slice 1 not on disk")
     def test_sdlc_reform_isap_parses(self) -> None:
         case = AuthorityCase.from_file(str(_SDLC_REFORM_ISAP))
         assert case.case_id == "CASE-SDLC-REFORM-001"

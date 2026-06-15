@@ -6,12 +6,10 @@ The model validates YAML frontmatter from case files and ISAPs.
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Any
 
-import yaml
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from commons.governance_case import BaseGovernanceCase
 from .risk_tier import RiskTier
 from .stage_taxonomy import Stage
 
@@ -26,21 +24,12 @@ NO_GO_FIELDS = (
 )
 
 
-class AuthorityCase(BaseModel):
+class AuthorityCase(BaseGovernanceCase):
     """Canonical AuthorityCase schema.
 
     Validates the frontmatter of case YAML files. Fail-closed: omitting
     a no-go field is treated as if it were true (the dangerous default).
     """
-
-    case_id: str
-    version: int = 0
-    stage: str
-    status: str
-    created_utc: datetime
-    originator: str
-    methodology: str | None = None
-    risk_tier: str | None = None
 
     source_mutation_authorized: bool = Field(default=True)
     docs_mutation_authorized: bool = Field(default=True)
@@ -105,34 +94,3 @@ class AuthorityCase(BaseModel):
             violations.append("axiom_mutation_authorized (without axiom_compliance_checked)")
 
         return violations
-
-    @classmethod
-    def from_yaml(cls, text: str) -> AuthorityCase:
-        """Parse an AuthorityCase from YAML frontmatter."""
-        frontmatter = _extract_frontmatter(text)
-        if frontmatter is None:
-            raise ValueError("No YAML frontmatter found")
-        return cls.model_validate(frontmatter)
-
-    @classmethod
-    def from_file(cls, path: str) -> AuthorityCase:
-        """Load an AuthorityCase from a file path."""
-        from pathlib import Path
-
-        text = Path(path).read_text(encoding="utf-8")
-        return cls.from_yaml(text)
-
-
-def _extract_frontmatter(text: str) -> dict[str, Any] | None:
-    """Extract YAML frontmatter from a markdown document."""
-    text = text.strip()
-    if not text.startswith("---"):
-        return None
-    end = text.find("---", 3)
-    if end == -1:
-        return None
-    raw = text[3:end].strip()
-    data = yaml.safe_load(raw)
-    if not isinstance(data, dict):
-        return None
-    return data
