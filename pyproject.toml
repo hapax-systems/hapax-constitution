@@ -3,11 +3,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["sdlc", "demo", "hapax_sdlc"]
+packages = ["commons", "sdlc", "rdlc", "demo", "hapax_sdlc"]
 
 [tool.hatch.build]
 include = [
+    "commons/**",
     "sdlc/**",
+    "rdlc/**",
     "demo/**",
     "hapax_sdlc/**",
 ]
@@ -42,10 +44,18 @@ asyncio_mode = "auto"
 target-version = "py312"
 line-length = 100
 [tool.ruff.lint.isort]
-known-first-party = ["sdlc", "demo", "hapax_sdlc", "shared", "scripts"]
+known-first-party = ["commons", "sdlc", "rdlc", "ndcvb", "demo", "hapax_sdlc", "shared", "scripts"]
 
 [dependency-groups]
 dev = [
     "pre-commit>=4.0",
     "pytest>=9.0.2",
+    "ndcvb",
 ]
+
+# RDLC's M block (the NDCVB instrument) lives in a sibling research repo. It is a
+# TEST/dev dependency only — rdlc.m_binding imports it lazily at runtime, so the
+# governance package never hard-depends on the research artifact (M absent ->
+# honest-dark, not an import crash).
+[tool.uv.sources]
+ndcvb = { path = "../non-deception-benchmark", editable = true }

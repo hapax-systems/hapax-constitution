@@ -269,6 +269,7 @@ demo = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "ndcvb" },
     { name = "pre-commit" },
     { name = "pytest" },
 ]
@@ -290,6 +291,7 @@ provides-extras = ["ci", "demo"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "ndcvb", editable = "../non-deception-benchmark" },
     { name = "pre-commit", specifier = ">=4.0" },
     { name = "pytest", specifier = ">=9.0.2" },
 ]
@@ -608,6 +610,16 @@ sdist = { url = "https://files.pythonhosted.org/packages/de/61/15f9476e270f64c78
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9a/73/7d3b2010baa0b5eb1e4dfa9e4385e89b6716be76f2fa21a6c0fe34b68e5a/moviepy-2.2.1-py3-none-any.whl", hash = "sha256:6b56803fec2ac54b557404126ac1160e65448e03798fa282bd23e8fab3795060", size = 129871, upload-time = "2025-05-21T19:31:50.11Z" },
 ]
+
+[[package]]
+name = "ndcvb"
+version = "0.1.0"
+source = { editable = "../non-deception-benchmark" }
+
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8" }]
 
 [[package]]
 name = "nodeenv"
