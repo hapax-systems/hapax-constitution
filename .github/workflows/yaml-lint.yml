@@ -88,3 +88,19 @@ jobs:
           if uncovered:
               print(f'Uncovered: {uncovered}')
           "
+
+  all-green:
+    name: all-green
+    runs-on: ubuntu-latest
+    needs:
+      - validate
+    if: always()
+    steps:
+      - name: Require required jobs to pass
+        env:
+          RESULTS: ${{ join(needs.*.result, ',') }}
+        run: |
+          if [ "$RESULTS" != "success" ]; then
+            echo "::error::Required job results: $RESULTS"
+            exit 1
+          fi
