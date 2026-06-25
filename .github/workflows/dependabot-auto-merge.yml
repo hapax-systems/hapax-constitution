@@ -18,13 +18,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Auto-approve minor/patch
-        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr review --approve "${{ github.event.pull_request.html_url }}"
-
       - name: Auto-merge minor/patch
         if: steps.metadata.outputs.update-type != 'version-update:semver-major'
         continue-on-error: true
@@ -36,8 +29,10 @@ jobs:
         if: steps.metadata.outputs.update-type == 'version-update:semver-major'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           gh label create needs-human \
+            --repo "$GH_REPO" \
             --description "Major-version dependency bump or other change requiring human review" \
             --color FBCA04 \
             --force
@@ -46,4 +41,5 @@ jobs:
         if: steps.metadata.outputs.update-type == 'version-update:semver-major'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr edit --add-label "needs-human" "${{ github.event.pull_request.html_url }}"
+          GH_REPO: ${{ github.repository }}
+        run: gh pr edit --repo "$GH_REPO" --add-label "needs-human" "${{ github.event.pull_request.html_url }}"
