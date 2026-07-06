@@ -216,12 +216,13 @@ repos:
     description: >-
       Constituent of the Hapax operating environment. Wear OS
       companion that streams biometric sensor data (heart rate, HRV,
-      skin temperature, sleep) to the council logos API. Single
+      skin temperature, activity state) to the council watch receiver
+      and reads an awareness summary from the council logos API. Single
       operator, single device.
     repo_type: wear-os
     role_in_constellation: >-
-      Wear OS biometric source. Streams to council logos API
-      (:8051) over Tailscale.
+      Wear OS biometric source. Streams to council watch receiver
+      (:8042); reads awareness summary from council logos API (:8051).
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
@@ -325,7 +326,7 @@ repos:
     repo_type: library
     role_in_constellation: >-
       MCP bridge. Consumes the council and officium logos APIs over
-      HTTP and presents 36 tools to Claude Code. The MCP ecosystem
+      HTTP and presents 38 tools to Claude Code. The MCP ecosystem
       norm is MIT; this repo carries MIT explicitly per operator
       divergence (every other runtime repo is PolyForm Strict).
     license_class: MIT

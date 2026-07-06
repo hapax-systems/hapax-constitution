@@ -371,6 +371,36 @@ def test_support_md_redirects_without_support_entitlement() -> None:
     assert "does not create an SLA" in body
 
 
+def test_product_and_adoption_preambles_do_not_use_generic_research_artifact_copy() -> None:
+    registry = load_registry()
+
+    reins_body = readme_section.render(registry["reins"])
+    assert "product front door" in reins_body
+    assert "governed command preview" in reins_body
+    assert "not a product" not in reins_body
+    assert "research infrastructure published as artifact" not in reins_body
+
+    agentgov_body = readme_section.render(registry["agentgov"])
+    assert "adoption-commons" in agentgov_body
+    assert "governance-hook surface" in agentgov_body
+    assert "not a product" not in agentgov_body
+    assert "research infrastructure published as artifact" not in agentgov_body
+
+
+def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
+    registry = load_registry()
+
+    reins_notice = notice_md.render(registry["reins"])
+    assert "product front door" in reins_notice
+    assert "read/preview claim ceiling" in reins_notice
+    assert "not a product" not in reins_notice
+
+    agentgov_contributing = contributing_md.render(registry["agentgov"])
+    assert "bounded adoption surface" in agentgov_contributing
+    assert "community maintenance" in agentgov_contributing
+    assert "not a product" not in agentgov_contributing
+
+
 def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec) -> None:
     body = issue_template_config_yml.render(council_repo)
     parsed = yaml.safe_load(body)
