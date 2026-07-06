@@ -1,6 +1,6 @@
 {
   "title": "hapax-constitution",
-  "description": "Governance specification for the Hapax operating environment. Spec-only, no runtime code. Publishes the hapax-sdlc package consumed by hapax-council and hapax-officium. Not seeking contributors.",
+  "description": "Governance specification for the Hapax operating environment. Publishes specification/publication material plus the hapax-sdlc enforcement/render tooling consumed by hapax-council and hapax-officium. Not seeking contributors.",
   "creators": [
     {
       "name": "Ryan Kleeberger"

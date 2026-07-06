@@ -2,14 +2,14 @@ cff-version: 1.2.0
 message: If you use this software in your research, please cite it as below.
 type: software
 title: hapax-constitution
-abstract: Governance specification for the Hapax operating environment. Spec-only,
-  no runtime code. Publishes the hapax-sdlc package consumed by hapax-council and
-  hapax-officium. Not seeking contributors.
+abstract: Governance specification for the Hapax operating environment. Publishes
+  specification/publication material plus the hapax-sdlc enforcement/render tooling
+  consumed by hapax-council and hapax-officium. Not seeking contributors.
 authors:
 - given-names: Ryan
   family-names: Kleeberger
-repository-code: https://github.com/ryanklee/hapax-constitution
-url: https://github.com/ryanklee/hapax-constitution
+repository-code: https://github.com/hapax-systems/hapax-constitution
+url: https://github.com/hapax-systems/hapax-constitution
 license: CC-BY-NC-ND-4.0
 keywords:
 - research-software

@@ -1,6 +1,6 @@
 # hapax-constitution
 
-Governance specification for a research project implementing Clark & Brennan's (1991) conversational grounding theory in a production voice AI system, evaluated via Single Case Experimental Design (SCED) with Bayesian analysis. See [hapax-council](https://github.com/ryanklee/hapax-council) for the primary research artifact and experiment design.
+Governance specification for a research project implementing Clark & Brennan's (1991) conversational grounding theory in a production voice AI system, evaluated via Single Case Experimental Design (SCED) with Bayesian analysis. See [hapax-council](https://github.com/hapax-systems/hapax-council) for the primary research artifact and experiment design.
 
 ## Role in the workspace
 
@@ -10,8 +10,8 @@ Two consumers extend the spec via the published package:
 
 | Consumer | Domain extensions | Package |
 |---------|-------------------|---------|
-| [hapax-council](https://github.com/ryanklee/hapax-council) | `single_user`, `executive_function`, `corporate_boundary`, `interpersonal_transparency`, `management_governance` | `hapax-sdlc` |
-| [hapax-officium](https://github.com/ryanklee/hapax-officium) | `single_operator`, `decision_support`, `management_safety` | `hapax-sdlc[demo]` |
+| [hapax-council](https://github.com/hapax-systems/hapax-council) | `single_user`, `executive_function`, `corporate_boundary`, `interpersonal_transparency`, `management_governance` | `hapax-sdlc` |
+| [hapax-officium](https://github.com/hapax-systems/hapax-officium) | `single_operator`, `decision_support`, `management_safety` | `hapax-sdlc[demo]` |
 
 Changes to `axioms/registry.yaml` propagate to both consumers on the next dependency bump.
 
@@ -79,7 +79,7 @@ Active research currents (`research/`):
 
 ## Repo presentation pipeline
 
-The `hapax-sdlc` package (published from `sdlc/` and `hapax_sdlc/` shim) renders eight artifacts into the seven first-party repos:
+The `hapax-sdlc` package (published from `sdlc/` and `hapax_sdlc/` shim) renders public metadata artifacts for first-party registry repos:
 
 | Artifact | Render mode | Source |
 |----------|-------------|--------|
@@ -156,12 +156,12 @@ CODEOWNERS protects `axioms/`, `domains/`, `knowledge/`, `.github/`. Operator re
 
 | Repository | Role |
 |-----------|------|
-| [hapax-council](https://github.com/ryanklee/hapax-council) | Primary research artifact — voice daemon, grounding system, experiment infrastructure |
+| [hapax-council](https://github.com/hapax-systems/hapax-council) | Primary research artifact — voice daemon, grounding system, experiment infrastructure |
 | **hapax-constitution** (this repo) | Governance specification — axioms, implications, canons, precedents |
-| [hapax-officium](https://github.com/ryanklee/hapax-officium) | Supporting software — management decision support |
-| [hapax-watch](https://github.com/ryanklee/hapax-watch) | Wear OS biometric companion |
-| [hapax-phone](https://github.com/ryanklee/hapax-phone) | Android health + context companion |
-| [hapax-mcp](https://github.com/ryanklee/hapax-mcp) | MCP server bridging the logos APIs to Claude Code |
+| [hapax-officium](https://github.com/hapax-systems/hapax-officium) | Supporting software — management decision support |
+| [hapax-watch](https://github.com/hapax-systems/hapax-watch) | Wear OS biometric companion |
+| [hapax-phone](https://github.com/hapax-systems/hapax-phone) | Android health + context companion |
+| [hapax-mcp](https://github.com/hapax-systems/hapax-mcp) | MCP server bridging the logos APIs to Claude Code |
 
 ## Citation
 
@@ -169,4 +169,11 @@ If you cite this specification, see the [CITATION.cff](CITATION.cff) file (rende
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+License posture is split by surface:
+
+- `hapax-sdlc` package/tooling code: Apache 2.0 — see [LICENSE](LICENSE).
+- Specification, citation, and publication metadata: CC BY-NC-ND 4.0, as declared in
+  [NOTICE.md](NOTICE.md), [CITATION.cff](CITATION.cff), `.zenodo.json`, and `codemeta.json`.
+
+Do not describe the whole repository as simply "Apache-licensed" or "open source" in public
+copy; distinguish runnable tooling from specification/publication material.

@@ -29,8 +29,8 @@ def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
         "title": repo.name,
         "abstract": repo.description.strip(),
         "authors": [author_block],
-        "repository-code": f"https://github.com/ryanklee/{repo.name}",
-        "url": f"https://github.com/ryanklee/{repo.name}",
+        "repository-code": repo.github_url,
+        "url": repo.github_url,
         "license": _spdx_for_license(repo.license_class.value),
         "keywords": list(repo.topics) if repo.topics else _default_keywords(),
     }

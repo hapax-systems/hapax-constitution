@@ -25,7 +25,7 @@ import json
 import subprocess
 from dataclasses import dataclass
 
-from sdlc.render.repo_registry import RepoSpec, load_registry
+from sdlc.render.repo_registry import DEFAULT_GITHUB_OWNER, RepoSpec, load_registry
 
 # Repos that keep ``has_wiki = true`` (the wiki is repurposed, not retired).
 # Only hapax-constitution, where the wiki carries the axiom registry.
@@ -36,6 +36,7 @@ WIKI_REPURPOSED: frozenset[str] = frozenset({"hapax-constitution"})
 class RepoSettings:
     """Subset of GitHub repo settings the policy governs."""
 
+    has_issues: bool
     has_wiki: bool
     has_projects: bool
     has_discussions: bool
@@ -44,6 +45,7 @@ class RepoSettings:
 def desired_settings(repo: RepoSpec) -> RepoSettings:
     """Policy-mandated settings for a repo, derived from its registry entry."""
     return RepoSettings(
+        has_issues=True,
         has_wiki=repo.name in WIKI_REPURPOSED,
         has_projects=False,
         has_discussions=False,
@@ -80,6 +82,7 @@ def current_settings(owner: str, repo_name: str) -> RepoSettings:
         )
     data = json.loads(result.stdout)
     return RepoSettings(
+        has_issues=bool(data.get("has_issues")),
         has_wiki=bool(data.get("has_wiki")),
         has_projects=bool(data.get("has_projects")),
         has_discussions=bool(data.get("has_discussions")),
@@ -99,6 +102,8 @@ def apply_settings(
             "-X",
             "PATCH",
             f"repos/{owner}/{repo_name}",
+            "-F",
+            f"has_issues={'true' if desired.has_issues else 'false'}",
             "-F",
             f"has_wiki={'true' if desired.has_wiki else 'false'}",
             "-F",
@@ -150,9 +155,7 @@ def detect_drift(
             skipped.append(r.name)
             continue
         reports.append(
-            DriftReport(
-                repo_name=r.name, desired=desired_settings(r), observed=observed
-            )
+            DriftReport(repo_name=r.name, desired=desired_settings(r), observed=observed)
         )
     return reports, skipped
 
@@ -163,7 +166,7 @@ def main(argv: list[str] | None = None) -> int:
     import argparse
 
     parser = argparse.ArgumentParser(prog="sdlc.render.repo_settings")
-    parser.add_argument("--owner", default="ryanklee", help="GitHub owner")
+    parser.add_argument("--owner", default=DEFAULT_GITHUB_OWNER, help="GitHub owner")
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", action="store_true", help="Detect drift; exit 1 on drift")
     mode.add_argument("--enforce", action="store_true", help="Apply policy where drift exists")
@@ -176,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
         marker = "DRIFT" if r.has_drift else "ok   "
         print(
             f"{marker} {args.owner}/{r.repo_name:25s} "
+            f"issues={r.observed.has_issues!s:5s} (want {r.desired.has_issues!s}) "
             f"wiki={r.observed.has_wiki!s:5s} (want {r.desired.has_wiki!s}) "
             f"projects={r.observed.has_projects!s:5s} (want {r.desired.has_projects!s}) "
             f"discussions={r.observed.has_discussions!s:5s} (want {r.desired.has_discussions!s})"

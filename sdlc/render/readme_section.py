@@ -12,7 +12,7 @@ preamble is prepended.
 from __future__ import annotations
 
 from sdlc.render.operator_referent import OperatorReferentPicker
-from sdlc.render.repo_registry import RepoSpec
+from sdlc.render.repo_registry import RepoSpec, SurfaceClass, github_repo_url
 
 PREAMBLE_BEGIN = "<!-- hapax-sdlc:preamble:begin -->"
 PREAMBLE_END = "<!-- hapax-sdlc:preamble:end -->"
@@ -22,14 +22,14 @@ def render(repo: RepoSpec) -> str:
     """Return the preamble block (between BEGIN/END markers, inclusive)."""
     referent = OperatorReferentPicker.pick_for_artifact(repo.id)
     license_summary = _license_one_liner(repo.license_class.value)
+    opening = _opening(repo)
+    contribution_line = _contribution_line(repo)
     return (
         f"{PREAMBLE_BEGIN}\n"
         f"\n"
         f"# {repo.name}\n"
         f"\n"
-        f"This repository is a constituent of the Hapax operating environment. "
-        f"It is not a product, not a service, and not seeking contributors. "
-        f"It is research infrastructure published as artifact.\n"
+        f"{opening}\n"
         f"\n"
         f"Authorship is indeterminate by design: this codebase is co-produced "
         f"by Hapax (the system itself), Claude Code, and the operator "
@@ -44,8 +44,7 @@ def render(repo: RepoSpec) -> str:
         f"\n"
         f"- Single-operator system; no auth, no roles, no contributor "
         f"onboarding (axiom: `single_user`)\n"
-        f"- No issues, no discussions, no PRs accepted; refusal is the "
-        f"artifact (see `CONTRIBUTING.md`)\n"
+        f"- {contribution_line}\n"
         f"- License: {license_summary}\n"
         f"- Citation: see `CITATION.cff`; archival DOI: see `.zenodo.json`\n"
         f"\n"
@@ -55,7 +54,7 @@ def render(repo: RepoSpec) -> str:
         f"- Refusal Brief: https://hapax.weblog.lol/refusal-brief\n"
         f"- Cohort Disparity Disclosure: "
         f"https://hapax.weblog.lol/cohort-disparity-disclosure\n"
-        f"- Constitution: https://github.com/ryanklee/hapax-constitution\n"
+        f"- Constitution: {github_repo_url('hapax-constitution')}\n"
         f"\n"
         f"## Inter-repo position\n"
         f"\n"
@@ -84,7 +83,12 @@ def _license_one_liner(license_class: str) -> str:
         "PolyForm-Strict-1.0.0": (
             "PolyForm Strict 1.0.0 (source-available, non-distribution, non-modification)"
         ),
+        "BUSL-1.1": (
+            "Business Source License 1.1 (source-available; not Open Source until the "
+            "change license/date applies)"
+        ),
         "CC-BY-NC-ND-4.0": "CC BY-NC-ND 4.0 (specification text, no derivatives)",
+        "CC0-1.0": "CC0 1.0 (public-domain dedication for the declared data/artifact surface)",
         "MIT": "MIT (MCP ecosystem alignment)",
         "Apache-2.0": "Apache 2.0",
         "CC-BY-SA-4.0": (
@@ -93,3 +97,71 @@ def _license_one_liner(license_class: str) -> str:
         ),
         "upstream": "Upstream license preserved (fork)",
     }.get(license_class, license_class)
+
+
+def _opening(repo: RepoSpec) -> str:
+    if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
+        return (
+            f"`{repo.name}` is the bounded adoption-commons repository in the "
+            "Hapax Systems portfolio. It is published so adopters can inspect "
+            "and pilot the governance-hook surface without inheriting the "
+            "Hapax runtime estate."
+        )
+    if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
+        return (
+            f"`{repo.name}` is the product front door for the Hapax Systems "
+            "portfolio. Its current public ceiling is observation and "
+            "governed command preview, not autonomous mutation authority."
+        )
+    if repo.surface_class is SurfaceClass.RUNTIME_MECHANISM:
+        return (
+            f"`{repo.name}` is a source-available runtime mechanism in the "
+            "Hapax Systems portfolio. It exposes dispatch, receipt, quota, "
+            "and projection machinery without claiming to be the whole "
+            "Hapax estate."
+        )
+    if repo.surface_class is SurfaceClass.GOVERNANCE_SPEC:
+        return (
+            f"`{repo.name}` is the governance-specification and publication "
+            "metadata anchor for the Hapax Systems repository constellation."
+        )
+    if repo.surface_class is SurfaceClass.ECOSYSTEM_BRIDGE:
+        return (
+            f"`{repo.name}` is an ecosystem bridge for the Hapax Systems "
+            "portfolio. It is published for MCP integration and inspection, "
+            "not as a general-purpose framework."
+        )
+    if repo.surface_class is SurfaceClass.ASSET_MIRROR:
+        return (
+            f"`{repo.name}` is a public asset mirror for the Hapax Systems "
+            "portfolio. Source of truth and approval remain outside this "
+            "mirror."
+        )
+    if repo.surface_class is SurfaceClass.EVIDENCE_ARTIFACT:
+        return (
+            f"`{repo.name}` is an evidence-artifact repository in the Hapax "
+            "Systems portfolio. It publishes bounded observations or "
+            "metadata, not runtime authority."
+        )
+    return (
+        f"`{repo.name}` is a constituent of the Hapax operating environment. "
+        "It is research or boundary infrastructure published as an artifact, "
+        "not a staffed product or community project."
+    )
+
+
+def _contribution_line(repo: RepoSpec) -> str:
+    if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
+        return (
+            "Issues are redirect-only and support is bounded; pull requests "
+            "are not the intake path for this single-operator project"
+        )
+    if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
+        return (
+            "Issues are redirect-only; support, commercial engagement, and "
+            "roadmap commitments do not happen through GitHub"
+        )
+    return (
+        "Issues are redirect-only; no discussions, no PRs accepted; refusal "
+        "is the artifact (see `CONTRIBUTING.md` and `SUPPORT.md`)"
+    )

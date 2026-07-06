@@ -4,7 +4,7 @@ Governance architecture for LLM agent systems — constitutional axioms, derived
 
 Shared conventions (uv, ruff, testing, git workflow) are in the workspace `CLAUDE.md` — this file covers constitution-specific details only.
 
-**Consumers of this spec:** [`hapax-council`](https://github.com/ryanklee/hapax-council) (extends the constitutional axiom set with single_user, executive_function, etc.) and [`hapax-officium`](https://github.com/ryanklee/hapax-officium) (extends with management_safety, management_governance) both depend on this repo via the published `hapax-sdlc` package. Changes to `axioms/registry.yaml` here propagate to both consumers on next dependency bump.
+**Consumers of this spec:** [`hapax-council`](https://github.com/hapax-systems/hapax-council) (extends the constitutional axiom set with single_user, executive_function, etc.) and [`hapax-officium`](https://github.com/hapax-systems/hapax-officium) (extends with management_safety, management_governance) both depend on this repo via the published `hapax-sdlc` package. Changes to `axioms/registry.yaml` here propagate to both consumers on next dependency bump.
 
 ## Key Files
 

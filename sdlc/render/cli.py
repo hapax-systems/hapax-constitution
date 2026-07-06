@@ -16,7 +16,9 @@ Each render produces these artifacts:
     NOTICE.md
     CONTRIBUTING.md
     SECURITY.md
+    SUPPORT.md
     GOVERNANCE.md
+    .github/ISSUE_TEMPLATE/config.yml
     README.md (preamble section-replaced; rest preserved)
 """
 
@@ -32,11 +34,14 @@ from sdlc.render import (
     codemeta_json,
     contributing_md,
     governance_md,
+    issue_template_config_yml,
     notice_md,
     readme_section,
     security_md,
+    support_md,
     zenodo_json,
 )
+from sdlc.render.repo_export import GENERATED_ARTIFACTS
 from sdlc.render.repo_registry import (
     OperatorIdentity,
     RepoSpec,
@@ -51,7 +56,8 @@ def build_parser() -> argparse.ArgumentParser:
         description=(
             "Render repo-presentation files (CITATION.cff, codemeta.json, "
             ".zenodo.json, NOTICE.md, CONTRIBUTING.md, SECURITY.md, "
-            "GOVERNANCE.md, README.md preamble) for one or all repos."
+            "SUPPORT.md, GOVERNANCE.md, .github/ISSUE_TEMPLATE/config.yml, "
+            "README.md preamble) for one or all repos."
         ),
     )
     target = parser.add_mutually_exclusive_group(required=True)
@@ -82,16 +88,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--file",
-        choices=[
-            "CITATION.cff",
-            "codemeta.json",
-            ".zenodo.json",
-            "NOTICE.md",
-            "CONTRIBUTING.md",
-            "SECURITY.md",
-            "GOVERNANCE.md",
-            "README.md",
-        ],
+        choices=GENERATED_ARTIFACTS,
         help="Render a single artifact instead of the full set",
     )
     return parser
@@ -108,7 +105,9 @@ def render_artifacts(repo: RepoSpec, identity: OperatorIdentity) -> dict[str, st
         "NOTICE.md": notice_md.render(repo),
         "CONTRIBUTING.md": contributing_md.render(repo),
         "SECURITY.md": security_md.render(repo, identity),
+        "SUPPORT.md": support_md.render(repo),
         "GOVERNANCE.md": governance_md.render(repo),
+        ".github/ISSUE_TEMPLATE/config.yml": issue_template_config_yml.render(repo),
         "README.md": readme_section.render(repo),
     }
 
@@ -145,6 +144,7 @@ def write_or_compare(target_root: Path, artifacts: dict[str, str], *, check_only
                 drift_count += 1
                 print(f"DRIFT {target}", file=sys.stderr)
         else:
+            target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(new_body, encoding="utf-8")
     return drift_count
 

@@ -16,7 +16,7 @@ Authorship is indeterminate by design. This codebase is co-produced by Hapax (th
 - Manifesto: https://hapax.weblog.lol/hapax-manifesto-v0
 - Refusal Brief: https://hapax.weblog.lol/refusal-brief
 - Cohort Disparity Disclosure: https://hapax.weblog.lol/cohort-disparity-disclosure
-- Constitution: https://github.com/ryanklee/hapax-constitution
+- Constitution: https://github.com/hapax-systems/hapax-constitution
 
 ## Inter-repo position
 
