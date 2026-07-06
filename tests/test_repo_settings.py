@@ -9,12 +9,13 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
-from sdlc.render.repo_registry import LicenseClass, RepoSpec
+from sdlc.render.repo_registry import LicenseClass, RepoSpec, ValuePartition
 from sdlc.render.repo_settings import (
     DriftReport,
     RepoNotBootstrapped,
     RepoSettings,
     WIKI_REPURPOSED,
+    apply_settings,
     desired_settings,
     detect_drift,
     first_party_repos,
@@ -29,6 +30,8 @@ def _stub_repo(name: str, *, is_first_party: bool = True) -> RepoSpec:
         repo_type="library",
         role_in_constellation="stub",
         license_class=LicenseClass.MIT,
+        value_partition=ValuePartition.ADOPTION_COMMONS,
+        license_posture="test fixture",
         is_first_party=is_first_party,
     )
 
@@ -41,7 +44,10 @@ def test_wiki_repurposed_set_is_constitution_only() -> None:
 def test_desired_settings_for_constitution_keeps_wiki() -> None:
     settings = desired_settings(_stub_repo("hapax-constitution"))
     assert settings == RepoSettings(
-        has_wiki=True, has_projects=False, has_discussions=False
+        has_issues=True,
+        has_wiki=True,
+        has_projects=False,
+        has_discussions=False,
     )
 
 
@@ -49,7 +55,10 @@ def test_desired_settings_for_other_repos_disables_wiki() -> None:
     for name in ("hapax-council", "hapax-mcp", "hapax-phone"):
         settings = desired_settings(_stub_repo(name))
         assert settings == RepoSettings(
-            has_wiki=False, has_projects=False, has_discussions=False
+            has_issues=True,
+            has_wiki=False,
+            has_projects=False,
+            has_discussions=False,
         )
 
 
@@ -61,10 +70,10 @@ def test_first_party_repos_excludes_upstream_forks() -> None:
 
 
 def test_first_party_repos_count_matches_registry_invariant() -> None:
-    """The constellation has 7 first-party repos (per test_render.py
-    ``test_registry_has_seven_first_party_repos``). The enforcer governs
+    """The constellation has 12 first-party repos (per test_render.py
+    ``test_registry_has_current_first_party_repos``). The enforcer governs
     all of them."""
-    assert len(first_party_repos()) == 7
+    assert len(first_party_repos()) == 12
 
 
 def test_detect_drift_reports_per_repo_when_observed_matches() -> None:
@@ -76,7 +85,7 @@ def test_detect_drift_reports_per_repo_when_observed_matches() -> None:
         return desired_council if name == "hapax-council" else desired_constitution
 
     with patch("sdlc.render.repo_settings.current_settings", side_effect=fake_current):
-        reports, skipped = detect_drift("ryanklee", repos)
+        reports, skipped = detect_drift("hapax-systems", repos)
 
     assert all(isinstance(r, DriftReport) for r in reports)
     assert all(not r.has_drift for r in reports)
@@ -85,14 +94,19 @@ def test_detect_drift_reports_per_repo_when_observed_matches() -> None:
 
 def test_detect_drift_reports_drift_when_observed_differs() -> None:
     repo = _stub_repo("hapax-council")
-    bad_observed = RepoSettings(has_wiki=True, has_projects=True, has_discussions=True)
+    bad_observed = RepoSettings(
+        has_issues=False,
+        has_wiki=True,
+        has_projects=True,
+        has_discussions=True,
+    )
 
     with patch("sdlc.render.repo_settings.current_settings", return_value=bad_observed):
-        reports, skipped = detect_drift("ryanklee", [repo])
+        reports, skipped = detect_drift("hapax-systems", [repo])
 
     assert len(reports) == 1
     assert reports[0].has_drift
-    assert reports[0].desired == RepoSettings(False, False, False)
+    assert reports[0].desired == RepoSettings(True, False, False, False)
     assert reports[0].observed == bad_observed
     assert skipped == []
 
@@ -105,21 +119,50 @@ def test_detect_drift_skips_unbootstrapped_repos() -> None:
 
     def fake_current(_owner: str, name: str) -> RepoSettings:
         if name == "hapax-assets":
-            raise RepoNotBootstrapped(f"ryanklee/{name} does not exist on GitHub")
+            raise RepoNotBootstrapped(f"hapax-systems/{name} does not exist on GitHub")
         return council_settings
 
     with patch("sdlc.render.repo_settings.current_settings", side_effect=fake_current):
-        reports, skipped = detect_drift("ryanklee", repos)
+        reports, skipped = detect_drift("hapax-systems", repos)
 
     assert len(reports) == 1
     assert reports[0].repo_name == "hapax-council"
     assert skipped == ["hapax-assets"]
 
 
+def test_apply_settings_patches_issues_redirect_policy() -> None:
+    desired = RepoSettings(
+        has_issues=True,
+        has_wiki=False,
+        has_projects=False,
+        has_discussions=False,
+    )
+
+    with patch("sdlc.render.repo_settings.subprocess.run") as run:
+        apply_settings("hapax-systems", "hapax-council", desired)
+
+    argv = run.call_args.args[0]
+    assert "repos/hapax-systems/hapax-council" in argv
+    assert "has_issues=true" in argv
+    assert "has_wiki=false" in argv
+    assert "has_projects=false" in argv
+    assert "has_discussions=false" in argv
+
+
 def test_repo_settings_is_hashable_for_set_dedup() -> None:
     """Frozen dataclass invariant — used in dedup paths if the enforcer
     ever batches repos by desired-settings shape."""
-    a = RepoSettings(has_wiki=False, has_projects=False, has_discussions=False)
-    b = RepoSettings(has_wiki=False, has_projects=False, has_discussions=False)
+    a = RepoSettings(
+        has_issues=True,
+        has_wiki=False,
+        has_projects=False,
+        has_discussions=False,
+    )
+    b = RepoSettings(
+        has_issues=True,
+        has_wiki=False,
+        has_projects=False,
+        has_discussions=False,
+    )
     assert hash(a) == hash(b)
     assert {a, b} == {a}

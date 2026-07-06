@@ -543,7 +543,7 @@ A personal LLM-augmented operating environment. The full stack: 16 Docker servic
 
 The system is specifically designed around ADHD/autism and executive function support — the `executive_function` axiom governs accommodation patterns, proactive nudges, and cognitive load management throughout the agent architecture.
 
-Repository: [https://github.com/ryanklee/hapax-council](https://github.com/ryanklee/hapax-council)
+Repository: [https://github.com/hapax-systems/hapax-council](https://github.com/hapax-systems/hapax-council)
 
 ### hapax-officium (Management Decision Support)
 
@@ -551,7 +551,7 @@ A decision-support system for engineering managers. Agents prepare context for 1
 
 Safety principle: "LLMs prepare, humans deliver." The system never generates feedback language, coaching recommendations, or evaluations of individual team members. This boundary is enforced as a constitutional axiom (`management_safety`, weight 95) with T0 blocking implications.
 
-Repository: [https://github.com/ryanklee/hapax-officium](https://github.com/ryanklee/hapax-officium)
+Repository: [https://github.com/hapax-systems/hapax-officium](https://github.com/hapax-systems/hapax-officium)
 
 ### Relationship Between Implementations
 

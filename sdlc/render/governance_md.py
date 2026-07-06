@@ -9,7 +9,7 @@ their own governance.
 from __future__ import annotations
 
 from sdlc.render.operator_referent import OperatorReferentPicker
-from sdlc.render.repo_registry import RepoSpec
+from sdlc.render.repo_registry import RepoSpec, github_repo_url
 
 
 def render(repo: RepoSpec) -> str:
@@ -60,6 +60,7 @@ def _render_anchor(referent: str) -> str:
 
 
 def _render_redirect(repo: RepoSpec, referent: str) -> str:
+    constitution_url = github_repo_url("hapax-constitution")
     return (
         "# Governance\n"
         "\n"
@@ -69,14 +70,10 @@ def _render_redirect(repo: RepoSpec, referent: str) -> str:
         "\n"
         "## Authoritative sources\n"
         "\n"
-        "- Axiom registry: "
-        "https://github.com/ryanklee/hapax-constitution/blob/main/axioms/registry.yaml\n"
-        "- Implications: "
-        "https://github.com/ryanklee/hapax-constitution/tree/main/axioms/implications/\n"
-        "- Precedents: "
-        "https://github.com/ryanklee/hapax-constitution/tree/main/axioms/precedents/\n"
-        "- Axiom registry as Wiki: "
-        "https://github.com/ryanklee/hapax-constitution/wiki\n"
+        f"- Axiom registry: {constitution_url}/blob/main/axioms/registry.yaml\n"
+        f"- Implications: {constitution_url}/tree/main/axioms/implications/\n"
+        f"- Precedents: {constitution_url}/tree/main/axioms/precedents/\n"
+        f"- Axiom registry as Wiki: {constitution_url}/wiki\n"
         "\n"
         "## Operator\n"
         "\n"

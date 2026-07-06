@@ -12,7 +12,7 @@ preamble is prepended.
 from __future__ import annotations
 
 from sdlc.render.operator_referent import OperatorReferentPicker
-from sdlc.render.repo_registry import RepoSpec
+from sdlc.render.repo_registry import RepoSpec, github_repo_url
 
 PREAMBLE_BEGIN = "<!-- hapax-sdlc:preamble:begin -->"
 PREAMBLE_END = "<!-- hapax-sdlc:preamble:end -->"
@@ -44,8 +44,8 @@ def render(repo: RepoSpec) -> str:
         f"\n"
         f"- Single-operator system; no auth, no roles, no contributor "
         f"onboarding (axiom: `single_user`)\n"
-        f"- No issues, no discussions, no PRs accepted; refusal is the "
-        f"artifact (see `CONTRIBUTING.md`)\n"
+        f"- Issues are redirect-only; no discussions, no PRs accepted; "
+        f"refusal is the artifact (see `CONTRIBUTING.md` and `SUPPORT.md`)\n"
         f"- License: {license_summary}\n"
         f"- Citation: see `CITATION.cff`; archival DOI: see `.zenodo.json`\n"
         f"\n"
@@ -55,7 +55,7 @@ def render(repo: RepoSpec) -> str:
         f"- Refusal Brief: https://hapax.weblog.lol/refusal-brief\n"
         f"- Cohort Disparity Disclosure: "
         f"https://hapax.weblog.lol/cohort-disparity-disclosure\n"
-        f"- Constitution: https://github.com/ryanklee/hapax-constitution\n"
+        f"- Constitution: {github_repo_url('hapax-constitution')}\n"
         f"\n"
         f"## Inter-repo position\n"
         f"\n"
@@ -84,7 +84,12 @@ def _license_one_liner(license_class: str) -> str:
         "PolyForm-Strict-1.0.0": (
             "PolyForm Strict 1.0.0 (source-available, non-distribution, non-modification)"
         ),
+        "BUSL-1.1": (
+            "Business Source License 1.1 (source-available; not Open Source until the "
+            "change license/date applies)"
+        ),
         "CC-BY-NC-ND-4.0": "CC BY-NC-ND 4.0 (specification text, no derivatives)",
+        "CC0-1.0": "CC0 1.0 (public-domain dedication for the declared data/artifact surface)",
         "MIT": "MIT (MCP ecosystem alignment)",
         "Apache-2.0": "Apache 2.0",
         "CC-BY-SA-4.0": (

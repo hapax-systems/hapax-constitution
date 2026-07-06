@@ -9,7 +9,7 @@ legal name does NOT appear.
 from __future__ import annotations
 
 from sdlc.render.operator_referent import OperatorReferentPicker
-from sdlc.render.repo_registry import RepoSpec
+from sdlc.render.repo_registry import RepoSpec, github_repo_url
 
 
 def render(repo: RepoSpec) -> str:
@@ -43,7 +43,7 @@ def render(repo: RepoSpec) -> str:
         "- Refusal Brief: https://hapax.weblog.lol/refusal-brief\n"
         "- Cohort Disparity Disclosure: "
         "https://hapax.weblog.lol/cohort-disparity-disclosure\n"
-        "- Constitution: https://github.com/ryanklee/hapax-constitution\n"
+        f"- Constitution: {github_repo_url('hapax-constitution')}\n"
         "\n"
         "## Inter-repo position\n"
         "\n"
@@ -63,9 +63,14 @@ def _license_summary(license_class: str) -> str:
         "PolyForm-Strict-1.0.0": (
             "PolyForm Strict 1.0.0 — source-available, non-distribution, non-modification."
         ),
+        "BUSL-1.1": (
+            "Business Source License 1.1 — source-available; not Open Source until "
+            "the change license/date applies."
+        ),
         "CC-BY-NC-ND-4.0": (
             "CC BY-NC-ND 4.0 — non-commercial, no derivatives. Specification text, not code."
         ),
+        "CC0-1.0": "CC0 1.0 — public-domain dedication for the declared data/artifact surface.",
         "MIT": "MIT — permissive (MCP ecosystem alignment).",
         "Apache-2.0": "Apache 2.0 — permissive with patent grant.",
         "CC-BY-SA-4.0": (

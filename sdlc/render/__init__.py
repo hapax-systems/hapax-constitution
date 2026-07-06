@@ -1,7 +1,7 @@
 """hapax-sdlc render subpackage.
 
-Single chokepoint for repo-presentation file generation across the nine
-hapax constellation repositories. Per drop 4 §6 (consolidated GitHub
+Single chokepoint for repo-presentation file generation across the
+Hapax Systems constellation repositories. Per drop 4 §6 (consolidated GitHub
 repo-presentation research, 2026-04-25), a render command rather than
 nine hand-edited file-sets is the constitutional shape: full-automation,
 single-source-of-truth, drift-detectable.
@@ -9,7 +9,7 @@ single-source-of-truth, drift-detectable.
 Public entry point::
 
     python -m hapax_sdlc.render --repo <id>            # render one repo
-    python -m hapax_sdlc.render --all                  # render every repo
+    python -m hapax_sdlc.render --all                  # render every registry repo
     python -m hapax_sdlc.render --repo <id> --check    # dry-run; exit 1 on drift
     python -m hapax_sdlc.render --repo <id> --dry-run  # print to stdout, write nothing
 
@@ -33,6 +33,10 @@ from sdlc.render.repo_registry import (
     LicenseClass,
     OperatorIdentity,
     RepoSpec,
+    RepoVisibility,
+    SourceOfTruth,
+    SurfaceClass,
+    ValuePartition,
     load_operator_identity,
     load_registry,
 )
@@ -41,6 +45,10 @@ __all__ = [
     "LicenseClass",
     "OperatorIdentity",
     "RepoSpec",
+    "RepoVisibility",
+    "SourceOfTruth",
+    "SurfaceClass",
+    "ValuePartition",
     "load_operator_identity",
     "load_registry",
 ]

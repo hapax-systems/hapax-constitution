@@ -20,9 +20,11 @@ from sdlc.render import (
     codemeta_json,
     contributing_md,
     governance_md,
+    issue_template_config_yml,
     notice_md,
     readme_section,
     security_md,
+    support_md,
     zenodo_json,
 )
 from sdlc.render.operator_referent import REFERENTS, OperatorReferentPicker
@@ -30,6 +32,10 @@ from sdlc.render.repo_registry import (
     LicenseClass,
     OperatorIdentity,
     RepoSpec,
+    RepoVisibility,
+    SourceOfTruth,
+    SurfaceClass,
+    ValuePartition,
     load_operator_identity,
     load_registry,
 )
@@ -38,19 +44,24 @@ from sdlc.render.repo_registry import (
 # --- Registry --------------------------------------------------------------
 
 
-def test_registry_has_seven_first_party_repos() -> None:
+def test_registry_has_current_first_party_repos() -> None:
     registry = load_registry()
     first_party = [s for s in registry.values() if s.is_first_party]
-    assert len(first_party) == 7
+    assert len(first_party) == 12
     ids = sorted(s.id for s in first_party)
     assert ids == [
+        "agentgov",
         "hapax-assets",
         "hapax-constitution",
+        "hapax-coord",
         "hapax-council",
         "hapax-mcp",
         "hapax-officium",
         "hapax-phone",
+        "hapax-research-ledger",
+        "hapax-spine",
         "hapax-watch",
+        "reins",
     ]
 
 
@@ -78,6 +89,113 @@ def test_registry_license_assignments_match_research_drop() -> None:
     assert registry["hapax-constitution"].license_class is LicenseClass.CC_BY_NC_ND_4_0
     assert registry["hapax-mcp"].license_class is LicenseClass.MIT
     assert registry["hapax-assets"].license_class is LicenseClass.CC_BY_SA_4_0
+    assert registry["agentgov"].license_class is LicenseClass.MIT
+    assert registry["reins"].license_class is LicenseClass.BUSL_1_1
+    assert registry["hapax-spine"].license_class is LicenseClass.BUSL_1_1
+    assert registry["hapax-coord"].license_class is LicenseClass.POLYFORM_STRICT_1_0_0
+    assert registry["hapax-research-ledger"].license_class is LicenseClass.CC0_1_0
+
+
+def test_registry_value_partitions_match_ratified_license_posture() -> None:
+    registry = load_registry()
+    assert registry["agentgov"].value_partition is ValuePartition.ADOPTION_COMMONS
+    assert registry["agentgov"].license_posture.startswith("Permissive adoption surface")
+
+    for repo_id in ("reins", "hapax-spine"):
+        repo = registry[repo_id]
+        assert repo.value_partition is ValuePartition.COMMERCIAL_MOAT
+        assert "not open source" in repo.license_posture.lower()
+
+    for repo_id in ("hapax-council", "hapax-coord", "hapax-phone", "hapax-watch"):
+        assert registry[repo_id].value_partition is ValuePartition.INTERNAL_APPARATUS
+
+    for repo_id in ("hapax-constitution", "hapax-assets", "hapax-research-ledger"):
+        assert registry[repo_id].value_partition is ValuePartition.EVIDENCE_ARTIFACT
+
+
+def test_registry_frontmatter_policy_fields_are_populated() -> None:
+    registry = load_registry()
+    for repo in registry.values():
+        assert repo.reader_promise
+        assert repo.claim_ceiling
+        assert repo.primary_audience
+        assert isinstance(repo.source_of_truth, SourceOfTruth)
+        assert isinstance(repo.surface_class, SurfaceClass)
+        assert isinstance(repo.visibility, RepoVisibility)
+        if repo.is_first_party:
+            assert repo.public_files
+
+
+def test_registry_surface_classes_match_portfolio_decisions() -> None:
+    registry = load_registry()
+    assert registry["agentgov"].surface_class is SurfaceClass.ADOPTION_COMMONS
+    assert registry["reins"].surface_class is SurfaceClass.PRODUCT_FRONT_DOOR
+    assert registry["hapax-spine"].surface_class is SurfaceClass.RUNTIME_MECHANISM
+    assert registry["hapax-council"].surface_class is SurfaceClass.RESEARCH_APPARATUS
+    assert registry["hapax-constitution"].surface_class is SurfaceClass.GOVERNANCE_SPEC
+    assert registry["hapax-mcp"].surface_class is SurfaceClass.ECOSYSTEM_BRIDGE
+    assert registry["hapax-assets"].surface_class is SurfaceClass.ASSET_MIRROR
+    assert registry["hapax-research-ledger"].surface_class is SurfaceClass.EVIDENCE_ARTIFACT
+
+
+def test_registry_visibility_matches_current_public_boundary() -> None:
+    registry = load_registry()
+    public = {repo.id for repo in registry.values() if repo.visibility is RepoVisibility.PUBLIC}
+    assert public == {
+        "agentgov",
+        "hapax-assets",
+        "hapax-constitution",
+        "hapax-council",
+        "hapax-officium",
+        "hapax-research-ledger",
+        "reins",
+    }
+
+
+def test_registry_dependency_order_is_derived_from_dependencies() -> None:
+    registry = load_registry()
+    assert registry["hapax-constitution"].dependency_order == 0
+    assert registry["agentgov"].dependency_order == 0
+    assert registry["hapax-council"].dependency_order > (
+        registry["hapax-constitution"].dependency_order
+    )
+    assert registry["hapax-spine"].dependency_order > registry["hapax-council"].dependency_order
+    assert registry["reins"].dependency_order > registry["hapax-spine"].dependency_order
+
+
+def test_registry_rejects_hand_authored_dependency_order(tmp_path: Path) -> None:
+    registry_path = tmp_path / "repos.yaml"
+    registry_path.write_text(
+        yaml.safe_dump(
+            {
+                "repos": {
+                    "demo": {
+                        "name": "demo",
+                        "description": "demo",
+                        "repo_type": "library",
+                        "role_in_constellation": "demo",
+                        "license_class": "MIT",
+                        "value_partition": "adoption_commons",
+                        "license_posture": "demo",
+                        "dependency_order": 99,
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="dependency_order is derived"):
+        load_registry(registry_path)
+
+
+def test_registry_first_party_repos_default_to_hapax_systems_owner() -> None:
+    registry = load_registry()
+    first_party = [s for s in registry.values() if s.is_first_party]
+    assert all(s.github_owner == "hapax-systems" for s in first_party)
+    assert registry["hapax-council"].github_url == (
+        "https://github.com/hapax-systems/hapax-council"
+    )
 
 
 def test_load_operator_identity_returns_placeholder_when_no_local_override(
@@ -187,7 +305,7 @@ def test_codemeta_json_parses_and_aligns_to_v3_jsonld(
     assert parsed["@type"] == "SoftwareSourceCode"
     assert parsed["author"][0]["@id"] == identity.orcid
     assert parsed["license"] == ("https://polyformproject.org/licenses/strict/1.0.0/")
-    assert parsed["codeRepository"] == "https://github.com/ryanklee/hapax-council"
+    assert parsed["codeRepository"] == "https://github.com/hapax-systems/hapax-council"
 
 
 def test_zenodo_json_carries_related_identifier_graph(
@@ -223,7 +341,7 @@ def test_notice_md_uses_referent_not_legal_name(
     referent = OperatorReferentPicker.pick_for_artifact(council_repo.id)
     assert referent in body
     assert "Single-operator" in body
-    assert "https://github.com/ryanklee/hapax-constitution" in body
+    assert "https://github.com/hapax-systems/hapax-constitution" in body
 
 
 def test_contributing_md_refuses_explicitly(council_repo: RepoSpec) -> None:
@@ -243,6 +361,34 @@ def test_security_md_publishes_sigstore_path_not_email(
     assert "@" not in body or "@type" in body  # JSON-LD @type is fine
 
 
+def test_support_md_redirects_without_support_entitlement() -> None:
+    registry = load_registry()
+    body = support_md.render(registry["agentgov"])
+    assert "bounded adoption surface" in body
+    assert "staffed support channel" in body
+    assert "Blank issues are disabled" in body
+    assert "no-perk research support only" in body
+    assert "does not create an SLA" in body
+
+
+def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec) -> None:
+    body = issue_template_config_yml.render(council_repo)
+    parsed = yaml.safe_load(body)
+    assert parsed["blank_issues_enabled"] is False
+    contact_links = parsed["contact_links"]
+    assert {link["name"] for link in contact_links} == {
+        "Read the repository overview",
+        "Read the support boundary",
+        "Report a security issue",
+        "Read Hapax governance",
+    }
+    assert all({"name", "url", "about"} == set(link) for link in contact_links)
+    assert (
+        parsed["contact_links"][1]["url"]
+        == "https://github.com/hapax-systems/hapax-council/blob/main/SUPPORT.md"
+    )
+
+
 def test_governance_md_anchor_vs_redirect(
     council_repo: RepoSpec, constitution_repo: RepoSpec
 ) -> None:
@@ -250,7 +396,7 @@ def test_governance_md_anchor_vs_redirect(
     redirect_body = governance_md.render(council_repo)
     assert "canonical axiom registry" in anchor_body
     assert "Governance for this repository is centralised" in redirect_body
-    assert "https://github.com/ryanklee/hapax-constitution" in redirect_body
+    assert "https://github.com/hapax-systems/hapax-constitution" in redirect_body
 
 
 def test_readme_section_replacement_preserves_existing_body(
@@ -294,7 +440,9 @@ def test_cli_dry_run_prints_all_artifacts() -> None:
         "NOTICE.md",
         "CONTRIBUTING.md",
         "SECURITY.md",
+        "SUPPORT.md",
         "GOVERNANCE.md",
+        ".github/ISSUE_TEMPLATE/config.yml",
         "README.md",
     ):
         assert f"# {filename}" in output
@@ -316,7 +464,7 @@ def test_cli_check_mode_detects_drift(tmp_path: Path) -> None:
             str(tmp_path),
         ]
     )
-    assert rc == 1  # all 8 files drifted
+    assert rc == 1  # every rendered file drifted
 
 
 def test_cli_check_mode_clean_after_write(tmp_path: Path) -> None:
@@ -342,7 +490,24 @@ def test_cli_check_mode_clean_after_write(tmp_path: Path) -> None:
     assert rc_check == 0
 
 
-def test_cli_all_mode_renders_seven_first_party_repos(tmp_path: Path) -> None:
+def test_cli_write_creates_nested_issue_template_config(tmp_path: Path) -> None:
+    rc = cli.main(
+        [
+            "--repo",
+            "hapax-council",
+            "--target-root",
+            str(tmp_path),
+            "--file",
+            ".github/ISSUE_TEMPLATE/config.yml",
+        ]
+    )
+    assert rc == 0
+    written = tmp_path / ".github" / "ISSUE_TEMPLATE" / "config.yml"
+    assert written.exists()
+    assert yaml.safe_load(written.read_text(encoding="utf-8"))["blank_issues_enabled"] is False
+
+
+def test_cli_all_mode_renders_first_party_repos(tmp_path: Path) -> None:
     """``--all`` renders every first-party repo. Each gets its own
     target subdirectory under ``--target-root`` is not yet supported —
     here we just verify the dry-run path handles --all without error.
@@ -361,7 +526,12 @@ def test_cli_all_mode_renders_seven_first_party_repos(tmp_path: Path) -> None:
         "hapax-watch",
         "hapax-phone",
         "hapax-mcp",
+        "hapax-coord",
+        "hapax-spine",
         "hapax-assets",
+        "hapax-research-ledger",
+        "agentgov",
+        "reins",
     ):
         assert repo_id in output
 
@@ -410,7 +580,9 @@ def test_no_emoji_in_any_rendered_body(council_repo: RepoSpec, identity: Operato
         notice_md.render(council_repo),
         contributing_md.render(council_repo),
         security_md.render(council_repo, identity),
+        support_md.render(council_repo),
         governance_md.render(council_repo),
+        issue_template_config_yml.render(council_repo),
         readme_section.render(council_repo),
     ]
     for body in bodies:
@@ -428,6 +600,8 @@ def test_no_first_person_we_in_constitutional_disclosures(
         notice_md.render(council_repo),
         contributing_md.render(council_repo),
         security_md.render(council_repo, identity),
+        support_md.render(council_repo),
+        issue_template_config_yml.render(council_repo),
         readme_section.render(council_repo),
     ]
     banned = (" we ", " We ", "our team", "Our team")
@@ -461,7 +635,9 @@ def test_legal_name_only_appears_in_formal_contexts(
         notice_md.render(council_repo),
         contributing_md.render(council_repo),
         security_md.render(council_repo, identity),
+        support_md.render(council_repo),
         governance_md.render(council_repo),
+        issue_template_config_yml.render(council_repo),
         readme_section.render(council_repo),
     ]
     for body in forbidden:

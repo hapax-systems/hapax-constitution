@@ -19,6 +19,7 @@ name = "hapax-sdlc"
 version = "0.2.0"
 description = "Shared SDLC and demo pipeline infrastructure for hapax repositories"
 requires-python = ">=3.12"
+license = "Apache-2.0"
 dependencies = [
     "pyyaml>=6.0",
     "pydantic>=2.12",
