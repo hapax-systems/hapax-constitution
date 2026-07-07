@@ -8,6 +8,10 @@ This repository is part of the Hapax Systems portfolio. Public metadata, issue a
 
 Governance specification and repo-presentation authority for Hapax Systems, with a clear hapax-sdlc tooling boundary.
 
+## Reader value
+
+Gives reviewers one auditable source for names, licenses, support boundaries, and claim ceilings, reducing public-surface drift.
+
 ## Claim ceiling
 
 Specification plus tooling split. Not the Hapax runtime. Not a blanket Apache or open-source statement for the whole repository.

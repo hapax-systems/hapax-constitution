@@ -25,7 +25,10 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "",
             "Hapax Systems publishes evidence-bound software for governing AI-agent work: "
             "authority before action, receipts before claims, and visible limits instead "
-            "of unsupported automation claims.",
+            "of unsupported automation claims. The practical value is legibility: "
+            "operators, reviewers, researchers, and adopters can see what is shipped, "
+            "what is reserved, and what evidence would have to exist before a stronger "
+            "claim is allowed.",
             "",
             "The public portfolio is intentionally split by value surface. Some parts are "
             "open adoption commons, some are source-available commercial core, and some "
@@ -114,8 +117,8 @@ def _portfolio_order(repo: RepoSpec) -> tuple[int, int, str]:
 
 def _entry_table(by_id: dict[str, RepoSpec]) -> str:
     rows = [
-        "| Surface | What to expect | License posture |",
-        "|---|---|---|",
+        "| Surface | What to expect | Reader value | License posture |",
+        "|---|---|---|---|",
     ]
     for repo_id in (
         "reins",
@@ -131,6 +134,7 @@ def _entry_table(by_id: dict[str, RepoSpec]) -> str:
             "| "
             f"[{repo.name}]({repo.github_url}) | "
             f"{_compact(repo.reader_promise)} | "
+            f"{_compact(repo.reader_value)} | "
             f"{_compact(repo.license_posture)} |"
         )
     return "\n".join(rows)

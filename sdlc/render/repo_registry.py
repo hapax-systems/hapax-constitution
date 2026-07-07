@@ -99,6 +99,7 @@ class RepoSpec:
     value_partition: ValuePartition
     license_posture: str
     reader_promise: str = ""
+    reader_value: str = ""
     claim_ceiling: str = ""
     primary_audience: tuple[str, ...] = ()
     surface_class: SurfaceClass = SurfaceClass.INTERNAL_APPARATUS
@@ -162,6 +163,7 @@ def load_registry(path: Path = REGISTRY_PATH) -> dict[str, RepoSpec]:
             value_partition=value_partition,
             license_posture=payload.get("license_posture", license_class.value),
             reader_promise=payload.get("reader_promise", ""),
+            reader_value=payload.get("reader_value", ""),
             claim_ceiling=payload.get("claim_ceiling", ""),
             primary_audience=tuple(payload.get("primary_audience", [])),
             surface_class=SurfaceClass(
