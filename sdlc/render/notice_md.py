@@ -20,8 +20,8 @@ def render(repo: RepoSpec) -> str:
         f"{_opening(repo)}\n"
         "\n"
         "This repository is part of the Hapax Systems portfolio. Public "
-        "metadata, issue affordances, and support boundaries are governed "
-        "by the registry in `hapax-constitution`.\n"
+        "metadata, issue affordances, and support boundaries follow the "
+        "registry in `hapax-constitution`.\n"
         "\n"
         "## Reader promise\n"
         "\n"
@@ -111,7 +111,7 @@ def _opening(repo: RepoSpec) -> str:
         )
     if repo.surface_class is SurfaceClass.ECOSYSTEM_BRIDGE:
         return (
-            f"`{repo.name}` is an ecosystem bridge for Hapax Systems APIs and "
+            f"`{repo.name}` is an integration bridge for Hapax Systems APIs and "
             "MCP clients. It is maintained for integration and inspection, "
             "not as a general-purpose MCP framework."
         )

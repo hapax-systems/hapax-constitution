@@ -133,12 +133,11 @@ def _opening(repo: RepoSpec) -> str:
         )
     if repo.surface_class is SurfaceClass.GOVERNANCE_SPEC:
         return (
-            f"`{repo.name}` is the governance-specification and publication "
-            "metadata anchor for the Hapax Systems repository constellation."
+            f"`{repo.name}` anchors governance and public metadata for Hapax Systems repositories."
         )
     if repo.surface_class is SurfaceClass.ECOSYSTEM_BRIDGE:
         return (
-            f"`{repo.name}` is an ecosystem bridge for the Hapax Systems "
+            f"`{repo.name}` is an integration bridge for the Hapax Systems "
             "portfolio. It is maintained for MCP integration and inspection, "
             "not as a general-purpose framework."
         )
@@ -157,8 +156,8 @@ def _opening(repo: RepoSpec) -> str:
     if repo.surface_class is SurfaceClass.INTERNAL_APPARATUS:
         return (
             f"`{repo.name}` is internal apparatus in the Hapax Systems "
-            "portfolio. It is published, mirrored, or staged for controlled "
-            "inspection only where a separate visibility decision permits it."
+            "portfolio. It is visible only where a separate visibility "
+            "decision permits inspection."
         )
     return (
         f"`{repo.name}` is a constituent of the Hapax operating environment. "

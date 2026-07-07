@@ -95,7 +95,7 @@ repos:
       - identifier: https://github.com/hapax-systems/hapax-constitution
         relation: isPartOf
         scheme: url
-      - identifier: https://hapax.weblog.lol/hapax-manifesto-v0
+      - identifier: https://github.com/hapax-systems/hapax-council/blob/main/START_HERE.md
         relation: isSupplementTo
         scheme: url
 
@@ -108,21 +108,21 @@ repos:
       hapax-officium. Not seeking contributors.
     repo_type: spec
     role_in_constellation: >-
-      Anchor of the dependency graph. Defines axioms, derived
-      implications, interpretive canons, and precedent store. Other
-      first-party repos depend on this via `hapax-sdlc`.
+      Anchor for repo metadata and governance. Defines axioms,
+      implications, canons, and precedent records. Other first-party
+      repos consume it through `hapax-sdlc`.
     license_class: CC-BY-NC-ND-4.0
     value_partition: evidence_artifact
     license_posture: >-
-      Split posture: specification and publication metadata are
-      citation-oriented and non-commercial/no-derivatives; runnable
-      hapax-sdlc tooling is Apache-2.0 and must be described separately.
+      Split posture: specification and publication metadata use
+      CC BY-NC-ND; runnable hapax-sdlc tooling uses Apache-2.0. Do not
+      describe the whole repository as Apache or open source.
     reader_promise: >-
       Governance specification and repo-presentation authority for
-      Hapax-family systems, including the hapax-sdlc tooling boundary.
+      Hapax Systems, with a clear hapax-sdlc tooling boundary.
     claim_ceiling: >-
-      Specification plus tooling split; not the Hapax runtime and not a
-      blanket Apache/open-source statement for the whole repository.
+      Specification plus tooling split. Not the Hapax runtime. Not a
+      blanket Apache or open-source statement for the whole repository.
     primary_audience:
       - researchers
       - auditors
@@ -152,8 +152,8 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://hapax.weblog.lol/hapax-manifesto-v0
-        relation: isSupplementTo
+      - identifier: https://github.com/hapax-systems/hapax-council
+        relation: isReferencedBy
         scheme: url
 
   hapax-officium:
@@ -164,19 +164,18 @@ repos:
       HR software, SaaS, or an adoption surface.
     repo_type: runtime
     role_in_constellation: >-
-      Management-domain runtime. Consumes the constitution and the
-      management_governance + management_safety domain axioms without
-      creating a public product boundary.
+      Management-domain runtime. Consumes the constitution and management
+      domain axioms without creating a public product boundary.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
       Source-visible strict runtime artifact pending product boundary;
       not open source and not an adoption or support surface.
     reader_promise: >-
-      Internal management decision-support runtime published as a
-      source-visible artifact for boundary and governance review.
+      Internal management decision-support runtime published for boundary
+      and governance review.
     claim_ceiling: >-
-      Single-operator management apparatus; not HR SaaS, not an advice
+      Single-operator management apparatus. Not HR SaaS, not an advice
       engine, and not a staffed support surface.
     primary_audience:
       - governance auditors
@@ -318,7 +317,7 @@ repos:
   hapax-mcp:
     name: hapax-mcp
     description: >-
-      Private MCP ecosystem bridge for Hapax Systems logos APIs. Exposes
+      Private MCP integration bridge for Hapax Systems logos APIs. Exposes
       governed Hapax API state and actions to Claude Code and compatible
       MCP clients without becoming a general-purpose MCP framework.
     repo_type: library
@@ -329,13 +328,13 @@ repos:
     license_class: MIT
     value_partition: internal_apparatus
     license_posture: >-
-      Permissive ecosystem bridge for MCP integration; current copy must
+      Permissive integration bridge for MCP use; current copy must
       frame it as a Hapax logos bridge, not a general-purpose MCP library.
     reader_promise: >-
       MCP bridge exposing Hapax logos API state and actions to Claude Code
       and compatible MCP clients.
     claim_ceiling: >-
-      Ecosystem bridge only; not a general MCP framework and not an
+      Integration bridge only; not a general MCP framework and not an
       authority source beyond the underlying Hapax APIs.
     primary_audience:
       - MCP users
@@ -571,7 +570,7 @@ repos:
     repo_type: app
     role_in_constellation: >-
       Internal coordination dashboard and read surface. Supports proof and
-      operating leverage; not a standalone public product.
+      coordination evidence; not a standalone public product.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-

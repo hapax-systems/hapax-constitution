@@ -2,19 +2,19 @@
 
 `hapax-constitution` is the governance-specification and publication metadata anchor for the Hapax Systems repository constellation.
 
-This repository is part of the Hapax Systems portfolio. Public metadata, issue affordances, and support boundaries are governed by the registry in `hapax-constitution`.
+This repository is part of the Hapax Systems portfolio. Public metadata, issue affordances, and support boundaries follow the registry in `hapax-constitution`.
 
 ## Reader promise
 
-Governance specification and repo-presentation authority for Hapax-family systems, including the hapax-sdlc tooling boundary.
+Governance specification and repo-presentation authority for Hapax Systems, with a clear hapax-sdlc tooling boundary.
 
 ## Claim ceiling
 
-Specification plus tooling split; not the Hapax runtime and not a blanket Apache/open-source statement for the whole repository.
+Specification plus tooling split. Not the Hapax runtime. Not a blanket Apache or open-source statement for the whole repository.
 
 ## License and rights
 
-Split posture: specification and publication metadata are citation-oriented and non-commercial/no-derivatives; runnable hapax-sdlc tooling is Apache-2.0 and must be described separately.
+Split posture: specification and publication metadata use CC BY-NC-ND; runnable hapax-sdlc tooling uses Apache-2.0. Do not describe the whole repository as Apache or open source.
 
 Rendered summary: CC BY-NC-ND 4.0 - non-commercial, no derivatives. Specification text, not code.
 
@@ -27,7 +27,7 @@ Rendered summary: CC BY-NC-ND 4.0 - non-commercial, no derivatives. Specificatio
 
 ## Portfolio position
 
-Anchor of the dependency graph. Defines axioms, derived implications, interpretive canons, and precedent store. Other first-party repos depend on this via `hapax-sdlc`.
+Anchor for repo metadata and governance. Defines axioms, implications, canons, and precedent records. Other first-party repos consume it through `hapax-sdlc`.
 
 ---
 

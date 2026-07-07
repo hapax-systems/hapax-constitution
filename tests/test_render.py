@@ -480,7 +480,7 @@ def test_governance_md_anchor_vs_redirect(
     anchor_body = governance_md.render(constitution_repo)
     redirect_body = governance_md.render(council_repo)
     assert "canonical axiom registry" in anchor_body
-    assert "Governance for this repository is centralised" in redirect_body
+    assert "`hapax-constitution` governs this repository" in redirect_body
     assert "https://github.com/hapax-systems/hapax-constitution" in redirect_body
 
 

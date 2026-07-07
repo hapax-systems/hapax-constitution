@@ -18,8 +18,8 @@
   ],
   "related_identifiers": [
     {
-      "identifier": "https://hapax.weblog.lol/hapax-manifesto-v0",
-      "relation": "isSupplementTo",
+      "identifier": "https://github.com/hapax-systems/hapax-council",
+      "relation": "isReferencedBy",
       "scheme": "url"
     }
   ],
