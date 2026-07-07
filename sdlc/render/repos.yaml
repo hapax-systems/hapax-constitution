@@ -33,22 +33,22 @@
 #     topics:               [<topic>, ...] — sparse, schema.org-aligned;
 #                           NEVER `ai`/`agents`/`framework`/`tool`/`library`/`awesome`
 #     is_first_party:       true | false
-#     zenodo_concept_doi:   "10.5281/zenodo.<n>" | null (pre-mint)
+#     zenodo_doi:           "10.5281/zenodo.<n>" | null (pre-version-mint)
+#     zenodo_concept_doi:   "10.5281/zenodo.<n>" | null (pre-concept-mint)
 #     related_identifiers:  [{identifier, relation, scheme}, ...] — DataCite RelatedIdentifier graph
 
 repos:
   hapax-council:
     name: hapax-council
     description: >-
-      Constituent of the Hapax operating environment. Single-operator
-      research apparatus for externalised executive function. Not a
-      product, not seeking contributors. Research infrastructure
-      published as artifact.
+      Source-visible Hapax Systems research/runtime artifact for
+      studying governed AI-agent work, public claim discipline, refusal,
+      and publication-bus egress under a single-operator system.
     repo_type: runtime
     role_in_constellation: >-
-      Primary research artifact. 200+ agents, voice daemon, studio
-      compositor, reactive engine. Consumes the constitution via the
-      hapax-sdlc package.
+      Primary research/runtime artifact. Carries governance,
+      coordination, evidence, refusal, and publication-bus surfaces.
+      Consumes the constitution via the hapax-sdlc package.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
@@ -89,12 +89,13 @@ repos:
       - governance
       - infrastructure-as-argument
     is_first_party: true
-    zenodo_concept_doi: null
+    zenodo_doi: "10.5281/zenodo.20113515"
+    zenodo_concept_doi: "10.5281/zenodo.20113514"
     related_identifiers:
       - identifier: https://github.com/hapax-systems/hapax-constitution
         relation: isPartOf
         scheme: url
-      - identifier: https://hapax.weblog.lol/hapax-manifesto-v0
+      - identifier: https://github.com/hapax-systems/hapax-council/blob/main/START_HERE.md
         relation: isSupplementTo
         scheme: url
 
@@ -107,21 +108,21 @@ repos:
       hapax-officium. Not seeking contributors.
     repo_type: spec
     role_in_constellation: >-
-      Anchor of the dependency graph. Defines axioms, derived
-      implications, interpretive canons, and precedent store. Other
-      first-party repos depend on this via `hapax-sdlc`.
+      Anchor for repo metadata and governance. Defines axioms,
+      implications, canons, and precedent records. Other first-party
+      repos consume it through `hapax-sdlc`.
     license_class: CC-BY-NC-ND-4.0
     value_partition: evidence_artifact
     license_posture: >-
-      Split posture: specification and publication metadata are
-      citation-oriented and non-commercial/no-derivatives; runnable
-      hapax-sdlc tooling is Apache-2.0 and must be described separately.
+      Split posture: specification and publication metadata use
+      CC BY-NC-ND; runnable hapax-sdlc tooling uses Apache-2.0. Do not
+      describe the whole repository as Apache or open source.
     reader_promise: >-
       Governance specification and repo-presentation authority for
-      Hapax-family systems, including the hapax-sdlc tooling boundary.
+      Hapax Systems, with a clear hapax-sdlc tooling boundary.
     claim_ceiling: >-
-      Specification plus tooling split; not the Hapax runtime and not a
-      blanket Apache/open-source statement for the whole repository.
+      Specification plus tooling split. Not the Hapax runtime. Not a
+      blanket Apache or open-source statement for the whole repository.
     primary_audience:
       - researchers
       - auditors
@@ -151,32 +152,30 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://hapax.weblog.lol/hapax-manifesto-v0
-        relation: isSupplementTo
+      - identifier: https://github.com/hapax-systems/hapax-council
+        relation: isReferencedBy
         scheme: url
 
   hapax-officium:
     name: hapax-officium
     description: >-
-      Constituent of the Hapax operating environment. Management
-      decision-support apparatus for a single operator's professional
-      practice. Filesystem-as-bus data model. Research infrastructure
-      published as artifact.
+      Source-visible internal management decision-support runtime for
+      Hapax Systems boundary review. Published as an artifact, not as
+      HR software, SaaS, or an adoption surface.
     repo_type: runtime
     role_in_constellation: >-
-      Management-domain runtime. Logos API on :8050. Consumes the
-      constitution and the management_governance + management_safety
-      domain axioms.
+      Management-domain runtime. Consumes the constitution and management
+      domain axioms without creating a public product boundary.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
       Source-visible strict runtime artifact pending product boundary;
       not open source and not an adoption or support surface.
     reader_promise: >-
-      Internal management decision-support runtime published as a
-      source-visible artifact for boundary and governance review.
+      Internal management decision-support runtime published for boundary
+      and governance review.
     claim_ceiling: >-
-      Single-operator management apparatus; not HR SaaS, not an advice
+      Single-operator management apparatus. Not HR SaaS, not an advice
       engine, and not a staffed support surface.
     primary_audience:
       - governance auditors
@@ -214,15 +213,13 @@ repos:
   hapax-watch:
     name: hapax-watch
     description: >-
-      Constituent of the Hapax operating environment. Wear OS
-      companion that streams biometric sensor data (heart rate, HRV,
-      skin temperature, activity state) to the council watch receiver
-      and reads an awareness summary from the council logos API. Single
-      operator, single device.
+      Private Wear OS device bridge for Hapax Systems. Streams approved
+      sensor/context data to council receivers and reads awareness
+      summaries for local operator display.
     repo_type: wear-os
     role_in_constellation: >-
-      Wear OS biometric source. Streams to council watch receiver
-      (:8042); reads awareness summary from council logos API (:8051).
+      Private single-device bridge for context ingestion and local
+      awareness display. It is not a consumer health product.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
@@ -268,13 +265,13 @@ repos:
   hapax-phone:
     name: hapax-phone
     description: >-
-      Constituent of the Hapax operating environment. Android
-      companion that streams daily health summary and 60-second phone
-      context to the council logos API. Kotlin/Compose.
+      Private Android device bridge for Hapax Systems. Streams approved
+      daily health/context summaries and reads awareness state for local
+      operator display.
     repo_type: android
     role_in_constellation: >-
-      Android phone-side context source. Streams to council logos API
-      over Tailscale.
+      Private phone-side context bridge for Hapax. It is not a public
+      mobile product and not a health-efficacy claim.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
@@ -320,25 +317,24 @@ repos:
   hapax-mcp:
     name: hapax-mcp
     description: >-
-      Constituent of the Hapax operating environment. Model Context
-      Protocol server bridging the logos APIs to Claude Code.
-      Single-operator MCP surface; not a general-purpose MCP library.
+      Private MCP integration bridge for Hapax Systems logos APIs. Exposes
+      governed Hapax API state and actions to Claude Code and compatible
+      MCP clients without becoming a general-purpose MCP framework.
     repo_type: library
     role_in_constellation: >-
-      MCP bridge. Consumes the council and officium logos APIs over
-      HTTP and presents 38 tools to Claude Code. The MCP ecosystem
-      norm is MIT; this repo carries MIT explicitly per operator
-      divergence (every other runtime repo is PolyForm Strict).
+      MCP bridge. Consumes council and officium logos APIs over HTTP and
+      presents bounded tools to Claude Code and compatible MCP clients.
+      Authority remains with the underlying Hapax APIs.
     license_class: MIT
     value_partition: internal_apparatus
     license_posture: >-
-      Permissive ecosystem bridge for MCP integration; current copy must
+      Permissive integration bridge for MCP use; current copy must
       frame it as a Hapax logos bridge, not a general-purpose MCP library.
     reader_promise: >-
       MCP bridge exposing Hapax logos API state and actions to Claude Code
       and compatible MCP clients.
     claim_ceiling: >-
-      Ecosystem bridge only; not a general MCP framework and not an
+      Integration bridge only; not a general MCP framework and not an
       authority source beyond the underlying Hapax APIs.
     primary_audience:
       - MCP users
@@ -377,9 +373,9 @@ repos:
   hapax-assets:
     name: hapax-assets
     description: >-
-      Public CDN of aesthetic assets used by the Hapax operating
-      environment (BitchX splash/quotes/palette, Px437 IBM VGA 8x16
-      font). GitHub Pages mirror; SHA-pinned, integrity-verified.
+      Public asset mirror for approved Hapax Systems web and publication
+      surfaces. Serves reviewed artifacts and preserves per-asset license
+      notices.
     repo_type: library
     role_in_constellation: >-
       CDN-only public mirror of aesthetic-library asset bundle. Source
@@ -477,7 +473,7 @@ repos:
     repo_type: engine
     role_in_constellation: >-
       Source-visible commercial core consumed by Reins and extracted from
-      the council runtime. Not yet a generic n-DLC kernel.
+      the council runtime. Not a general-purpose lifecycle kernel.
     license_class: BUSL-1.1
     value_partition: commercial_moat
     license_posture: >-
@@ -526,7 +522,7 @@ repos:
     role_in_constellation: >-
       Public product/front-door cockpit consuming hapax-spine and read
       APIs. Current public claim ceiling is read/preview/cockpit, not
-      full mutation cockpit.
+      full write-authority cockpit.
     license_class: BUSL-1.1
     value_partition: commercial_moat
     license_posture: >-
@@ -538,7 +534,7 @@ repos:
       Product front-door cockpit for observing and previewing governed
       AI-agent delivery state.
     claim_ceiling: >-
-      Read and command-preview today; governed mutation only when
+      Read and command-preview today; governed writes only when
       receipt-backed writes are actually shipped.
     primary_audience:
       - operators
@@ -574,7 +570,7 @@ repos:
     repo_type: app
     role_in_constellation: >-
       Internal coordination dashboard and read surface. Supports proof and
-      operating leverage; not a standalone public product.
+      coordination evidence; not a standalone public product.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
@@ -615,8 +611,8 @@ repos:
   hapax-research-ledger:
     name: hapax-research-ledger
     description: >-
-      Open ledger of public-safe research observations from the Hapax
-      research program. Numeric and evidence-oriented, not runtime code.
+      Public-domain numeric evidence ledger for the Hapax research
+      program. Numeric and evidence-oriented, not runtime code.
     repo_type: data
     role_in_constellation: >-
       Evidence/artifact output for public research and citation. Carries
@@ -627,7 +623,7 @@ repos:
       Public-domain data posture for the ledger only; does not license
       Hapax runtime code, Reins, or council internals.
     reader_promise: >-
-      Open numeric-only SCED evidence ledger published from the first
+      Public numeric-only SCED evidence ledger published from the first
       data point with caveats preserved.
     claim_ceiling: >-
       Evidence/baseline data only; no adjudicated research result unless

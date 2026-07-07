@@ -3,7 +3,7 @@
   "description": "Governance specification for the Hapax operating environment. Publishes specification/publication material plus the hapax-sdlc enforcement/render tooling consumed by hapax-council and hapax-officium. Not seeking contributors.",
   "creators": [
     {
-      "name": "Ryan Kleeberger"
+      "name": "Hapax Systems"
     }
   ],
   "license": "CC-BY-NC-ND-4.0",
@@ -18,14 +18,9 @@
   ],
   "related_identifiers": [
     {
-      "identifier": "https://hapax.weblog.lol/hapax-manifesto-v0",
-      "relation": "isSupplementTo",
+      "identifier": "https://github.com/hapax-systems/hapax-council",
+      "relation": "isReferencedBy",
       "scheme": "url"
-    }
-  ],
-  "communities": [
-    {
-      "identifier": "hapax-publications"
     }
   ],
   "publication_type": "other"

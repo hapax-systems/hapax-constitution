@@ -22,6 +22,7 @@ from sdlc.render import (
     governance_md,
     issue_template_config_yml,
     notice_md,
+    org_profile_readme,
     readme_section,
     security_md,
     support_md,
@@ -289,9 +290,10 @@ def test_citation_cff_yaml_parses_and_carries_required_fields(
     assert parsed["cff-version"] == "1.2.0"
     assert parsed["title"] == "hapax-council"
     assert parsed["type"] == "software"
-    assert parsed["authors"][0]["family-names"] == "Zarbacaster"
-    assert parsed["authors"][0]["given-names"] == "Quentin"
-    assert parsed["authors"][0]["orcid"] == identity.orcid
+    assert parsed["authors"][0]["name"] == "Hapax Systems"
+    assert "family-names" not in parsed["authors"][0]
+    assert "orcid" not in parsed["authors"][0]
+    assert parsed["doi"] == "10.5281/zenodo.20113515"
     assert parsed["license"] == "PolyForm-Strict-1.0.0"
     assert "research-software" in parsed["keywords"]
 
@@ -303,7 +305,11 @@ def test_codemeta_json_parses_and_aligns_to_v3_jsonld(
     parsed = json.loads(body)
     assert parsed["@context"] == "https://w3id.org/codemeta/3.0"
     assert parsed["@type"] == "SoftwareSourceCode"
-    assert parsed["author"][0]["@id"] == identity.orcid
+    assert parsed["author"][0]["@type"] == "Organization"
+    assert parsed["author"][0]["name"] == "Hapax Systems"
+    assert parsed["author"][0]["url"] == "https://github.com/hapax-systems"
+    assert "@id" not in parsed["author"][0]
+    assert parsed["identifier"] == "https://doi.org/10.5281/zenodo.20113515"
     assert parsed["license"] == ("https://polyformproject.org/licenses/strict/1.0.0/")
     assert parsed["codeRepository"] == "https://github.com/hapax-systems/hapax-council"
 
@@ -315,8 +321,12 @@ def test_zenodo_json_carries_related_identifier_graph(
     parsed = json.loads(body)
     assert parsed["upload_type"] == "software"
     assert parsed["access_right"] == "open"
-    # ORCID stripped of URL prefix per Zenodo schema
-    assert parsed["creators"][0]["orcid"] == "0000-0000-0000-0001"
+    assert parsed["creators"][0]["name"] == "Hapax Systems"
+    assert "orcid" not in parsed["creators"][0]
+    assert parsed["doi"] == "10.5281/zenodo.20113515"
+    assert parsed["conceptdoi"] == "10.5281/zenodo.20113514"
+    assert parsed["license"] == "other-closed"
+    assert "PolyForm Strict" in parsed["notes"]
     related = parsed["related_identifiers"]
     assert any(
         ri["identifier"].endswith("hapax-constitution") and ri["relation"] == "isPartOf"
@@ -338,9 +348,11 @@ def test_notice_md_uses_referent_not_legal_name(
 ) -> None:
     body = notice_md.render(council_repo)
     assert identity.full_name not in body  # legal name banned in body
-    referent = OperatorReferentPicker.pick_for_artifact(council_repo.id)
-    assert referent in body
-    assert "Single-operator" in body
+    assert "Reader promise" in body
+    assert "Claim ceiling" in body
+    assert "License and rights" in body
+    assert "hapax-systems" in body
+    assert "hapax-manifesto-v0" not in body
     assert "https://github.com/hapax-systems/hapax-constitution" in body
 
 
@@ -377,12 +389,19 @@ def test_product_and_adoption_preambles_do_not_use_generic_research_artifact_cop
     reins_body = readme_section.render(registry["reins"])
     assert "product front door" in reins_body
     assert "governed command preview" in reins_body
+    assert "Reader promise" in reins_body
+    assert "Claim ceiling" in reins_body
+    assert "License and rights" in reins_body
+    assert "autonomous write authority" in reins_body
     assert "not a product" not in reins_body
     assert "research infrastructure published as artifact" not in reins_body
+    assert "Authorship is indeterminate" not in reins_body
+    assert "hapax-manifesto-v0" not in reins_body
 
     agentgov_body = readme_section.render(registry["agentgov"])
     assert "adoption-commons" in agentgov_body
     assert "governance-hook surface" in agentgov_body
+    assert "Permissive adoption surface" in agentgov_body
     assert "not a product" not in agentgov_body
     assert "research infrastructure published as artifact" not in agentgov_body
 
@@ -392,13 +411,49 @@ def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
 
     reins_notice = notice_md.render(registry["reins"])
     assert "product front door" in reins_notice
-    assert "read/preview claim ceiling" in reins_notice
+    assert "read and command-preview claim ceiling" in reins_notice
     assert "not a product" not in reins_notice
 
     agentgov_contributing = contributing_md.render(registry["agentgov"])
     assert "bounded adoption surface" in agentgov_contributing
     assert "community maintenance" in agentgov_contributing
     assert "not a product" not in agentgov_contributing
+
+
+def test_org_profile_readme_orients_public_portfolio_without_private_repo_table() -> None:
+    registry = load_registry()
+    body = org_profile_readme.render(registry)
+    assert body.startswith("# Hapax Systems")
+    assert "authority before action" in body
+    assert "receipts before claims" in body
+    assert "unsupported automation claims" in body
+
+    assert "[reins](https://github.com/hapax-systems/reins)" in body
+    assert "[agentgov](https://github.com/hapax-systems/agentgov)" in body
+    assert "[hapax-council](https://github.com/hapax-systems/hapax-council)" in body
+    assert "[hapax-constitution](https://github.com/hapax-systems/hapax-constitution)" in body
+
+    assert "hapax-spine](https://github.com/hapax-systems/hapax-spine)" not in body
+    assert "hapax-mcp](https://github.com/hapax-systems/hapax-mcp)" not in body
+    assert "hapax-watch](https://github.com/hapax-systems/hapax-watch)" not in body
+
+
+def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
+    body = org_profile_readme.render(load_registry())
+    assert "open adoption commons" in body
+    assert "source-available commercial core" in body
+    assert "source-visible research apparatus" in body
+    assert "remains a read/preview surface" in body
+    assert "not a general-purpose lifecycle kernel" in body
+    assert "not as a supported framework" in body
+    assert "not claim autonomous write authority" in body
+    assert "full general lifecycle coverage" in body
+    assert "staffed community support" in body
+    assert "publication-bus channels" in body
+    assert "must not imply direct public" in body
+    assert "Hapax is open source" not in body
+    assert "generic agent OS" not in body
+    assert "guaranteed safe" not in body
 
 
 def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec) -> None:
@@ -425,7 +480,7 @@ def test_governance_md_anchor_vs_redirect(
     anchor_body = governance_md.render(constitution_repo)
     redirect_body = governance_md.render(council_repo)
     assert "canonical axiom registry" in anchor_body
-    assert "Governance for this repository is centralised" in redirect_body
+    assert "`hapax-constitution` governs this repository" in redirect_body
     assert "https://github.com/hapax-systems/hapax-constitution" in redirect_body
 
 
@@ -476,6 +531,25 @@ def test_cli_dry_run_prints_all_artifacts() -> None:
         "README.md",
     ):
         assert f"# {filename}" in output
+
+
+def test_cli_dry_run_prints_org_profile() -> None:
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = cli.main(["--org-profile", "--dry-run"])
+    output = buf.getvalue()
+    assert rc == 0
+    assert "# profile/README.md" in output
+    assert "# Hapax Systems" in output
+    assert "https://github.com/hapax-systems/reins" in output
+
+
+def test_cli_org_profile_write_creates_nested_profile_readme(tmp_path: Path) -> None:
+    rc = cli.main(["--org-profile", "--target-root", str(tmp_path)])
+    assert rc == 0
+    written = tmp_path / "profile" / "README.md"
+    assert written.exists()
+    assert written.read_text(encoding="utf-8").startswith("# Hapax Systems")
 
 
 def test_cli_unknown_repo_errors() -> None:
@@ -640,28 +714,22 @@ def test_no_first_person_we_in_constitutional_disclosures(
             assert needle not in body, f"banned phrase {needle!r} present in rendered body"
 
 
-def test_legal_name_only_appears_in_formal_contexts(
+def test_formal_metadata_uses_org_creator_not_legal_name(
     council_repo: RepoSpec, identity: OperatorIdentity
 ) -> None:
-    """Operator-referent policy: legal name in CITATION/codemeta/.zenodo
-    only. NEVER in body text of NOTICE/CONTRIBUTING/SECURITY/GOVERNANCE/
-    README preamble.
+    """Public metadata uses Hapax Systems as creator; operator legal name
+    must not be rendered by default in public repo metadata or body text.
     """
-    # Legal-name parts (CITATION.cff splits given/family; codemeta uses
-    # givenName/familyName; .zenodo.json uses joined form).
     legal_full = identity.full_name
     legal_parts = legal_full.split()
     citation_body = citation_cff.render(council_repo, identity)
     codemeta_body = codemeta_json.render(council_repo, identity)
     zenodo_body = zenodo_json.render(council_repo, identity)
-    # Joined form must appear in zenodo.json creators name field.
-    assert legal_full in zenodo_body
-    # Both parts must appear in citation + codemeta (split form).
-    for part in legal_parts:
-        assert part in citation_body
-        assert part in codemeta_body
 
-    forbidden = [
+    all_public_bodies = [
+        citation_body,
+        codemeta_body,
+        zenodo_body,
         notice_md.render(council_repo),
         contributing_md.render(council_repo),
         security_md.render(council_repo, identity),
@@ -670,7 +738,9 @@ def test_legal_name_only_appears_in_formal_contexts(
         issue_template_config_yml.render(council_repo),
         readme_section.render(council_repo),
     ]
-    for body in forbidden:
+    for body in (citation_body, codemeta_body, zenodo_body):
+        assert "Hapax Systems" in body
+    for body in all_public_bodies:
         assert legal_full not in body
         for part in legal_parts:
             assert part not in body

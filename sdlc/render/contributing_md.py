@@ -28,11 +28,11 @@ def render(repo: RepoSpec) -> str:
         "\n"
         "## What this means in practice\n"
         "\n"
-        "- Issues are redirect-only; blank issues are disabled by "
-        "`.github/ISSUE_TEMPLATE/config.yml`.\n"
-        "- Pull requests are auto-closed by `.github/workflows/`.\n"
-        "- Discussions and Wiki are disabled (except `hapax-constitution` "
-        "Wiki, which mirrors the axiom registry).\n"
+        "- Issues are redirect-only; `.github/ISSUE_TEMPLATE/config.yml` "
+        "disables blank issues.\n"
+        "- Pull requests are not an intake path for this repository.\n"
+        "- Repositories disable Discussions and Wiki except for the "
+        "`hapax-constitution` Wiki, which mirrors the axiom registry.\n"
         "- Funding links, if present, are no-perk research support only.\n"
         "- This file is rendered from `hapax-constitution/sdlc/render/`; "
         "edits are overwritten on next render.\n"
@@ -74,7 +74,8 @@ def _why(repo: RepoSpec) -> str:
         "Hapax is research infrastructure for one operator's externalised "
         "executive function. This repository is not a staffed product, "
         "service, or community library. The refusal is the artifact: see the "
-        "Refusal Brief at https://hapax.weblog.lol/refusal-brief."
+        "Refusal Brief at "
+        "https://hapax.weblog.lol/2026/04/refusal-brief-an-automation-tractability-disclosure."
     )
 
 

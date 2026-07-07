@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from sdlc.render.org_profile_readme import ORG_PROFILE_PATH
 from sdlc.render.repo_registry import RepoSpec, RepoVisibility, SurfaceClass, load_registry
 from sdlc.render.repo_settings import desired_settings
 
@@ -49,6 +50,11 @@ def build_export(registry: dict[str, RepoSpec] | None = None) -> dict[str, Any]:
             "discussions": "disabled",
             "funding": "no_perk_research_support_only",
         },
+        "organization_profile": {
+            "repository": "hapax-systems/.github",
+            "path": ORG_PROFILE_PATH,
+            "source": "hapax-constitution:sdlc.render.org_profile_readme",
+        },
         "repos": repos,
     }
 
@@ -77,6 +83,7 @@ def _repo_to_export(repo: RepoSpec) -> dict[str, Any]:
         "dependencies": list(repo.dependencies),
         "topics": list(repo.topics),
         "is_first_party": repo.is_first_party,
+        "zenodo_doi": repo.zenodo_doi,
         "zenodo_concept_doi": repo.zenodo_concept_doi,
         "related_identifiers": list(repo.related_identifiers),
         "generated_artifacts": list(GENERATED_ARTIFACTS) if repo.is_first_party else [],

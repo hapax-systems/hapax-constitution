@@ -3,6 +3,7 @@
 Modes:
     --repo <id>           render every artifact for one repo
     --all                 render every first-party repo
+    --org-profile         render hapax-systems/.github profile/README.md
     --check               diff-mode (no-write); exit 1 on drift
     --dry-run             print to stdout instead of writing
     --target-root <path>  override the directory where files are written
@@ -36,6 +37,7 @@ from sdlc.render import (
     governance_md,
     issue_template_config_yml,
     notice_md,
+    org_profile_readme,
     readme_section,
     security_md,
     support_md,
@@ -66,6 +68,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--all",
         action="store_true",
         help="Render every first-party repo (skips upstream forks)",
+    )
+    target.add_argument(
+        "--org-profile",
+        action="store_true",
+        help="Render the public Hapax Systems organization profile README",
     )
     parser.add_argument(
         "--check",
@@ -121,6 +128,12 @@ def default_target_root(repo: RepoSpec) -> Path:
     """
     constitution_root = Path(__file__).resolve().parent.parent.parent
     return constitution_root.parent / repo.name
+
+
+def default_org_profile_target_root() -> Path:
+    """Default local checkout path for the hapax-systems/.github repo."""
+    constitution_root = Path(__file__).resolve().parent.parent.parent
+    return constitution_root.parent / "hapax-systems--github"
 
 
 def write_or_compare(target_root: Path, artifacts: dict[str, str], *, check_only: bool) -> int:
@@ -184,6 +197,22 @@ def main(argv: Iterable[str] | None = None) -> int:
 
     registry = load_registry()
     identity = load_operator_identity()
+
+    if args.org_profile:
+        if args.file:
+            parser.error("--file is only valid with --repo or --all")
+        artifacts = {org_profile_readme.ORG_PROFILE_PATH: org_profile_readme.render(registry)}
+        if args.dry_run:
+            sep = "=" * 70
+            print(f"\n{sep}\n# {org_profile_readme.ORG_PROFILE_PATH}\n{sep}")
+            print(artifacts[org_profile_readme.ORG_PROFILE_PATH])
+            return 0
+        actual_target = args.target_root or default_org_profile_target_root()
+        drift = write_or_compare(actual_target, artifacts, check_only=args.check)
+        if args.check and drift:
+            print(f"check failed: {drift} drift(s)", file=sys.stderr)
+            return 1
+        return 0
 
     repo_ids: list[str]
     if args.all:

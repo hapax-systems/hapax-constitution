@@ -18,5 +18,5 @@
 #   omg_lol_address: weblog.lol subdomain prefix (default "hapax").
 full_name: "<operator-name-unset>"
 orcid: null
-contact_url: "https://example.invalid/contact"
+contact_url: "https://hapax.weblog.lol/contact"
 omg_lol_address: hapax

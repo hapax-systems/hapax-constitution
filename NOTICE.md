@@ -1,26 +1,33 @@
-# NOTICE — hapax-constitution
+# NOTICE - hapax-constitution
 
-This repository is a constituent of the Hapax operating environment. It is not a product, not a service, and not seeking contributors. It is research infrastructure published as artifact.
+`hapax-constitution` is the governance-specification and publication metadata anchor for the Hapax Systems repository constellation.
 
-Authorship is indeterminate by design. This codebase is co-produced by Hapax (the system itself), Claude Code, and the operator (OTO). Per the Hapax Manifesto, unsettled contribution is a feature of the work, not a concealment.
+This repository is part of the Hapax Systems portfolio. Public metadata, issue affordances, and support boundaries follow the registry in `hapax-constitution`.
 
-## Constitutional position
+## Reader promise
 
-- Single-operator system; no auth, no roles, no contributor onboarding (axiom: `single_user`).
-- No issues, no discussions, no pull requests accepted; refusal is the artifact (see /CONTRIBUTING.md).
-- License: CC BY-NC-ND 4.0 — non-commercial, no derivatives. Specification text, not code.
-- Citation: see CITATION.cff; archival DOI: see .zenodo.json
+Governance specification and repo-presentation authority for Hapax Systems, with a clear hapax-sdlc tooling boundary.
 
-## Linked artifacts
+## Claim ceiling
 
-- Manifesto: https://hapax.weblog.lol/hapax-manifesto-v0
-- Refusal Brief: https://hapax.weblog.lol/refusal-brief
-- Cohort Disparity Disclosure: https://hapax.weblog.lol/cohort-disparity-disclosure
-- Constitution: https://github.com/hapax-systems/hapax-constitution
+Specification plus tooling split. Not the Hapax runtime. Not a blanket Apache or open-source statement for the whole repository.
 
-## Inter-repo position
+## License and rights
 
-Anchor of the dependency graph. Defines axioms, derived implications, interpretive canons, and precedent store. Other first-party repos depend on this via `hapax-sdlc`.
+Split posture: specification and publication metadata use CC BY-NC-ND; runnable hapax-sdlc tooling uses Apache-2.0. Do not describe the whole repository as Apache or open source.
+
+Rendered summary: CC BY-NC-ND 4.0 - non-commercial, no derivatives. Specification text, not code.
+
+## Public boundary
+
+- Issues are redirect-only; no discussions and no pull requests are accepted through GitHub.
+- First-party public links must use the `hapax-systems` GitHub organization.
+- Public fanout must route through the governed publication bus or a documented guarded legacy surface.
+- Governance reference: https://github.com/hapax-systems/hapax-constitution
+
+## Portfolio position
+
+Anchor for repo metadata and governance. Defines axioms, implications, canons, and precedent records. Other first-party repos consume it through `hapax-sdlc`.
 
 ---
 
