@@ -47,7 +47,6 @@ def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
         "upload_type": _upload_type(repo.repo_type),
         "keywords": list(repo.topics) if repo.topics else _default_keywords(),
         "related_identifiers": related,
-        "communities": [{"identifier": "hapax-publications"}],
     }
     if repo.zenodo_doi:
         body["doi"] = repo.zenodo_doi
