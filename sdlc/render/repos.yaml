@@ -17,6 +17,7 @@
 #                           internal_apparatus | evidence_artifact | upstream
 #     license_posture:      Copy-safe posture summary for publication surfaces.
 #     reader_promise:       What a reader can expect from this repo.
+#     reader_value:         Why that expectation matters to the target reader.
 #     claim_ceiling:        Highest safe public claim until new evidence lands.
 #     primary_audience:     [reader segment, ...]
 #     surface_class:        adoption_commons | product_front_door |
@@ -58,6 +59,10 @@ repos:
       Primary live Hapax estate and research artifact for readers auditing
       how governance, perception, coordination, public egress, and refusal
       operate under one single-operator system.
+    reader_value: >-
+      Lets researchers and auditors follow claim authority, refusal,
+      publication egress, and coordination from code to receipts instead
+      of relying on demo claims.
     claim_ceiling: >-
       Research/runtime apparatus only; not a reusable platform, harness,
       product, support surface, or open-source project.
@@ -120,6 +125,9 @@ repos:
     reader_promise: >-
       Governance specification and repo-presentation authority for
       Hapax Systems, with a clear hapax-sdlc tooling boundary.
+    reader_value: >-
+      Gives reviewers one auditable source for names, licenses, support
+      boundaries, and claim ceilings, reducing public-surface drift.
     claim_ceiling: >-
       Specification plus tooling split. Not the Hapax runtime. Not a
       blanket Apache or open-source statement for the whole repository.
@@ -174,6 +182,10 @@ repos:
     reader_promise: >-
       Internal management decision-support runtime published for boundary
       and governance review.
+    reader_value: >-
+      Shows how management-context software can preserve boundary
+      discipline: preparation and context assembly without people-evaluation
+      or HR-software claims.
     claim_ceiling: >-
       Single-operator management apparatus. Not HR SaaS, not an advice
       engine, and not a staffed support surface.
@@ -228,6 +240,9 @@ repos:
     reader_promise: >-
       Wear OS biometric/context bridge for the Hapax environment, useful
       for auditing device integration and privacy boundaries.
+    reader_value: >-
+      Makes biometric and context ingestion inspectable as a bounded,
+      privacy-scoped signal path rather than a consumer health claim.
     claim_ceiling: >-
       Internal single-device companion; not a consumer health product and
       not a health-efficacy claim.
@@ -280,6 +295,10 @@ repos:
     reader_promise: >-
       Android phone-side context bridge for the Hapax environment, useful
       for auditing data sources, transport, and privacy boundaries.
+    reader_value: >-
+      Shows which phone-derived signals enter the estate, which sensors
+      are excluded, and how missing data degrades without becoming a
+      health-efficacy claim.
     claim_ceiling: >-
       Internal device bridge; not a public mobile product and not a
       health-efficacy claim.
@@ -333,6 +352,9 @@ repos:
     reader_promise: >-
       MCP bridge exposing Hapax logos API state and actions to Claude Code
       and compatible MCP clients.
+    reader_value: >-
+      Gives MCP clients a bounded bridge to live Hapax state while keeping
+      authority with the underlying APIs rather than the connector.
     claim_ceiling: >-
       Integration bridge only; not a general MCP framework and not an
       authority source beyond the underlying Hapax APIs.
@@ -391,6 +413,9 @@ repos:
     reader_promise: >-
       Public CDN mirror of approved aesthetic assets with per-asset
       provenance and notices.
+    reader_value: >-
+      Lets public pages reuse reviewed assets through stable URLs and
+      license notices without turning the mirror into the source of truth.
     claim_ceiling: >-
       Artifact delivery mirror only; source of truth and edits live in
       council, and licenses remain per-asset.
@@ -436,6 +461,10 @@ repos:
     reader_promise: >-
       Portable governance hooks that an adopter can install, audit, and
       pilot without inheriting the Hapax estate.
+    reader_value: >-
+      Turns common AI coding-agent risks into installable pre-action
+      checks that teams can pilot before buying or building heavier
+      governance.
     claim_ceiling: >-
       Adoption commons for hooks only; not the full Hapax governance
       system, not policyflow, and not a staffed support service.
@@ -483,6 +512,10 @@ repos:
     reader_promise: >-
       Runtime mechanism package for append-only events, policy-backed
       routing, receipts, quotas, EDT, and projections.
+    reader_value: >-
+      Separates the commercial runtime mechanics behind Reins so dispatch,
+      receipts, quotas, and projections can be inspected as mechanisms
+      without treating them as a full estate.
     claim_ceiling: >-
       Mechanism only; not the whole Hapax estate and not fully
       instance-agnostic until configuration injection is complete.
@@ -533,6 +566,9 @@ repos:
     reader_promise: >-
       Product front-door cockpit for observing and previewing governed
       AI-agent delivery state.
+    reader_value: >-
+      Lets operators and technical buyers see what an agent estate is
+      doing and what a write would request before granting write authority.
     claim_ceiling: >-
       Read and command-preview today; governed writes only when
       receipt-backed writes are actually shipped.
@@ -580,6 +616,10 @@ repos:
     reader_promise: >-
       Coordination dashboard/control preflight surface for governed
       Hapax lanes and sessions.
+    reader_value: >-
+      Shows the local coordination layer that keeps dashboard state
+      advisory and mutation routed through task, dispatch, and receipt
+      gates.
     claim_ceiling: >-
       Internal coordination apparatus; UI state is not authority and
       mutating controls must route through governed dispatch/claim paths.
@@ -625,6 +665,10 @@ repos:
     reader_promise: >-
       Public numeric-only SCED evidence ledger published from the first
       data point with caveats preserved.
+    reader_value: >-
+      Lets skeptical readers audit early observations, caveats, nulls,
+      and scorer substitutions as data rather than reading them as polished
+      product or research claims.
     claim_ceiling: >-
       Evidence/baseline data only; no adjudicated research result unless
       validity gates explicitly clear.
@@ -672,6 +716,9 @@ repos:
     reader_promise: >-
       Local upstream clone used by the Hapax environment; not a Hapax
       Systems publication surface.
+    reader_value: >-
+      Clarifies that the local clone preserves upstream identity and is
+      not part of Hapax Systems public frontmatter.
     claim_ceiling: Upstream project; preserve upstream identity and license.
     primary_audience:
       - internal operators
@@ -701,6 +748,9 @@ repos:
     reader_promise: >-
       Local upstream clone used by the Hapax voice pipeline; not a Hapax
       Systems publication surface.
+    reader_value: >-
+      Clarifies that the local clone preserves upstream identity and is
+      not part of Hapax Systems public frontmatter.
     claim_ceiling: Upstream project; preserve upstream identity and license.
     primary_audience:
       - internal operators

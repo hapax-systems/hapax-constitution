@@ -118,6 +118,7 @@ def test_registry_frontmatter_policy_fields_are_populated() -> None:
     registry = load_registry()
     for repo in registry.values():
         assert repo.reader_promise
+        assert repo.reader_value
         assert repo.claim_ceiling
         assert repo.primary_audience
         assert isinstance(repo.source_of_truth, SourceOfTruth)
@@ -349,6 +350,7 @@ def test_notice_md_uses_referent_not_legal_name(
     body = notice_md.render(council_repo)
     assert identity.full_name not in body  # legal name banned in body
     assert "Reader promise" in body
+    assert "Reader value" in body
     assert "Claim ceiling" in body
     assert "License and rights" in body
     assert "hapax-systems" in body
@@ -390,6 +392,7 @@ def test_product_and_adoption_preambles_do_not_use_generic_research_artifact_cop
     assert "product front door" in reins_body
     assert "governed command preview" in reins_body
     assert "Reader promise" in reins_body
+    assert "Reader value" in reins_body
     assert "Claim ceiling" in reins_body
     assert "License and rights" in reins_body
     assert "autonomous write authority" in reins_body
@@ -427,6 +430,8 @@ def test_org_profile_readme_orients_public_portfolio_without_private_repo_table(
     assert "authority before action" in body
     assert "receipts before claims" in body
     assert "unsupported automation claims" in body
+    assert "Reader value" in body
+    assert "what evidence would have to exist" in body
 
     assert "[reins](https://github.com/hapax-systems/reins)" in body
     assert "[agentgov](https://github.com/hapax-systems/agentgov)" in body

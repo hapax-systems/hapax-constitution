@@ -73,6 +73,7 @@ def _repo_to_export(repo: RepoSpec) -> dict[str, Any]:
         "value_partition": repo.value_partition.value,
         "license_posture": repo.license_posture,
         "reader_promise": repo.reader_promise,
+        "reader_value": repo.reader_value,
         "claim_ceiling": repo.claim_ceiling,
         "primary_audience": list(repo.primary_audience),
         "surface_class": repo.surface_class.value,
