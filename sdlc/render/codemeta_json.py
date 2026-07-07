@@ -5,8 +5,9 @@ schema.org alignment per researchsoft.org 2026 software-citation
 roadmap. v4 alignment is forward-compatible since renamed fields are
 all additive.
 
-The ``author`` block is one of the formal-address-required contexts per
-the operator referent policy; legal name surfaces here.
+Public repository metadata uses organization authorship. Operator identity is
+not emitted by default because first-party public surfaces are owned by
+``hapax-systems``.
 """
 
 from __future__ import annotations
@@ -15,17 +16,16 @@ import json
 
 from sdlc.render.repo_registry import OperatorIdentity, RepoSpec
 
+PUBLIC_CREATOR_NAME = "Hapax Systems"
+
 
 def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
     """Return codemeta.json (JSON-LD) body for ``repo``."""
-    given, family = _split_name(identity.full_name)
     author: dict[str, object] = {
-        "@type": "Person",
-        "givenName": given,
-        "familyName": family,
+        "@type": "Organization",
+        "name": PUBLIC_CREATOR_NAME,
+        "url": "https://github.com/hapax-systems",
     }
-    if identity.orcid:
-        author["@id"] = identity.orcid
 
     codemeta: dict[str, object] = {
         "@context": "https://w3id.org/codemeta/3.0",
@@ -41,23 +41,15 @@ def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
         "isAccessibleForFree": True,
         "keywords": list(repo.topics) if repo.topics else _default_keywords(),
     }
-    if repo.zenodo_concept_doi:
-        codemeta["identifier"] = f"https://doi.org/{repo.zenodo_concept_doi}"
+    citation_doi = repo.zenodo_doi or repo.zenodo_concept_doi
+    if citation_doi:
+        codemeta["identifier"] = f"https://doi.org/{citation_doi}"
     if repo.related_identifiers:
         codemeta["relatedLink"] = [
             ri["identifier"] for ri in repo.related_identifiers if ri.get("scheme") == "url"
         ]
 
     return json.dumps(codemeta, indent=2, ensure_ascii=False) + "\n"
-
-
-def _split_name(full_name: str) -> tuple[str, str]:
-    parts = full_name.strip().split()
-    if not parts:
-        return ("", "")
-    if len(parts) == 1:
-        return (parts[0], "")
-    return (" ".join(parts[:-1]), parts[-1])
 
 
 def _spdx_url(license_class: str) -> str:

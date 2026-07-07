@@ -25,6 +25,11 @@ def test_repo_export_includes_generated_artifacts_and_settings_policy() -> None:
         "discussions": "disabled",
         "funding": "no_perk_research_support_only",
     }
+    assert export["organization_profile"] == {
+        "repository": "hapax-systems/.github",
+        "path": "profile/README.md",
+        "source": "hapax-constitution:sdlc.render.org_profile_readme",
+    }
 
 
 def test_repo_export_orders_repos_by_derived_dependency_order() -> None:
@@ -55,6 +60,8 @@ def test_repo_export_carries_frontmatter_policy_fields() -> None:
     constitution = by_id["hapax-constitution"]
     assert constitution["github_settings"]["has_wiki"] is True
     assert "SUPPORT.md" in constitution["public_files"]
+    assert by_id["hapax-council"]["zenodo_doi"] == "10.5281/zenodo.20113515"
+    assert by_id["hapax-council"]["zenodo_concept_doi"] == "10.5281/zenodo.20113514"
 
 
 def test_repo_export_marks_upstream_forks_inert() -> None:

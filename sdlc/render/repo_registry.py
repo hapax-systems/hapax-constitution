@@ -110,7 +110,8 @@ class RepoSpec:
     topics: tuple[str, ...] = ()
     is_first_party: bool = True
     github_owner: str = DEFAULT_GITHUB_OWNER
-    zenodo_concept_doi: str | None = None  # populated post-first-mint; None pre-mint
+    zenodo_doi: str | None = None  # populated post-first-version-mint; None pre-mint
+    zenodo_concept_doi: str | None = None  # populated post-first-concept-mint; None pre-mint
     related_identifiers: tuple[dict[str, str], ...] = field(default_factory=tuple)
 
     @property
@@ -189,6 +190,7 @@ def load_registry(path: Path = REGISTRY_PATH) -> dict[str, RepoSpec]:
             topics=tuple(payload.get("topics", [])),
             is_first_party=payload.get("is_first_party", True),
             github_owner=payload.get("github_owner", DEFAULT_GITHUB_OWNER),
+            zenodo_doi=payload.get("zenodo_doi"),
             zenodo_concept_doi=payload.get("zenodo_concept_doi"),
             related_identifiers=tuple(payload.get("related_identifiers", [])),
         )

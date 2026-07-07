@@ -6,8 +6,7 @@ abstract: Governance specification for the Hapax operating environment. Publishe
   specification/publication material plus the hapax-sdlc enforcement/render tooling
   consumed by hapax-council and hapax-officium. Not seeking contributors.
 authors:
-- given-names: Ryan
-  family-names: Kleeberger
+- name: Hapax Systems
 repository-code: https://github.com/hapax-systems/hapax-constitution
 url: https://github.com/hapax-systems/hapax-constitution
 license: CC-BY-NC-ND-4.0

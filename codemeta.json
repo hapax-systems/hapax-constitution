@@ -8,9 +8,9 @@
   "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
   "author": [
     {
-      "@type": "Person",
-      "givenName": "Ryan",
-      "familyName": "Kleeberger"
+      "@type": "Organization",
+      "name": "Hapax Systems",
+      "url": "https://github.com/hapax-systems"
     }
   ],
   "applicationCategory": "Specification",

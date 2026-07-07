@@ -6,9 +6,9 @@ constellation into DataCite Commons / ORCID without touching social
 platforms. Per drop 4 (cross-account-promotion), this is the highest-
 leverage academic-spectacle mechanic.
 
-The ``creators:`` block is the third formal-address-required context;
-legal name surfaces here. ORCID iD is included when present so the
-auto-update bridge to the operator's ORCID record fires on first mint.
+The ``creators:`` block uses organization authorship for public repository
+metadata. Operator identity is not emitted by default because first-party
+public surfaces are owned by ``hapax-systems``.
 
 REFUSED-status anti-patterns (Bandcamp/Discogs/RYM, etc.) get registered
 here as DataCite ``IsObsoletedBy`` relations per the
@@ -21,14 +21,12 @@ import json
 
 from sdlc.render.repo_registry import OperatorIdentity, RepoSpec
 
+PUBLIC_CREATOR_NAME = "Hapax Systems"
+
 
 def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
     """Return .zenodo.json body for ``repo``."""
-    creator: dict[str, object] = {"name": identity.full_name}
-    if identity.orcid:
-        # Zenodo expects bare ORCID (no URL prefix) here.
-        orcid_bare = identity.orcid.replace("https://orcid.org/", "")
-        creator["orcid"] = orcid_bare
+    creator: dict[str, object] = {"name": PUBLIC_CREATOR_NAME}
 
     related: list[dict[str, str]] = []
     for ri in repo.related_identifiers:
@@ -51,6 +49,12 @@ def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
         "related_identifiers": related,
         "communities": [{"identifier": "hapax-publications"}],
     }
+    if repo.zenodo_doi:
+        body["doi"] = repo.zenodo_doi
+    if repo.zenodo_concept_doi:
+        body["conceptdoi"] = repo.zenodo_concept_doi
+    if notes := _license_notes(repo.license_class.value):
+        body["notes"] = notes
     if repo.repo_type == "spec":
         body["upload_type"] = "publication"
         body["publication_type"] = "other"
@@ -62,7 +66,20 @@ def _zenodo_license(license_class: str) -> str:
     """Zenodo accepts SPDX identifiers; map the registry's enum values."""
     if license_class == "upstream":
         return "UPSTREAM"
+    if license_class in {"PolyForm-Strict-1.0.0", "BUSL-1.1"}:
+        return "other-closed"
     return license_class
+
+
+def _license_notes(license_class: str) -> str | None:
+    if license_class == "PolyForm-Strict-1.0.0":
+        return (
+            "Repository license: PolyForm Strict 1.0.0 "
+            "(https://polyformproject.org/licenses/strict/1.0.0/)."
+        )
+    if license_class == "BUSL-1.1":
+        return "Repository license: Business Source License 1.1."
+    return None
 
 
 def _upload_type(repo_type: str) -> str:

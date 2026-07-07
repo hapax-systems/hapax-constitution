@@ -11,7 +11,6 @@ preamble is prepended.
 
 from __future__ import annotations
 
-from sdlc.render.operator_referent import OperatorReferentPicker
 from sdlc.render.repo_registry import RepoSpec, SurfaceClass, github_repo_url
 
 PREAMBLE_BEGIN = "<!-- hapax-sdlc:preamble:begin -->"
@@ -20,10 +19,10 @@ PREAMBLE_END = "<!-- hapax-sdlc:preamble:end -->"
 
 def render(repo: RepoSpec) -> str:
     """Return the preamble block (between BEGIN/END markers, inclusive)."""
-    referent = OperatorReferentPicker.pick_for_artifact(repo.id)
     license_summary = _license_one_liner(repo.license_class.value)
     opening = _opening(repo)
-    contribution_line = _contribution_line(repo)
+    issue_line = _issue_line(repo)
+    authority_surfaces = _authority_surfaces(repo)
     return (
         f"{PREAMBLE_BEGIN}\n"
         f"\n"
@@ -31,32 +30,32 @@ def render(repo: RepoSpec) -> str:
         f"\n"
         f"{opening}\n"
         f"\n"
-        f"Authorship is indeterminate by design: this codebase is co-produced "
-        f"by Hapax (the system itself), Claude Code, and the operator "
-        f"({referent}). Per the Hapax Manifesto, unsettled contribution is a "
-        f"feature of the work, not a concealment.\n"
+        f"## Reader promise\n"
         f"\n"
-        f"## What this is, not what it does\n"
+        f"{repo.reader_promise.strip()}\n"
         f"\n"
-        f"{repo.description.strip()}\n"
+        f"## Claim ceiling\n"
         f"\n"
-        f"## Constitutional position\n"
+        f"{repo.claim_ceiling.strip()}\n"
         f"\n"
-        f"- Single-operator system; no auth, no roles, no contributor "
-        f"onboarding (axiom: `single_user`)\n"
-        f"- {contribution_line}\n"
-        f"- License: {license_summary}\n"
-        f"- Citation: see `CITATION.cff`; archival DOI: see `.zenodo.json`\n"
+        f"## License and rights\n"
         f"\n"
-        f"## Linked artifacts\n"
+        f"{repo.license_posture.strip()}\n"
         f"\n"
-        f"- Manifesto: https://hapax.weblog.lol/hapax-manifesto-v0\n"
-        f"- Refusal Brief: https://hapax.weblog.lol/refusal-brief\n"
-        f"- Cohort Disparity Disclosure: "
-        f"https://hapax.weblog.lol/cohort-disparity-disclosure\n"
-        f"- Constitution: {github_repo_url('hapax-constitution')}\n"
+        f"Rendered summary: {license_summary}. See {authority_surfaces} for "
+        f"the authority surfaces.\n"
         f"\n"
-        f"## Inter-repo position\n"
+        f"## Public boundary\n"
+        f"\n"
+        f"- {issue_line}\n"
+        f"- Public copy must use `hapax-systems` organization links for "
+        f"first-party Hapax repositories.\n"
+        f"- Publication, weblog, RSS, social, DOI/archive, and other public "
+        f"fanout paths must route through the governed publication bus or a "
+        f"documented guarded legacy surface.\n"
+        f"- Governance reference: {github_repo_url('hapax-constitution')}\n"
+        f"\n"
+        f"## Portfolio position\n"
         f"\n"
         f"{repo.role_in_constellation.strip()}\n"
         f"\n"
@@ -78,6 +77,18 @@ def replace_section(existing_readme: str, preamble: str) -> str:
     return existing_readme[:begin_idx] + preamble + existing_readme[end_idx:]
 
 
+def _authority_surfaces(repo: RepoSpec) -> str:
+    preferred = ["LICENSE", "NOTICE.md", "CITATION.cff", ".zenodo.json"]
+    surfaces = [f"`{name}`" for name in preferred if name in repo.public_files]
+    if not surfaces:
+        return "`LICENSE`"
+    if len(surfaces) == 1:
+        return surfaces[0]
+    if len(surfaces) == 2:
+        return f"{surfaces[0]} and {surfaces[1]}"
+    return f"{', '.join(surfaces[:-1])}, and {surfaces[-1]}"
+
+
 def _license_one_liner(license_class: str) -> str:
     return {
         "PolyForm-Strict-1.0.0": (
@@ -89,7 +100,7 @@ def _license_one_liner(license_class: str) -> str:
         ),
         "CC-BY-NC-ND-4.0": "CC BY-NC-ND 4.0 (specification text, no derivatives)",
         "CC0-1.0": "CC0 1.0 (public-domain dedication for the declared data/artifact surface)",
-        "MIT": "MIT (MCP ecosystem alignment)",
+        "MIT": "MIT",
         "Apache-2.0": "Apache 2.0",
         "CC-BY-SA-4.0": (
             "CC BY-SA 4.0 (existing aesthetic-library blend with "
@@ -111,7 +122,7 @@ def _opening(repo: RepoSpec) -> str:
         return (
             f"`{repo.name}` is the product front door for the Hapax Systems "
             "portfolio. Its current public ceiling is observation and "
-            "governed command preview, not autonomous mutation authority."
+            "governed command preview, not autonomous write authority."
         )
     if repo.surface_class is SurfaceClass.RUNTIME_MECHANISM:
         return (
@@ -128,7 +139,7 @@ def _opening(repo: RepoSpec) -> str:
     if repo.surface_class is SurfaceClass.ECOSYSTEM_BRIDGE:
         return (
             f"`{repo.name}` is an ecosystem bridge for the Hapax Systems "
-            "portfolio. It is published for MCP integration and inspection, "
+            "portfolio. It is maintained for MCP integration and inspection, "
             "not as a general-purpose framework."
         )
     if repo.surface_class is SurfaceClass.ASSET_MIRROR:
@@ -143,6 +154,12 @@ def _opening(repo: RepoSpec) -> str:
             "Systems portfolio. It publishes bounded observations or "
             "metadata, not runtime authority."
         )
+    if repo.surface_class is SurfaceClass.INTERNAL_APPARATUS:
+        return (
+            f"`{repo.name}` is internal apparatus in the Hapax Systems "
+            "portfolio. It is published, mirrored, or staged for controlled "
+            "inspection only where a separate visibility decision permits it."
+        )
     return (
         f"`{repo.name}` is a constituent of the Hapax operating environment. "
         "It is research or boundary infrastructure published as an artifact, "
@@ -150,11 +167,11 @@ def _opening(repo: RepoSpec) -> str:
     )
 
 
-def _contribution_line(repo: RepoSpec) -> str:
+def _issue_line(repo: RepoSpec) -> str:
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
             "Issues are redirect-only and support is bounded; pull requests "
-            "are not the intake path for this single-operator project"
+            "are not the intake path for this repository"
         )
     if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
         return (
@@ -162,6 +179,6 @@ def _contribution_line(repo: RepoSpec) -> str:
             "roadmap commitments do not happen through GitHub"
         )
     return (
-        "Issues are redirect-only; no discussions, no PRs accepted; refusal "
-        "is the artifact (see `CONTRIBUTING.md` and `SUPPORT.md`)"
+        "Issues are redirect-only; no discussions, no pull requests accepted; "
+        "see `CONTRIBUTING.md` and `SUPPORT.md`"
     )
