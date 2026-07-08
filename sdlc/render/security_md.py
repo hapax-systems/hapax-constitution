@@ -7,18 +7,18 @@ requirement: operator does not publish email on repository surfaces.
 
 from __future__ import annotations
 
-from sdlc.render.operator_referent import OperatorReferentPicker
 from sdlc.render.repo_registry import OperatorIdentity, RepoSpec
 
 
 def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
-    referent = OperatorReferentPicker.pick_for_artifact(repo.id)
     return (
         "# Security policy\n"
         "\n"
-        f"A single individual ({referent}) operates this repository. It runs "
-        f"in a single-operator deployment with no external users, no auth "
-        f"surface, and no third-party data residency.\n"
+        "A single individual operates this repository in a single-operator "
+        "deployment. Public repository surfaces are not a multi-tenant "
+        "product, customer-data processor, or public auth service. That "
+        "boundary is a scope statement, not a warranty about every internal "
+        "integration.\n"
         "\n"
         "## Disclosure path\n"
         "\n"
@@ -39,20 +39,25 @@ def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
         "\n"
         "## Scope\n"
         "\n"
-        f"Security reports about deployment hardening, architectural "
-        f"choices, or features absent from a single-operator system "
-        f"(multi-tenancy, RBAC, federated identity) are out of scope; the "
-        f"single-operator axiom forecloses these.\n"
+        f"In scope: exposure of secrets or private material in public "
+        f"commits/artifacts, public-egress bypasses, supply-chain or "
+        f"workflow weaknesses, and concrete remotely exploitable defects. "
+        f"Out of scope: feature requests for multi-tenancy, RBAC, federated "
+        f"identity, general hardening consultations, or integration support.\n"
         "\n"
         "## Response time\n"
         "\n"
-        "Best-effort, single-operator basis; no SLA. The next maintenance "
-        "window handles critical disclosures such as remote code execution "
-        "or secret leaks in published commits.\n"
+        "Best-effort, single-operator basis; no SLA. Critical disclosures "
+        "such as remote code execution or leaked secrets in published "
+        "commits are triaged out of band immediately; other reports wait "
+        "for a maintenance window.\n"
         "\n"
-        "## Past advisories\n"
+        "## Advisory record\n"
         "\n"
-        "None to date.\n"
+        "This rendered policy does not maintain a complete dated advisory "
+        "ledger. Current advisories, if any, belong in release notes, "
+        "security notices, or publication-bus records with their own dates "
+        "and receipts.\n"
         "\n"
         "---\n"
         "\n"

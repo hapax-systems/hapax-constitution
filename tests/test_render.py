@@ -378,6 +378,30 @@ def test_security_md_publishes_sigstore_path_not_email(
     assert "@" not in body or "@type" in body  # JSON-LD @type is fine
 
 
+def test_security_md_keeps_critical_disclosures_out_of_band(
+    council_repo: RepoSpec, identity: OperatorIdentity
+) -> None:
+    body = security_md.render(council_repo, identity)
+    assert "no SLA" in body
+    assert "triaged out of band" in body
+    # Regression pin: critical disclosures must never be deferred to a
+    # maintenance window on a public security policy.
+    assert "next maintenance window handles critical" not in body
+    # No freshness-rotting advisory claims ("None to date" class).
+    assert "None to date" not in body
+
+
+def test_security_and_contributing_do_not_publish_operator_referent(
+    council_repo: RepoSpec, identity: OperatorIdentity
+) -> None:
+    for body in (
+        security_md.render(council_repo, identity),
+        contributing_md.render(council_repo),
+    ):
+        for referent in ("Oudepode", "OTO", "The Operator"):
+            assert referent not in body
+
+
 def test_support_md_redirects_without_support_entitlement() -> None:
     registry = load_registry()
     body = support_md.render(registry["agentgov"])
@@ -487,7 +511,7 @@ def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec)
     assert {link["name"] for link in contact_links} == {
         "Read the repository overview",
         "Read the support boundary",
-        "Report a security issue",
+        "Read the security disclosure path",
         "Read Hapax governance",
     }
     assert all({"name", "url", "about"} == set(link) for link in contact_links)
