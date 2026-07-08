@@ -225,21 +225,21 @@ repos:
   hapax-watch:
     name: hapax-watch
     description: >-
-      Private Wear OS device bridge for Hapax Systems. Streams approved
-      sensor/context data to council receivers and reads awareness
-      summaries for local operator display.
+      Wrist biometric source for Hapax Systems. Public source-visible
+      Wear OS bridge for approved sensor/context data and local operator
+      awareness display.
     repo_type: wear-os
     role_in_constellation: >-
-      Private single-device bridge for context ingestion and local
-      awareness display. It is not a consumer health product.
+      Wrist biometric source for context ingestion and local awareness
+      display. It is not a consumer health product.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
       Single-operator device bridge; source-visible strict unless a
       separate productized device boundary is created.
     reader_promise: >-
-      Wear OS biometric/context bridge for the Hapax environment, useful
-      for auditing device integration and privacy boundaries.
+      Wrist biometric source for the Hapax environment, useful for
+      auditing device integration and privacy boundaries.
     reader_value: >-
       Makes biometric and context ingestion inspectable as a bounded,
       privacy-scoped signal path rather than a consumer health claim.
@@ -251,7 +251,7 @@ repos:
       - privacy reviewers
       - internal operators
     surface_class: internal_apparatus
-    visibility: private
+    visibility: public
     source_of_truth: constitution_registry
     public_files:
       - README.md
@@ -280,21 +280,21 @@ repos:
   hapax-phone:
     name: hapax-phone
     description: >-
-      Private Android device bridge for Hapax Systems. Streams approved
-      daily health/context summaries and reads awareness state for local
-      operator display.
+      Mobile context source for Hapax Systems. Public source-visible
+      Android bridge for approved daily health/context summaries and
+      local operator awareness display.
     repo_type: android
     role_in_constellation: >-
-      Private phone-side context bridge for Hapax. It is not a public
-      mobile product and not a health-efficacy claim.
+      Mobile context source for Hapax. It is not a public mobile product
+      and not a health-efficacy claim.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
       Single-operator device bridge; source-visible strict unless a
       separate productized device boundary is created.
     reader_promise: >-
-      Android phone-side context bridge for the Hapax environment, useful
-      for auditing data sources, transport, and privacy boundaries.
+      Mobile context source for the Hapax environment, useful for
+      auditing data sources, transport, and privacy boundaries.
     reader_value: >-
       Shows which phone-derived signals enter the estate, which sensors
       are excluded, and how missing data degrades without becoming a
@@ -307,7 +307,7 @@ repos:
       - privacy reviewers
       - internal operators
     surface_class: internal_apparatus
-    visibility: private
+    visibility: public
     source_of_truth: constitution_registry
     public_files:
       - README.md
@@ -336,22 +336,22 @@ repos:
   hapax-mcp:
     name: hapax-mcp
     description: >-
-      Private MCP integration bridge for Hapax Systems logos APIs. Exposes
-      governed Hapax API state and actions to Claude Code and compatible
-      MCP clients without becoming a general-purpose MCP framework.
+      Hapax Logos MCP Bridge. Public source-visible integration bridge
+      for Hapax Systems logos APIs without becoming a general-purpose MCP
+      framework.
     repo_type: library
     role_in_constellation: >-
-      MCP bridge. Consumes council and officium logos APIs over HTTP and
-      presents bounded tools to Claude Code and compatible MCP clients.
-      Authority remains with the underlying Hapax APIs.
+      Logos MCP Bridge. Consumes council and officium logos APIs over
+      HTTP and presents bounded tools to Claude Code and compatible MCP
+      clients. Authority remains with the underlying Hapax APIs.
     license_class: MIT
     value_partition: internal_apparatus
     license_posture: >-
       Permissive integration bridge for MCP use; current copy must
       frame it as a Hapax logos bridge, not a general-purpose MCP library.
     reader_promise: >-
-      MCP bridge exposing Hapax logos API state and actions to Claude Code
-      and compatible MCP clients.
+      Hapax Logos MCP Bridge exposing Hapax API state and actions to
+      Claude Code and compatible MCP clients.
     reader_value: >-
       Gives MCP clients a bounded bridge to live Hapax state while keeping
       authority with the underlying APIs rather than the connector.
@@ -363,7 +363,7 @@ repos:
       - technical auditors
       - internal operators
     surface_class: ecosystem_bridge
-    visibility: private
+    visibility: public
     source_of_truth: constitution_registry
     public_files:
       - README.md
@@ -427,6 +427,7 @@ repos:
     source_of_truth: council_source
     public_files:
       - README.md
+      - NOTICE.md
       - _NOTICES.md
       - _manifest.yaml
       - SECURITY.md

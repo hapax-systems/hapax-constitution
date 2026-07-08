@@ -82,10 +82,17 @@ def replace_section(existing_readme: str, preamble: str) -> str:
 
 
 def _authority_surfaces(repo: RepoSpec) -> str:
-    preferred = ["LICENSE", "NOTICE.md", "CITATION.cff", ".zenodo.json"]
+    preferred = [
+        "LICENSE",
+        "NOTICE.md",
+        "_NOTICES.md",
+        "_manifest.yaml",
+        "CITATION.cff",
+        ".zenodo.json",
+    ]
     surfaces = [f"`{name}`" for name in preferred if name in repo.public_files]
     if not surfaces:
-        return "`LICENSE`"
+        return "the files declared in `sdlc/render/repos.yaml`"
     if len(surfaces) == 1:
         return surfaces[0]
     if len(surfaces) == 2:

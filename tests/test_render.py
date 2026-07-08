@@ -148,8 +148,11 @@ def test_registry_visibility_matches_current_public_boundary() -> None:
         "hapax-assets",
         "hapax-constitution",
         "hapax-council",
+        "hapax-mcp",
         "hapax-officium",
+        "hapax-phone",
         "hapax-research-ledger",
+        "hapax-watch",
         "reins",
     }
 
@@ -409,6 +412,15 @@ def test_product_and_adoption_preambles_do_not_use_generic_research_artifact_cop
     assert "research infrastructure published as artifact" not in agentgov_body
 
 
+def test_asset_mirror_preamble_uses_per_asset_authority_surfaces() -> None:
+    registry = load_registry()
+    body = readme_section.render(registry["hapax-assets"])
+
+    assert "See `LICENSE`" not in body
+    assert "`NOTICE.md`, `_NOTICES.md`, and `_manifest.yaml`" in body
+    assert "licenses remain per-asset" in body
+
+
 def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
     registry = load_registry()
 
@@ -437,10 +449,16 @@ def test_org_profile_readme_orients_public_portfolio_without_private_repo_table(
     assert "[agentgov](https://github.com/hapax-systems/agentgov)" in body
     assert "[hapax-council](https://github.com/hapax-systems/hapax-council)" in body
     assert "[hapax-constitution](https://github.com/hapax-systems/hapax-constitution)" in body
+    assert "[hapax-mcp](https://github.com/hapax-systems/hapax-mcp)" in body
+    assert "[hapax-phone](https://github.com/hapax-systems/hapax-phone)" in body
+    assert "[hapax-watch](https://github.com/hapax-systems/hapax-watch)" in body
+    assert "Supporting Public Surfaces" in body
+    assert "Hapax Logos MCP Bridge" in body
+    assert "Mobile Context Source" in body
+    assert "Wrist Biometric Source" in body
 
     assert "hapax-spine](https://github.com/hapax-systems/hapax-spine)" not in body
-    assert "hapax-mcp](https://github.com/hapax-systems/hapax-mcp)" not in body
-    assert "hapax-watch](https://github.com/hapax-systems/hapax-watch)" not in body
+    assert "hapax-coord](https://github.com/hapax-systems/hapax-coord)" not in body
 
 
 def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:

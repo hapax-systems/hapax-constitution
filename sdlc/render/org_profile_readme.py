@@ -39,6 +39,10 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "",
             _entry_table(by_id),
             "",
+            "## Supporting Public Surfaces",
+            "",
+            _supporting_table(by_id),
+            "",
             "## Operating Frame",
             "",
             "- Reins is the product front door: read and command-preview for governed "
@@ -50,6 +54,10 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "not a general-purpose lifecycle kernel.",
             "- hapax-council is the research/runtime apparatus. It is published for "
             "inspection and citation, not as a supported framework.",
+            "- Hapax Logos MCP Bridge, Mobile Context Source, and Wrist Biometric "
+            "Source are public source-visible boundary artifacts. They support audit "
+            "and integration review; they are not general products, health products, "
+            "or broad MCP framework claims.",
             "- The Claim Verification Council is a public-facing capability name for "
             "claim-checking governance. Internal labels are not part of the public API.",
             "- The Capability Frontier is a way to describe measured capability and "
@@ -98,6 +106,9 @@ def _portfolio_order(repo: RepoSpec) -> tuple[int, int, str]:
         "hapax-officium": 4,
         "hapax-research-ledger": 5,
         "hapax-assets": 6,
+        "hapax-mcp": 7,
+        "hapax-phone": 8,
+        "hapax-watch": 9,
     }
     class_order = {
         SurfaceClass.PRODUCT_FRONT_DOOR: 0,
@@ -128,6 +139,27 @@ def _entry_table(by_id: dict[str, RepoSpec]) -> str:
         "hapax-officium",
         "hapax-research-ledger",
         "hapax-assets",
+    ):
+        repo = by_id[repo_id]
+        rows.append(
+            "| "
+            f"[{repo.name}]({repo.github_url}) | "
+            f"{_compact(repo.reader_promise)} | "
+            f"{_compact(repo.reader_value)} | "
+            f"{_compact(repo.license_posture)} |"
+        )
+    return "\n".join(rows)
+
+
+def _supporting_table(by_id: dict[str, RepoSpec]) -> str:
+    rows = [
+        "| Surface | What to expect | Reader value | License posture |",
+        "|---|---|---|---|",
+    ]
+    for repo_id in (
+        "hapax-mcp",
+        "hapax-phone",
+        "hapax-watch",
     ):
         repo = by_id[repo_id]
         rows.append(
