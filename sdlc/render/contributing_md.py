@@ -8,19 +8,21 @@ sticky-per-document operator referent.
 
 from __future__ import annotations
 
-from sdlc.render.operator_referent import OperatorReferentPicker
 from sdlc.render.repo_registry import RepoSpec, SurfaceClass
 
 
 def render(repo: RepoSpec) -> str:
-    referent = OperatorReferentPicker.pick_for_artifact(repo.id)
     return (
         "# Contributing\n"
         "\n"
-        f"This repository does not accept contributions. {referent} is the "
-        f"sole operator of the Hapax operating environment by constitutional "
-        f"axiom (`single_user`, weight 100); the architecture forecloses "
-        f"contributor onboarding at the structural level.\n"
+        "This repository does not accept contributions through GitHub. Hapax "
+        "is operated as a single-operator research estate; "
+        "public repository affordances are for inspection, citation, and "
+        "boundary review, not contributor onboarding.\n"
+        "\n"
+        "The `single_user` axiom is a boundary: it prevents public maintainer "
+        "roles, community governance, and external patch queues from becoming "
+        "part of this repository's authority model.\n"
         "\n"
         "## Why\n"
         "\n"
@@ -45,8 +47,7 @@ def render(repo: RepoSpec) -> str:
         "\n"
         "If your research engages with this codebase, cite via `CITATION.cff` "
         "(Citation File Format v1.2.0). Archival DOI lives in "
-        "`.zenodo.json`. The constellation graph is queryable via DataCite "
-        "Commons (GraphQL: https://api.datacite.org/graphql).\n"
+        "`.zenodo.json`.\n"
     )
 
 
@@ -71,9 +72,10 @@ def _why(repo: RepoSpec) -> str:
             "mechanism into a community-maintained framework."
         )
     return (
-        "Hapax is research infrastructure for one operator's externalised "
-        "executive function. This repository is not a staffed product, "
-        "service, or community library. The refusal is the artifact: see the "
+        "Hapax is a single-operator research/runtime apparatus. This "
+        "repository is not a staffed product, service, or community library. "
+        "The refusal keeps GitHub from becoming an implied support, roadmap, "
+        "or governance surface. See the "
         "Refusal Brief at "
         "https://hapax.weblog.lol/2026/04/refusal-brief-an-automation-tractability-disclosure."
     )
@@ -99,7 +101,7 @@ def _bug_boundary(repo: RepoSpec) -> str:
             "scope for GitHub."
         )
     return (
-        "Hapax is a research apparatus, not a staffed product. Bug reports "
-        "are not actionable through this surface. The codebase is published "
-        "for citation and reproducibility, not for general use."
+        "Security disclosures remain in scope through `SECURITY.md`. Other "
+        "bug reports, feature requests, integration help, and community "
+        "maintenance requests are out of scope for GitHub."
     )

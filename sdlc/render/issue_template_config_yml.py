@@ -23,9 +23,9 @@ def render(repo: RepoSpec) -> str:
                 "about": "GitHub Issues are not a staffed support queue.",
             },
             {
-                "name": "Report a security issue",
+                "name": "Read the security disclosure path",
                 "url": f"{repo.github_url}/security/policy",
-                "about": "Use the repository security policy for disclosures.",
+                "about": "Use the repository security policy before sending a disclosure.",
             },
             {
                 "name": "Read Hapax governance",

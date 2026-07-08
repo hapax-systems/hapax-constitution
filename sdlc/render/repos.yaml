@@ -42,34 +42,37 @@ repos:
   hapax-council:
     name: hapax-council
     description: >-
-      Source-visible Hapax Systems research/runtime artifact for
-      studying governed AI-agent work, public claim discipline, refusal,
-      and publication-bus egress under a single-operator system.
+      Source-visible Hapax Systems research/runtime for evidence-bound
+      AI-agent delivery: governed dispatch, route receipts, claim review,
+      refusal, and publication-egress controls in a single-operator estate.
     repo_type: runtime
     role_in_constellation: >-
-      Primary research/runtime artifact. Carries governance,
-      coordination, evidence, refusal, and publication-bus surfaces.
-      Consumes the constitution via the hapax-sdlc package.
+      Primary research/runtime estate. Carries task authority, coordination,
+      route evidence, claim and publication gates, refusal records, and
+      public-egress controls. Consumes the constitution via the hapax-sdlc
+      package.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
       Source-visible strict research/runtime artifact; not open source,
       not a framework, not a supported distribution.
     reader_promise: >-
-      Primary live Hapax estate and research artifact for readers auditing
-      how governance, perception, coordination, public egress, and refusal
-      operate under one single-operator system.
+      Inspect how AI-agent work is authorized, routed, reviewed, refused,
+      and surfaced publicly inside the Hapax estate.
     reader_value: >-
-      Lets researchers and auditors follow claim authority, refusal,
-      publication egress, and coordination from code to receipts instead
-      of relying on demo claims.
+      Lets technical leaders, researchers, and auditors evaluate concrete
+      controls: what may run, what may write, what evidence exists, and
+      where stale or unsupported claims fail closed.
     claim_ceiling: >-
-      Research/runtime apparatus only; not a reusable platform, harness,
-      product, support surface, or open-source project.
+      Source-visible research runtime and current case study only. Not a
+      portable platform, adoption package, product front door, support
+      surface, or open-source project.
     primary_audience:
       - researchers
       - technical auditors
-      - patrons
+      - technical leaders
+      - harness builders
+      - privacy reviewers
     surface_class: research_apparatus
     visibility: public
     source_of_truth: constitution_registry
@@ -90,9 +93,10 @@ repos:
     topics:
       - research-software
       - single-operator
-      - philosophy-of-science
-      - governance
-      - infrastructure-as-argument
+      - governed-sdlc
+      - claim-authority
+      - publication-egress
+      - refusal-systems
     is_first_party: true
     zenodo_doi: "10.5281/zenodo.20113515"
     zenodo_concept_doi: "10.5281/zenodo.20113514"
@@ -508,8 +512,9 @@ repos:
     value_partition: commercial_moat
     license_posture: >-
       Source-available under Business Source License 1.1; not open source
-      until the change license/date applies. Commercial/hosted-service
-      rights remain reserved by the BSL grant.
+      until the change license/date applies. Self-hosted and non-competing
+      production use is permitted by the Additional Use Grant; offering the
+      licensed work as a competing hosted or managed service remains reserved.
     reader_promise: >-
       Runtime mechanism package for append-only events, policy-backed
       routing, receipts, quotas, EDT, and projections.
