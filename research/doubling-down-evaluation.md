@@ -30,9 +30,9 @@ Plus interpretive canon (textualist, purposivist, absurdity, omitted-case) and a
 
 The value isn't in preventing you from accidentally writing prohibited class names — that's the least interesting layer. The real value is in three things:
 
-1. **Decision coherence over time.** The precedent database means an architectural decision made 6 months ago informs today's decision. Without this, you'd re-litigate the same tradeoffs constantly. For someone with ADHD, this is enormous — it externalizes the "wait, didn't we already decide this?" function.
+1. **Decision coherence over time.** The precedent database means an architectural decision made 6 months ago informs today's decision. Without this, you'd re-litigate the same tradeoffs constantly. Where working memory and attention are binding constraints, this is enormous — it externalizes the "wait, didn't we already decide this?" function.
 
-2. **Executive function protection.** The executive_function axiom's sufficiency requirements (zero-config agents, errors with next actions, recurring tasks automated) actively push the system toward being ADHD-friendly. Without enforcement, entropy would erode these properties over time.
+2. **Executive function protection.** The executive_function axiom's sufficiency requirements (zero-config agents, errors with next actions, recurring tasks automated) actively push the system toward low cognitive load. Without enforcement, entropy would erode these properties over time.
 
 3. **Preventing scope creep.** The single_user axiom blocks the most common source of accidental complexity in software: building for hypothetical users. Every "just in case" permission check is complexity that serves nobody.
 

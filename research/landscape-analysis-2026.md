@@ -248,7 +248,7 @@ The concept of constraining agents via formal principles is now well-established
 What's distinctive about hapax's approach:
 1. **Structured multi-dimensional profile** (cognitive style, professional context, creative preferences, health patterns, communication style) vs. implicit preference vectors.
 2. **Profile injected into every agent's system prompt** — the operator model isn't just used for personalization, it constrains agent behavior.
-3. **Executive function modeling** — the profile explicitly captures ADHD-related patterns (decision fatigue thresholds, context-switching costs, hyperfocus windows) and agents adapt their behavior accordingly.
+3. **Executive function modeling** — the profile explicitly captures executive-function patterns (decision fatigue thresholds, context-switching costs, hyperfocus windows) and agents adapt their behavior accordingly.
 
 ### C4. Is the full combination novel?
 
@@ -307,7 +307,7 @@ Rabbit and Humane proved that the "AI OS" concept has consumer demand (100K Rabb
 
 **State of the field:** User modeling is mature as a research field but underdeveloped for personal AI systems. MemoryOS (2025) is the closest academic work. Commercial tools do shallow preference modeling. Nobody is doing structured cognitive/professional/health profiling for agent behavior adaptation.
 
-**Hapax's contribution:** The operator profile as a first-class system artifact, injected into every agent context. The executive function modeling (ADHD pattern recognition) is genuinely novel — no commercial or academic system explicitly models cognitive constraints for personalized automation.
+**Hapax's contribution:** The operator profile as a first-class system artifact, injected into every agent context. The executive function modeling (cognitive-pattern recognition) is genuinely novel — no commercial or academic system explicitly models cognitive constraints for personalized automation.
 
 **Open question:** How do you validate that the operator model is accurate? If the system's model of the operator diverges from reality (e.g., the operator's cognitive patterns change, or the profile was wrong from the start), the system will make systematically wrong decisions. There's no feedback loop to correct the model other than manual editing.
 
@@ -353,7 +353,7 @@ Rabbit and Humane proved that the "AI OS" concept has consumer demand (100K Rabb
 
 9. **Personal axioms with interpretive canon** — No system has operator-specific constitutional constraints with a legal-theory-inspired interpretation framework.
 10. **Sufficiency probes (obligation checking)** — Most governance checks for violations. Checking that the system meets its obligations is an inversion not found in the literature.
-11. **Executive function modeling** — No system explicitly models ADHD/cognitive patterns to adapt agent behavior.
+11. **Executive function modeling** — No system explicitly models operator cognitive patterns to adapt agent behavior.
 12. **The specific combination** — Ambient voice + RAG + self-maintaining + constitutional governance + operator modeling + filesystem-bus + single-operator. No system covers more than 3-4 of these 7 dimensions.
 13. **3-tier agent architecture (interactive > on-demand > autonomous)** — Most frameworks are either all-interactive or all-autonomous. The graduated teaming model is unique and aligns with human-AI teaming research recommendations.
 

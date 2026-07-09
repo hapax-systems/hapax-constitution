@@ -190,7 +190,7 @@ After all 8 domains are individually audited, examine the system as an integrate
 
 ### Coherence
 
-Do the parts agree on what the system is and who the operator is? Does the operator model stay consistent across all touchpoints — the 13-dimension profile that the profiler writes, the context tools that agents query, the accommodations that shape system behavior, the nudge priorities that decide what gets attention, the copilot observations that decide what gets said? When the system prompt says "ADHD and autism — task initiation and sustained attention are genuine cognitive challenges," does every agent actually behave as though that's true?
+Do the parts agree on what the system is and who the operator is? Does the operator model stay consistent across all touchpoints — the 13-dimension profile that the profiler writes, the context tools that agents query, the accommodations that shape system behavior, the nudge priorities that decide what gets attention, the copilot observations that decide what gets said? When the system prompt says "task initiation, sustained attention, and routine maintenance are the binding constraints the system exists to support," does every agent actually behave as though that's true?
 
 ### Unity
 

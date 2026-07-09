@@ -8,7 +8,7 @@
 
 ## Context
 
-The 8 domain-specific audits examined individual components in isolation. This holistic pass examines how those components compose into a system — and whether that system actually serves its stated purpose as externalized executive function for an operator with ADHD and autism.
+The 8 domain-specific audits examined individual components in isolation. This holistic pass examines how those components compose into a system — and whether that system actually serves its stated purpose as externalized executive function infrastructure for its operator.
 
 The operator is not a user; the operator is a component. The human-system boundary is a system interface subject to the same design discipline as any other interface.
 
@@ -51,8 +51,8 @@ The system's founding assertion is in `shared/operator.py:8-12`:
 ```python
 SYSTEM_CONTEXT = """\
 System: Externalized executive function infrastructure for a single operator.
-The operator has ADHD and autism — task initiation, sustained attention, and \
-routine maintenance are genuine cognitive challenges...
+Task initiation, sustained attention, and routine maintenance are the binding \
+constraints the system exists to support...
 """
 ```
 
@@ -78,7 +78,7 @@ This is the ground truth. Every component that interacts with the operator shoul
 
 The 5 agents with static prompts describe the operator generically ("technical and wants precision") or not at all. They have context tools for on-demand lookup, but:
 
-1. Context tools are pull-based — the agent must decide to call them. An agent with no neurocognitive awareness in its system prompt has no reason to call `lookup_constraints()` about ADHD accommodations.
+1. Context tools are pull-based — the agent must decide to call them. An agent with no executive-function awareness in its system prompt has no reason to call `lookup_constraints()` about operator accommodations.
 2. The briefing agent generates daily output that the operator reads every morning. If the briefing doesn't account for executive function challenges in how it structures information, it's failing at its core purpose.
 3. Management prep generates material for high-stakes human interactions. The prompts mention "the operator is an experienced manager" but not that they have specific cognitive needs around information density and task initiation.
 
@@ -118,7 +118,7 @@ The operator is technical and wants precision, not filler.
 """
 ```
 
-This describes one attribute of the operator ("technical and wants precision") while omitting the defining characteristic (ADHD, autism, executive function challenges). A briefing agent that thinks it's serving a generic technical user will:
+This describes one attribute of the operator ("technical and wants precision") while omitting the defining characteristic (executive function constraints). A briefing agent that thinks it's serving a generic technical user will:
 
 - Present information in whatever order seems logical, rather than prioritizing by actionability (executive function support)
 - Not consider cognitive load in how many items it surfaces
@@ -140,7 +140,7 @@ This is a separate identity ("Hapax") with a separate personality description. T
 
 The plugin does load dynamic context from `30-system/hapax-context.md` on every message (confirmed in `chat-view.ts:135`), which can provide operator context. But the base identity is disconnected — it's a different character with different framing.
 
-**Mitigating factor**: The vault context file can be updated to include the neurocognitive model. But the default system prompt in `types.ts` is what new installations get, and it doesn't mention executive function, ADHD, or autism.
+**Mitigating factor**: The vault context file can be updated to include the neurocognitive model. But the default system prompt in `types.ts` is what new installations get, and it doesn't mention executive function support.
 
 ---
 
@@ -297,7 +297,7 @@ def _on_action_item_selected(self, event):
 
 The `Decision` dataclass defines three possible actions: `"executed"`, `"dismissed"`, `"expired"` (see `cockpit/data/decisions.py:25`). But the only call site in the codebase always passes `action="executed"`. There is no code path that records a dismissed or expired nudge.
 
-This means the profiler (which reads `decisions.jsonl` via `profiler_sources.py:559`) only sees what the operator chose to do — never what they chose to ignore. For an operator with ADHD, the pattern of ignored nudges is arguably *more* informative than the pattern of executed ones:
+This means the profiler (which reads `decisions.jsonl` via `profiler_sources.py:559`) only sees what the operator chose to do — never what they chose to ignore. For a system built to support attention allocation, the pattern of ignored nudges is arguably *more* informative than the pattern of executed ones:
 - Consistently dismissed health nudges might indicate the operator has learned to work around the issue
 - Expired nudges might indicate task initiation difficulty — the system surfaced something actionable but the operator couldn't start it
 - A pattern of "all dismissed during afternoon hours" would validate the energy-aware accommodation
@@ -319,7 +319,7 @@ The web dashboard (Domain 7) is read-only. It renders nudges, health status, VRA
 - Send a chat message
 - Respond to a micro-probe
 
-Every operator action requires switching to the TUI or command line. For an operator with ADHD, the cognitive cost of context-switching between interfaces is significant. The web dashboard surfaces attention-demanding information (nudges with "you should do X") without providing the affordance to act on it.
+Every operator action requires switching to the TUI or command line. Given the executive-function constraints the system exists to support, the cognitive cost of context-switching between interfaces is significant. The web dashboard surfaces attention-demanding information (nudges with "you should do X") without providing the affordance to act on it.
 
 **Contrast**: The TUI has `ActionItemsList.ActionItemSelected` which records a decision and executes the command. The web dashboard has no equivalent interaction.
 
@@ -337,7 +337,7 @@ The `asked_topics` set *is* persisted to `<cache>/cockpit/probe-state.json`, so 
 
 For the operator: frequent TUI restarts (which happen during development or after crashes) will cause probes to fire immediately on startup, adding cognitive load at exactly the moment the operator is trying to get oriented.
 
-**So what**: A system designed for ADHD accommodation has a mechanism that can create unwanted interruptions during the already-costly process of reorienting after a restart.
+**So what**: A system designed for executive-function accommodation has a mechanism that can create unwanted interruptions during the already-costly process of reorienting after a restart.
 
 ---
 
@@ -456,7 +456,7 @@ Traced through 3 codebases:
 
 3. Accommodation post-processing (`_apply_accommodations`, line 197-208): If `time_anchor_enabled`, appends session duration to messages (e.g., "quiet session. (23m in)"). This is the only active accommodation affecting copilot output.
 
-**Verdict**: The copilot is genuinely observational and low-interruption. It updates a single text line that the operator can glance at or ignore. The priority ordering ensures urgent information (health drops, agent failures) surfaces immediately but still as passive text, not as an interrupting modal. Micro-probes are gated behind idle threshold (300s) and eval-count modulo (every 4th eval, ~2 min intervals at 30s refresh). The design respects ADHD attention patterns — it surfaces information without demanding a response.
+**Verdict**: The copilot is genuinely observational and low-interruption. It updates a single text line that the operator can glance at or ignore. The priority ordering ensures urgent information (health drops, agent failures) surfaces immediately but still as passive text, not as an interrupting modal. Micro-probes are gated behind idle threshold (300s) and eval-count modulo (every 4th eval, ~2 min intervals at 30s refresh). The design respects the operator's attention budget — it surfaces information without demanding a response.
 
 #### Full Lifecycle Trace
 
@@ -539,7 +539,7 @@ There is no automated mechanism to detect when Python dataclasses and TypeScript
 2. **No contract tests**: No tests verify that Python-serialized data matches TS type expectations
 3. **No CI validation**: Divergence is only caught when the frontend renders wrong/missing data
 
-**So what**: The API boundary between Python and TypeScript is an implicit contract. In a system maintained by one operator with ADHD, implicit contracts are especially dangerous — they require the operator to remember cross-repo dependencies when making changes.
+**So what**: The API boundary between Python and TypeScript is an implicit contract. In a single-operator system where routine maintenance is a binding constraint, implicit contracts are especially dangerous — they require the operator to remember cross-repo dependencies when making changes.
 
 ---
 
@@ -557,14 +557,14 @@ In a pathological but realistic scenario:
 - 1 stale briefing (score 55)
 - 1 scout recommendation (score 30)
 
-That's 15 nudges demanding attention simultaneously. For an operator with ADHD, this is the opposite of executive function support — it's a wall of demands that triggers task paralysis.
+That's 15 nudges demanding attention simultaneously. This is the opposite of executive function support — it's a wall of demands that triggers task paralysis.
 
 The energy-aware accommodation reduces non-critical scores by 20% during low-energy hours, which changes ordering but not quantity. There is no mechanism to:
 - Cap the number of visible nudges (e.g., "show top 5")
 - Batch similar nudges (e.g., "3 management items need attention")
 - Suppress lower-priority nudges when high-priority ones exist
 
-**So what**: The nudge system was designed with priority scoring to help the operator focus. But without quantity management, the scoring just determines which item in an overwhelming list comes first. The system creates more cognitive load than it resolves when many things need attention simultaneously — exactly the condition where ADHD support is most needed.
+**So what**: The nudge system was designed with priority scoring to help the operator focus. But without quantity management, the scoring just determines which item in an overwhelming list comes first. The system creates more cognitive load than it resolves when many things need attention simultaneously — exactly the condition where executive function support is most needed.
 
 ---
 
@@ -588,7 +588,7 @@ The energy-aware accommodation reduces non-critical scores by 20% during low-ene
 
 *Decision records "executed" only (H-3.1). **Chat agent could search Qdrant via tools.
 
-There is no documentation of which channel supports which capabilities. An operator choosing between channels has to discover capabilities by trial. For an operator with ADHD, the uncertainty of "can I do X here or do I need to switch?" creates friction that discourages engagement.
+There is no documentation of which channel supports which capabilities. An operator choosing between channels has to discover capabilities by trial. The uncertainty of "can I do X here or do I need to switch?" creates friction that discourages engagement.
 
 The capability gaps are particularly notable:
 - The web dashboard (intended for ambient monitoring) shows nudges but can't act on them
@@ -616,7 +616,7 @@ For the TUI, the copilot could observe this — but the copilot rules don't incl
 
 ---
 
-### Mobile (Telegram bot + ntfy) — ADHD appropriateness
+### Mobile (Telegram bot + ntfy) — attention-budget appropriateness
 
 **Files**: `n8n-workflows/briefing-push.json`, `n8n-workflows/health-relay.json`, `shared/notify.py`
 
@@ -626,14 +626,14 @@ The mobile notification path has two channels:
 
 2. **Telegram bot** (via n8n): Briefing push at 07:15 (15 min after briefing generates), health relay via webhook. Formats messages for mobile with extracted headline + action items in Markdown.
 
-For ADHD-appropriate mobile attention:
+For attention-budget-appropriate mobile notifications:
 - **Good**: Health watchdog is silent when healthy — no notification fatigue. Priority escalation is proportional (degraded = default, failed = high). ntfy tags allow filtering.
 - **Good**: Briefing push extracts only headline + action items — information-dense, not full briefing dump.
 - **Gap**: Telegram credentials are `CONFIGURE_ME` — the n8n workflows appear undeployed. If so, mobile is ntfy-only (push notifications without context). The briefing narrative and action commands are lost.
 - **Gap**: No notification batching. If health degrades every 15 minutes (the timer period), the operator gets a push every 15 minutes for the same issue. No deduplication or escalation throttle.
 - **Gap**: Quick-capture workflow (`quick-capture.json`) exists for Telegram-to-RAG, but there's no mobile path to *dismiss* a nudge or *acknowledge* a health alert — mobile is receive-only.
 
-**So what**: The notification design is sound (priority mapping, silence on healthy, headline extraction). But the apparent non-deployment of Telegram workflows means mobile notification is limited to push without context. And the lack of deduplication means a persistent failure becomes persistent interruption — the opposite of ADHD accommodation.
+**So what**: The notification design is sound (priority mapping, silence on healthy, headline extraction). But the apparent non-deployment of Telegram workflows means mobile notification is limited to push without context. And the lack of deduplication means a persistent failure becomes persistent interruption — the opposite of attention accommodation.
 
 ---
 
@@ -641,17 +641,17 @@ For ADHD-appropriate mobile attention:
 
 **Files**: `<personal-vault>/` folder structure, `50-templates/`
 
-The vault has a clear hierarchical structure (00-inbox through 90-attachments) with numbered prefixes that provide spatial consistency — the folders always appear in the same visual order. This is good for an operator with ADHD.
+The vault has a clear hierarchical structure (00-inbox through 90-attachments) with numbered prefixes that provide spatial consistency — the folders always appear in the same visual order. This supports low-friction navigation.
 
 For cognitive overhead:
 - **Good**: `00-inbox/` as universal capture point is low-friction. QuickAdd plugin provides rapid capture templates. Inbox currently has 1 item, suggesting it's being processed regularly.
 - **Good**: Templates (16 total) reduce blank-page paralysis. `tpl-daily.md`, `tpl-1on1-prep.md`, `tpl-meeting-1on1.md` all provide structured scaffolding for recurring tasks.
 - **Good**: `31-system-inbox/` is a bidirectional bridge — operator writes notes, system reads them. This gives the operator a familiar interface (Obsidian) rather than requiring them to learn system-specific tools.
 - **Good**: Bases dashboards (team-dashboard, active-projects, decision-log, recent-meetings, system-dashboard, team-operating-picture) provide pre-built views that don't require constructing queries.
-- **Concern**: The folder hierarchy is 10 folders deep (00 through 90). For someone with ADHD, navigating to `10-work/meetings/` vs `10-work/decisions/` vs `32-bridge/prompts/` requires remembering the taxonomy. The numbered prefix system helps, but the tree depth could create "where does this go?" friction. The inbox as universal capture zone mitigates this — the operator can always dump into `00-inbox/` and sort later.
+- **Concern**: The folder hierarchy is 10 folders deep (00 through 90). Navigating to `10-work/meetings/` vs `10-work/decisions/` vs `32-bridge/prompts/` requires remembering the taxonomy. The numbered prefix system helps, but the tree depth could create "where does this go?" friction. The inbox as universal capture zone mitigates this — the operator can always dump into `00-inbox/` and sort later.
 - **Concern**: Templates are in `50-templates/` accessed via Templater plugin. The operator must remember which template to use for which context. Templater's folder-based triggers can automate this (create in `10-work/meetings/` -> auto-apply meeting template), but this requires initial configuration.
 
-**So what**: The vault structure is well-designed for scannability and low-friction capture. The main ADHD risk is the sort-later problem — items captured to inbox may accumulate if the operator doesn't have a regular processing habit. The system doesn't currently nudge for inbox processing (no vault-inbox-stale nudge exists in `nudges.py`).
+**So what**: The vault structure is well-designed for scannability and low-friction capture. The main executive-function risk is the sort-later problem — items captured to inbox may accumulate if the operator doesn't have a regular processing habit. The system doesn't currently nudge for inbox processing (no vault-inbox-stale nudge exists in `nudges.py`).
 
 ---
 
@@ -664,7 +664,7 @@ The neurocognitive awareness gap (H-1.1, H-1.2, H-1.3) is not an oversight — i
 The fix isn't to revert to large static prompts. It's to ensure that every agent's system prompt contains a minimum viable neurocognitive framing — one sentence — that causes the LLM to use context tools appropriately:
 
 ```
-The operator has ADHD and autism. Call lookup_constraints() before generating output.
+This system is executive function support infrastructure. Call lookup_constraints() before generating output.
 ```
 
 This is ~15 tokens. The token budget savings from the refactoring are preserved.
@@ -683,7 +683,7 @@ A system that externalizes executive function must include the feedback loop: ac
 
 ### The Unity Tax
 
-Every parallel definition (H-2.2, H-2.5), every bypassed shared module (H-2.3), every unmaintained collection (H-2.1) adds a maintenance burden that falls on one operator. In a team, redundancy is annoying. For a single operator with ADHD, every redundancy is a potential "which one did I need to update?" decision point that drains executive function.
+Every parallel definition (H-2.2, H-2.5), every bypassed shared module (H-2.3), every unmaintained collection (H-2.1) adds a maintenance burden that falls on one operator. In a team, redundancy is annoying. For a single operator, every redundancy is a potential "which one did I need to update?" decision point that drains executive function.
 
 ---
 
@@ -691,7 +691,7 @@ Every parallel definition (H-2.2, H-2.5), every bypassed shared module (H-2.3), 
 
 1. **Add neurocognitive micro-prompt to all agent system prompts** (H-1.1, H-1.2, H-1.3) — ~15 tokens per agent, restores coherence. Register context tools on digest agent.
 2. **Add `profile-facts` to knowledge-maint, health-monitor, digest COLLECTIONS** (H-2.1) — one-line fix per file, prevents unbounded growth.
-3. **Implement nudge cap** (H-5.2) — surface top N nudges, batch the rest as "and N more." Most impactful ADHD accommodation fix in the whole audit.
+3. **Implement nudge cap** (H-5.2) — surface top N nudges, batch the rest as "and N more." Most impactful executive-function accommodation fix in the whole audit.
 4. **Record dismissed/expired decisions** (H-3.1) — complete the decision capture flow that's already wired end-to-end.
 5. **Switch scout to shared.notify** (H-2.3) — one import change, enables mobile notification.
 6. **Remove legacy `store_to_qdrant()` and `--store-qdrant` flag** (H-4.2) — eliminate dead path.

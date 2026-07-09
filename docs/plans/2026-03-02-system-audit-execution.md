@@ -513,7 +513,7 @@ This is the largest domain. Prioritize:
 
 6. **Data collector error isolation**: In `cockpit/data/`, if one collector crashes (e.g., `collect_docker()` when Docker is down), does it break other collectors? Check the `snapshot.py` or cache aggregation logic.
 
-7. **Nudge priority scoring** (`data/nudges.py`, 478 LOC): Map all nudge sources and their priority scores. Are scores correct relative to each other? Does the priority ladder (critical > high > medium > low) make sense for an ADHD operator?
+7. **Nudge priority scoring** (`data/nudges.py`, 478 LOC): Map all nudge sources and their priority scores. Are scores correct relative to each other? Does the priority ladder (critical > high > medium > low) make sense for the operator's attention budget?
 
 8. **Decision capture** (`data/decisions.py`): Are all operator actions on nudges recorded? What if the JSONL file is locked or full?
 
@@ -727,11 +727,11 @@ Trace the operator model across all touchpoints:
 - **Context tools** (`shared/context_tools.py`): reads `profiles/operator-digest.json`
 - **System prompts** (`shared/operator.py`): `SYSTEM_CONTEXT` + `get_system_prompt_fragment()`
 - **Accommodations** (`cockpit/accommodations.py`): `profiles/accommodations.json`
-- **Nudge priorities** (`cockpit/data/nudges.py`): priority scoring for ADHD operator
+- **Nudge priorities** (`cockpit/data/nudges.py`): priority scoring for the operator's attention budget
 - **Copilot** (`cockpit/copilot.py`): observational mode
 - **Interview** (`cockpit/interview.py`): profile gap-filling
 
-Question: When the system prompt says "ADHD and autism — task initiation and sustained attention are genuine cognitive challenges," does every agent actually behave as though that's true? Or do some agents demand sustained attention, overload with information, or ignore accommodations?
+Question: When the system prompt says "task initiation, sustained attention, and routine maintenance are the binding constraints the system exists to support," does every agent actually behave as though that's true? Or do some agents demand sustained attention, overload with information, or ignore accommodations?
 
 **Step 3: Unity analysis**
 
@@ -802,7 +802,7 @@ Map all inter-domain interfaces:
 For each interface: Is the contract explicit (typed, documented) or implicit (convention, assumption)? What breaks if one side changes?
 
 Operator interfaces:
-- TUI (cockpit) — is it designed for ADHD? Low-distraction? Scannable?
+- TUI (cockpit) — is it designed for low cognitive load? Low-distraction? Scannable?
 - Web (cockpit-web) — same questions
 - Mobile (Telegram bot, ntfy) — appropriate for mobile attention?
 - Vault (Obsidian) — is the folder structure intuitive? Does it match mental model?

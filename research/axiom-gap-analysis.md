@@ -130,7 +130,7 @@ fi
 
 ## Gap 3: Pull-Based Upper Layers vs. Executive Function Axiom
 
-**Problem:** Layers 5-7 (agent tools, operator review, precedent database) require the operator to *check* things — `check_axiom_compliance()` must be called by the agent, cockpit precedent review requires manual navigation, and the precedent database is only consulted on lookup. This contradicts the `executive_function` axiom: the operator has ADHD, and pull-based systems fail when task initiation is the bottleneck.
+**Problem:** Layers 5-7 (agent tools, operator review, precedent database) require the operator to *check* things — `check_axiom_compliance()` must be called by the agent, cockpit precedent review requires manual navigation, and the precedent database is only consulted on lookup. This contradicts the `executive_function` axiom: task initiation is a binding constraint, and pull-based systems fail when initiation is the bottleneck.
 
 **Evidence from push governance research:**
 - Taiwan's digital governance reform (2019-2023): Shifted from "citizens must apply" to "government proactively delivers." Result: 40% increase in service utilization among populations with access barriers.
