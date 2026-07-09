@@ -532,7 +532,7 @@ repos:
       - Reins implementers
       - technical auditors
     surface_class: runtime_mechanism
-    visibility: private
+    visibility: public
     source_of_truth: constitution_registry
     public_files:
       - README.md
