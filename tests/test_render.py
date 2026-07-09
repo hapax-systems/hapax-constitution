@@ -564,6 +564,28 @@ def test_readme_section_prepends_when_no_markers_present(
     assert "## Body without markers" in rendered
 
 
+def test_readme_section_coemits_public_surface_markers(
+    council_repo: RepoSpec,
+) -> None:
+    """D4 marker convergence: the claim-bearing hapax-public family is
+    co-emitted INSIDE the hapax-sdlc replacement anchors."""
+    preamble = readme_section.render(council_repo)
+    public_begin, public_end = readme_section.public_surface_marker_pair(council_repo.name)
+    assert "hapax-public:surface=github.repo.hapax-council.readme.preamble" in public_begin
+    lines = preamble.splitlines()
+    assert lines[0] == readme_section.PREAMBLE_BEGIN
+    assert lines[1] == public_begin
+    assert lines[-2] == public_end
+    assert lines[-1] == readme_section.PREAMBLE_END
+    # Replacement still keys on the OLD family only: replacing a legacy
+    # preamble (no inner markers) must succeed and produce the new region.
+    legacy = f"{readme_section.PREAMBLE_BEGIN}\n# OLD\n{readme_section.PREAMBLE_END}\n\n## Body\n"
+    rendered = readme_section.replace_section(legacy, preamble)
+    assert public_begin in rendered
+    assert rendered.count(readme_section.PREAMBLE_BEGIN) == 1
+    assert "## Body" in rendered
+
+
 # --- CLI -------------------------------------------------------------------
 
 

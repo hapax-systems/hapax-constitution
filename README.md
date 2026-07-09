@@ -1,4 +1,5 @@
 <!-- hapax-sdlc:preamble:begin -->
+<!-- hapax-public:surface=github.repo.hapax-constitution.readme.preamble:begin -->
 
 # hapax-constitution
 
@@ -34,6 +35,7 @@ Rendered summary: CC BY-NC-ND 4.0 (specification text, no derivatives). See `LIC
 
 Anchor for repo metadata and governance. Defines axioms, implications, canons, and precedent records. Other first-party repos consume it through `hapax-sdlc`.
 
+<!-- hapax-public:surface=github.repo.hapax-constitution.readme.preamble:end -->
 <!-- hapax-sdlc:preamble:end -->
 
 # hapax-constitution
