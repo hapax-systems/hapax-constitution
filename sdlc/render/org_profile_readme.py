@@ -50,8 +50,9 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "writes ship and are released.",
             "- agentgov is the adoption commons: portable governance hooks for AI coding "
             "agents under MIT.",
-            "- hapax-spine is the source-available runtime mechanism behind Reins; it is "
-            "not a general-purpose lifecycle kernel.",
+            "- hapax-spine is the BSL 1.1 runtime mechanism behind Reins; its "
+            "repository is private during restructure, and it is not a "
+            "general-purpose lifecycle kernel.",
             "- hapax-council is the research/runtime apparatus. It is published for "
             "inspection and citation, not as a supported framework.",
             "- Hapax Logos MCP Bridge, Mobile Context Source, and Wrist Biometric "
@@ -60,8 +61,10 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "or broad MCP framework claims.",
             "- The Claim Verification Council is a public-facing capability name for "
             "claim-checking governance. Internal labels are not part of the public API.",
-            "- The Capability Frontier is a way to describe measured capability and "
-            "authority ceilings without collapsing them into a single agent score.",
+            "- The Capability Frontier is a way to describe capability registries, "
+            "route receipts, and authority ceilings without collapsing them into a "
+            "single agent score. Scores are registry-asserted today; measured "
+            "calibration is planned.",
             "- omg.lol weblog, RSS, social, DOI/archive, and other public fanout "
             "surfaces are governed publication-bus channels. Repository copy may "
             "point at published artifacts, but it must not imply direct public "

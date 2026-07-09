@@ -492,6 +492,14 @@ def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
     assert "source-visible research apparatus" in body
     assert "remains a read/preview surface" in body
     assert "not a general-purpose lifecycle kernel" in body
+    # D1 regression pin: public copy must not imply the spine repository is
+    # publicly browsable while it is private.
+    assert "repository is private during restructure" in body
+    assert "spine is the source-available runtime mechanism" not in body
+    # Capability Frontier embargo: scores are registry-asserted today;
+    # "measured capability" is claimable only once the measurement loop runs.
+    assert "registry-asserted today; measured calibration is planned" in body
+    assert "describe measured capability" not in body
     assert "not as a supported framework" in body
     assert "not claim autonomous write authority" in body
     assert "full general lifecycle coverage" in body
