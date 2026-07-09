@@ -26,6 +26,7 @@ Rendered summary: CC BY-NC-ND 4.0 (specification text, no derivatives). See `LIC
 
 - Issues are redirect-only; no discussions, no pull requests accepted; see `CONTRIBUTING.md` and `SUPPORT.md`
 - Public copy must use `hapax-systems` organization links for first-party Hapax repositories.
+- README text is orientation, not a freshness witness; current public claims require surface-specific release, reconcile, or publication receipts.
 - Publication, weblog, RSS, social, DOI/archive, and other public fanout paths must route through the governed publication bus or a documented guarded legacy surface.
 - Governance reference: https://github.com/hapax-systems/hapax-constitution
 
