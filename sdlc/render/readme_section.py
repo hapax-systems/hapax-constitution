@@ -17,14 +17,31 @@ PREAMBLE_BEGIN = "<!-- hapax-sdlc:preamble:begin -->"
 PREAMBLE_END = "<!-- hapax-sdlc:preamble:end -->"
 
 
+def public_surface_marker_pair(repo_name: str) -> tuple[str, str]:
+    """Claim-bearing generated-section markers (the plan's marker family).
+
+    Co-emitted INSIDE the ``hapax-sdlc`` anchors: the old family remains the
+    section-replacement anchor (behavior unchanged), while this family marks
+    the generated, claim-bearing region that public-surface claim checks
+    recognise (matrix-plan control-shape item 3 / D4 marker convergence).
+    """
+    surface_id = f"github.repo.{repo_name}.readme.preamble"
+    return (
+        f"<!-- hapax-public:surface={surface_id}:begin -->",
+        f"<!-- hapax-public:surface={surface_id}:end -->",
+    )
+
+
 def render(repo: RepoSpec) -> str:
     """Return the preamble block (between BEGIN/END markers, inclusive)."""
     license_summary = _license_one_liner(repo.license_class.value)
     opening = _opening(repo)
     issue_line = _issue_line(repo)
     authority_surfaces = _authority_surfaces(repo)
+    public_begin, public_end = public_surface_marker_pair(repo.name)
     return (
         f"{PREAMBLE_BEGIN}\n"
+        f"{public_begin}\n"
         f"\n"
         f"# {repo.name}\n"
         f"\n"
@@ -66,6 +83,7 @@ def render(repo: RepoSpec) -> str:
         f"\n"
         f"{repo.role_in_constellation.strip()}\n"
         f"\n"
+        f"{public_end}\n"
         f"{PREAMBLE_END}"
     )
 
