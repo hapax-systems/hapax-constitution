@@ -146,6 +146,8 @@ repos:
       - README.md
       - NOTICE.md
       - LICENSE
+      - LICENSE-APACHE
+      - LICENSE-SPEC
       - CITATION.cff
       - codemeta.json
       - .zenodo.json
