@@ -44,8 +44,8 @@ posture for reuse).
 
 Prior distributions of this repository were made under the Apache License
 2.0 in their entirety; that grant is irrevocable for the versions so
-distributed. The split posture above applies from commit <SHA-PLACEHOLDER>
-(2026-07-09) forward.
+distributed. The split posture above applies from commit
+35288e34d27d4afec5879c98b6518237791a5058 (2026-07-09) forward.
 
 Note: GitHub license detection is expected to report NOASSERTION for this
 layout; that is the intended result of a per-path split, not an error.
