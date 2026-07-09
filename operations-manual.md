@@ -8,7 +8,7 @@
 
 Hapax is a three-tier autonomous agent system running on a single workstation with an NVIDIA RTX 3090. It provides:
 
-- **Externalized executive function** — automated routines, proactive nudges, and contextual briefings compensate for ADHD/autism-related challenges with task initiation and sustained attention
+- **Externalized executive function** — automated routines, proactive nudges, and contextual briefings compensate for task-initiation and sustained-attention constraints
 - **LLM-augmented development** — Claude Code as primary interface, 26+ specialized agents, RAG-backed knowledge retrieval
 - **Music production infrastructure** — MIDI routing, sample management, hardware integration for a DAWless studio
 - **Management support** — 1:1 prep, team snapshots, coaching signal tracking (aggregation only, never generates feedback language)

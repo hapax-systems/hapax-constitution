@@ -251,7 +251,7 @@ Listed by impact (highest first):
 
 ### Proposal 3: Starter Document Generation
 
-**The problem:** The books recommend many document types (decision docs, coaching hypotheses, feedback records, team charters, career narratives). Creating each one from scratch is high-friction, especially for someone with ADHD.
+**The problem:** The books recommend many document types (decision docs, coaching hypotheses, feedback records, team charters, career narratives). Creating each one from scratch is high-friction, especially where task initiation is a binding constraint.
 
 **The solution:** Whenever data suggests a document should exist, auto-generate a starter version. The operator edits, not creates.
 

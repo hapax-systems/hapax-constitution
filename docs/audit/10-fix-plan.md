@@ -55,8 +55,8 @@ Total findings: 162 actionable (excluding 9 bonuses from Domain 8, 1 retracted f
 ### Fix 6: Add neurocognitive micro-prompt to all agent system prompts
 **Findings:** H-1.1, H-1.3
 **Files:** `agents/briefing.py`, `agents/scout.py`, `agents/management_prep.py`, `agents/drift_detector.py`, `agents/digest.py`
-**Action:** Add a minimal neurocognitive framing line (~15 tokens) to each agent's system prompt: `"The operator has ADHD and autism. Call lookup_constraints() before generating output to understand their cognitive needs."` This preserves the lean prompt design from the context management refactoring while ensuring agents know to query context tools for neurocognitive accommodations.
-**Verification:** Grep all `SYSTEM_PROMPT` definitions in `agents/`. Each should contain "ADHD" or reference `get_system_prompt_fragment()`.
+**Action:** Add a minimal executive-function framing line (~15 tokens) to each agent's system prompt: `"This system is executive function support infrastructure. Call lookup_constraints() before generating output to understand the operator's cognitive needs."` This preserves the lean prompt design from the context management refactoring while ensuring agents know to query context tools for operator accommodations.
+**Verification:** Grep all `SYSTEM_PROMPT` definitions in `agents/`. Each should contain the executive-function framing line or reference `get_system_prompt_fragment()`.
 
 ### Fix 7: Register context tools on digest agent
 **Findings:** H-1.2, C-5.1
@@ -412,8 +412,8 @@ for _tool_fn in get_context_tools():
 ### Fix 64: Fix Obsidian plugin default system prompt
 **Findings:** H-1.4
 **Files:** `<obsidian-hapax>/src/types.ts`
-**Action:** Update the `DEFAULT_SETTINGS.systemPrompt` to include the neurocognitive model framing from `SYSTEM_CONTEXT`. The base prompt should mention ADHD, autism, and executive function support to maintain coherence with the Python system's identity. The "Hapax" name can remain as the Obsidian-specific identity, but the operational context should align.
-**Verification:** Build the plugin (`pnpm run build`). Open Obsidian, check default prompt in settings. Verify it mentions ADHD/autism.
+**Action:** Update the `DEFAULT_SETTINGS.systemPrompt` to include the operator-model framing from `SYSTEM_CONTEXT`. The base prompt should mention executive function support to maintain coherence with the Python system's identity. The "Hapax" name can remain as the Obsidian-specific identity, but the operational context should align.
+**Verification:** Build the plugin (`pnpm run build`). Open Obsidian, check default prompt in settings. Verify it mentions executive function support.
 
 ### Fix 65: Document channel capability matrix
 **Findings:** H-5.3
@@ -606,7 +606,7 @@ for _tool_fn in get_context_tools():
 - Add None guard in `code_review.py` system prompt concatenation to prevent crash when `get_system_prompt_fragment()` returns None (R-5.1)
 - Add explicit check for empty Tavily results in `scout.py` and log warning — don't silently pass empty search results to LLM evaluation (B-5.2)
 - Add streaming timeout in `cockpit/chat_agent.py` so a stalled SSE stream doesn't hang the chat indefinitely (B-6.1)
-- Plan web dashboard action pathway: at minimum, add nudge dismiss/execute buttons that POST to a new API endpoint; this is the most significant ADHD accommodation gap in the web layer (H-3.2)
+- Plan web dashboard action pathway: at minimum, add nudge dismiss/execute buttons that POST to a new API endpoint; this is the most significant executive-function accommodation gap in the web layer (H-3.2)
 **Verification:** Each item verifiable via targeted unit test or manual check. H-3.2 requires a design decision before implementation.
 
 ---
@@ -643,7 +643,7 @@ Restores the coherent operator model across all LLM agents. Every agent gets neu
 **Estimated scope:** 10 files, ~350 LOC changes
 **Priority range:** P1-P2
 
-Completes the decision capture loop (dismissed/expired), fixes resume reliability for takeout processing, makes persistent state writes atomic, caps the nudge attention budget, and adds accommodation feedback. The nudge cap (Fix 54) is the most impactful ADHD accommodation fix in the audit.
+Completes the decision capture loop (dismissed/expired), fixes resume reliability for takeout processing, makes persistent state writes atomic, caps the nudge attention budget, and adds accommodation feedback. The nudge cap (Fix 54) is the most impactful executive-function accommodation fix in the audit.
 
 ### WS-5: Test Coverage
 **Fixes:** 18, 19, 26, 27, 35, 36, 37, 63, 72, 74, 92 (partial: C-3.1)

@@ -8,7 +8,7 @@ hapaxromana is unusual because it spans several categories simultaneously:
 - **Specification layer** (axioms, governance, architecture docs — not runnable code)
 - **Personal multi-agent infrastructure** (13 agents, 3 tiers, systemd timers)
 - **Self-hosted AI stack** (Docker services, LiteLLM routing, Langfuse observability)
-- **Executive function prosthetic** (ADHD-optimized automation and cognitive offloading)
+- **Executive function prosthetic** (automation and cognitive offloading optimized for executive-function support)
 - **Personal knowledge management** (RAG pipeline, Obsidian plugin, vector DB)
 
 No single project covers all of these. The closest matches are composites.

@@ -177,7 +177,7 @@ Install via Settings → Community Plugins → Browse:
 ## Install Now
 
 - [ ] **Meta Bind** — Interactive frontmatter widgets (INPUT[toggle], INPUT[slider], INPUT[select]). Already referenced in `tpl-person.md` template. Without this plugin, person notes show raw `INPUT[]` syntax.
-- [ ] **Day Planner** — Time blocking view integrated with daily notes. ADHD task initiation support — visual timeline makes "what do I do next?" concrete.
+- [ ] **Day Planner** — Time blocking view integrated with daily notes. Task-initiation support — visual timeline makes "what do I do next?" concrete.
 - [ ] **Excalidraw** — Visual thinking canvas. Architecture diagrams, meeting whiteboarding, spatial reasoning. Embeds in notes.
 
 ## Evaluate Later
