@@ -1,0 +1,28 @@
+# Advisory routing for the Hapax constitution/specification repo.
+#
+# Under the single-operator model this is not a required-review gate:
+# branch protection must not require the operator to self-approve. The file
+# exists to make ownership of governance-sensitive paths explicit and to route
+# review attention through the Hapax Systems org team.
+
+* @hapax-systems/codeowners
+
+/.github/ @hapax-systems/codeowners
+/axioms/ @hapax-systems/codeowners
+/domains/ @hapax-systems/codeowners
+/knowledge/ @hapax-systems/codeowners
+
+/commons/ @hapax-systems/codeowners
+/demo/ @hapax-systems/codeowners
+/rdlc/ @hapax-systems/codeowners
+/sdlc/ @hapax-systems/codeowners
+/hapax_sdlc/ @hapax-systems/codeowners
+
+/docs/design/ @hapax-systems/codeowners
+/docs/plans/ @hapax-systems/codeowners
+/docs/document-registry.yaml @hapax-systems/codeowners
+/docs/cross-project-boundary.md @hapax-systems/codeowners
+
+/README.md @hapax-systems/codeowners
+/pattern-guide.md @hapax-systems/codeowners
+/pyproject.toml @hapax-systems/codeowners
