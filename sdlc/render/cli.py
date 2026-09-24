@@ -6,7 +6,7 @@ Modes:
     --org-profile         render hapax-systems/.github profile/README.md
     --check               diff-mode (no-write); exit 1 on drift
     --dry-run             print to stdout instead of writing
-    --target-root <path>  override the directory where files are written
+    --target-root <path>  override the directory for --repo or --org-profile
                           (defaults to a sibling of hapax-constitution
                           named after the repo id)
 
@@ -89,7 +89,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=None,
         help=(
-            "Override the directory where files are written. Defaults to "
+            "Override the directory for --repo or --org-profile (not --all). Defaults to "
             "`<hapax-constitution-parent>/<repo_id>/`."
         ),
     )
@@ -202,6 +202,15 @@ def render_repo(
 def main(argv: Iterable[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    if args.all and args.target_root is not None:
+        parser.error(
+            "--all cannot be combined with --target-root: repositories would "
+            "overwrite the same files. Next action: use --repo <id> --target-root <path> "
+            "for each repository, retaining any --file selection; review the generated "
+            "diff, then repeat with --check. Use --all without --target-root only when "
+            "the default sibling checkouts are the intended destinations."
+        )
 
     registry = load_registry()
     identity = load_operator_identity()

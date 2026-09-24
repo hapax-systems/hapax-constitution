@@ -8,10 +8,14 @@ from __future__ import annotations
 
 import io
 import json
+import os
+import subprocess
+import sys
 from contextlib import redirect_stdout
 from dataclasses import replace
 from hashlib import sha256
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 import yaml
@@ -789,7 +793,11 @@ def test_cli_check_drift_is_actionable_and_preserves_consumers(
 ) -> None:
     target_root = tmp_path / "consumer checkout"
     target_root.mkdir()
-    target = target_root / filename
+    target = (
+        target_root / "hapax-council" / filename
+        if "--all" in target_args
+        else target_root / filename
+    )
     if existing_consumer:
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(b"Existing consumer content that requires reconciliation.\n")
@@ -807,7 +815,11 @@ def test_cli_check_drift_is_actionable_and_preserves_consumers(
         }
 
     before = snapshot()
-    rc = cli.main([*target_args, "--check", "--target-root", str(target_root)])
+    args = list(target_args)
+    if "--all" not in args:
+        args.extend(["--target-root", str(target_root)])
+    with patch.object(cli, "default_target_root", side_effect=lambda repo: target_root / repo.name):
+        rc = cli.main([*args, "--check"])
     output = capsys.readouterr()
 
     assert rc == 1
@@ -822,6 +834,9 @@ def test_cli_check_drift_is_actionable_and_preserves_consumers(
     assert "same target/file options without --check" in output.err
     assert "review the generated diff" in output.err
     assert "then rerun --check" in output.err
+    with patch.object(cli, "default_target_root", side_effect=lambda repo: target_root / repo.name):
+        assert cli.main(args) == 0
+        assert cli.main([*args, "--check"]) == 0
 
 
 def test_cli_check_mode_clean_after_write(tmp_path: Path) -> None:
@@ -847,6 +862,132 @@ def test_cli_check_mode_clean_after_write(tmp_path: Path) -> None:
     assert rc_check == 0
 
 
+@pytest.mark.parametrize("mode", [[], ["--check"], ["--dry-run"]])
+@pytest.mark.parametrize("only_file", [[], ["--file", "SUPPORT.md"]])
+@pytest.mark.parametrize("existing_target", [False, True])
+def test_cli_all_rejects_shared_target_before_writes(
+    tmp_path: Path, mode: list[str], only_file: list[str], existing_target: bool
+) -> None:
+    """A shared destination must fail before creating or overwriting consumers."""
+    root = Path(__file__).resolve().parents[1]
+    target = tmp_path / "consumer checkout"
+    if existing_target:
+        target.mkdir()
+        (target / "SUPPORT.md").write_bytes(b"Keep existing support.\n")
+        (target / "README.md").write_bytes(b"Keep existing README.\n")
+    before = {
+        p.name: (p.read_bytes(), p.stat().st_mode, p.stat().st_mtime_ns) for p in target.glob("*")
+    }
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-B",
+            "-m",
+            "hapax_sdlc.render",
+            "--all",
+            "--target-root",
+            str(target),
+            *only_file,
+            *mode,
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 2
+    assert result.stdout == ""
+    assert "--all cannot be combined with --target-root" in result.stderr
+    assert "overwrite" in result.stderr
+    assert "--repo <id> --target-root <path>" in result.stderr
+    assert "--check" in result.stderr
+    assert target.exists() is existing_target
+    assert {
+        p.name: (p.read_bytes(), p.stat().st_mode, p.stat().st_mtime_ns) for p in target.glob("*")
+    } == before
+
+    # Follow the stated repair with the real CLI, retaining the artifact selection.
+    args = [
+        sys.executable,
+        "-B",
+        "-m",
+        "hapax_sdlc.render",
+        "--repo",
+        "hapax-council",
+        "--target-root",
+        str(target),
+        *only_file,
+    ]
+    for extra in ([], ["--check"]):
+        repaired = subprocess.run(
+            [*args, *extra], cwd=root, capture_output=True, text=True, check=False
+        )
+        assert repaired.returncode == 0, repaired.stderr
+        assert repaired.stderr == ""
+    assert (target / "SUPPORT.md").read_text() == support_md.render(
+        load_registry()["hapax-council"]
+    )
+
+
+def test_cli_all_default_targets_converge(tmp_path: Path) -> None:
+    """The supported --all form retains separate repository destinations."""
+    with patch.object(cli, "default_target_root", side_effect=lambda repo: tmp_path / repo.name):
+        args = ["--all", "--file", "SUPPORT.md"]
+        assert cli.main(args) == 0
+        assert cli.main([*args, "--check"]) == 0
+    registry = load_registry()
+    assert {p.name for p in tmp_path.iterdir()} == {
+        repo.name for repo in registry.values() if repo.is_first_party
+    }
+    for repo in registry.values():
+        if repo.is_first_party:
+            assert (tmp_path / repo.name / "SUPPORT.md").read_text() == support_md.render(repo)
+
+
+@pytest.mark.parametrize("fail_at", range(1, 9))
+def test_org_profile_recheck_stops_on_failed_observation(tmp_path: Path, fail_at: int) -> None:
+    """Run the real shell witness; each failed API call must stop later observations."""
+    root = Path(__file__).resolve().parents[1]
+    stub = tmp_path / "gh"
+    stub.write_text(
+        f"#!{sys.executable}\n"
+        "import os, sys\n"
+        "from pathlib import Path\n"
+        "trace = Path(os.environ['RECHECK_TEST_TRACE'])\n"
+        "calls = trace.read_text().splitlines() if trace.exists() else []\n"
+        "calls.append(' '.join(sys.argv[1:]))\n"
+        "trace.write_text('\\n'.join(calls) + '\\n')\n"
+        "if len(calls) == int(os.environ['RECHECK_TEST_FAIL_AT']):\n"
+        "    print('simulated API observation failure', file=sys.stderr)\n"
+        "    sys.exit(42)\n"
+        "print('0123456789abcdef0123456789abcdef01234567' if len(calls) == 6 else '{}')\n"
+    )
+    stub.chmod(0o755)
+    trace = tmp_path / "calls.txt"
+    env = {
+        **os.environ,
+        "PATH": f"{tmp_path}{os.pathsep}{os.environ['PATH']}",
+        "GH_TOKEN": "synthetic-test-token-do-not-emit",
+        "GITHUB_TOKEN": "synthetic-test-token-do-not-emit",
+        "RECHECK_TEST_TRACE": str(trace),
+        "RECHECK_TEST_FAIL_AT": str(fail_at),
+    }
+    result = subprocess.run(
+        ["bash", "docs/recheck-org-profile.sh"],
+        cwd=root,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 42
+    assert result.stderr == "simulated API observation failure\n"
+    assert len(trace.read_text().splitlines()) == fail_at
+    assert "synthetic-test-token-do-not-emit" not in result.stdout + result.stderr
+    if fail_at <= 6:
+        assert "agentgov source commit:" not in result.stdout
+
+
 def test_cli_write_creates_nested_issue_template_config(tmp_path: Path) -> None:
     rc = cli.main(
         [
@@ -865,10 +1006,7 @@ def test_cli_write_creates_nested_issue_template_config(tmp_path: Path) -> None:
 
 
 def test_cli_all_mode_renders_first_party_repos(tmp_path: Path) -> None:
-    """``--all`` renders every first-party repo. Each gets its own
-    target subdirectory under ``--target-root`` is not yet supported —
-    here we just verify the dry-run path handles --all without error.
-    """
+    """The supported --all dry-run form includes every first-party repo."""
     buf = io.StringIO()
     with redirect_stdout(buf):
         rc = cli.main(["--all", "--dry-run"])
