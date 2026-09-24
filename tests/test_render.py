@@ -489,6 +489,11 @@ def test_org_profile_readme_orients_public_portfolio_without_private_repo_table(
 
 def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
     body = org_profile_readme.render(load_registry())
+    assert "private during restructure" not in body
+    assert "describe measured capability" not in body
+    assert "Hapax is open source" not in body
+    assert "generic agent OS" not in body
+    assert "guaranteed safe" not in body
     assert "The license in each repository defines its terms" in body
     assert "Split by path: CC BY-NC-ND 4.0 / Apache-2.0" in body
     assert "per-asset notices take precedence" in body
