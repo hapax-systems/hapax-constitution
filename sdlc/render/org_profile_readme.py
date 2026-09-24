@@ -86,7 +86,7 @@ Our public claims must remain within the evidence readers can inspect.
 
 ## Provenance and corrections
 
-Repository and release status checked September 24, 2026. This page is generated from the [profile source](https://github.com/hapax-systems/hapax-constitution/blob/main/sdlc/render/org_profile_readme.py) and [repository descriptions](https://github.com/hapax-systems/hapax-constitution/blob/main/sdlc/render/repos.yaml). [Earlier revisions](https://github.com/hapax-systems/hapax-constitution/commits/main/sdlc/render/org_profile_readme.py) remain inspectable. Propose corrections to those sources in a pull request; for repository-specific support or security concerns, follow that repository's stated intake route.
+Repository and release status checked September 24, 2026. This page is generated from the [profile source](https://github.com/hapax-systems/hapax-constitution/blob/main/sdlc/render/org_profile_readme.py) and [repository descriptions](https://github.com/hapax-systems/hapax-constitution/blob/main/sdlc/render/repos.yaml). [Earlier revisions](https://github.com/hapax-systems/hapax-constitution/commits/main/sdlc/render/org_profile_readme.py) remain inspectable. Corrections should identify the affected source revision and remain attached to its history. See the [published intake boundary](https://github.com/hapax-systems/hapax-constitution/blob/main/SUPPORT.md) before reporting a problem; it does not accept general pull requests or GitHub support requests.
 """
 
 
