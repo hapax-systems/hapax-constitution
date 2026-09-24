@@ -7,7 +7,7 @@ existing grant. Rendering does not publish or authorize publication.
 
 from __future__ import annotations
 
-from sdlc.render.repo_registry import RepoSpec, RepoVisibility
+from sdlc.render.repo_registry import DEFAULT_GITHUB_OWNER, RepoSpec, RepoVisibility
 
 ORG_PROFILE_PATH = "profile/README.md"
 
@@ -104,7 +104,7 @@ Repository and release status checked September 24, 2026. This page is generated
 
 
 def render(registry: dict[str, RepoSpec]) -> str:
-    """Render the profile; missing or nonpublic required entries fail closed."""
+    """Render only required entries with approved public first-party ownership."""
     # Validate the historical link as well as both tables before emitting copy.
     problems = []
     for repo_id in (*_START_REPOS, *_SUPPORTING_REPOS, "agentgov"):
@@ -115,6 +115,10 @@ def render(registry: dict[str, RepoSpec]) -> str:
             problems.append(f"{repo_id}: not first-party")
         elif repo.visibility is not RepoVisibility.PUBLIC:
             problems.append(f"{repo_id}: visibility={repo.visibility.value}")
+        elif repo.github_owner != DEFAULT_GITHUB_OWNER:
+            problems.append(
+                f"{repo_id}: github_owner={repo.github_owner}; expected {DEFAULT_GITHUB_OWNER}"
+            )
     if problems:
         raise ValueError(
             "Cannot render organization profile: " + "; ".join(problems) + ". "

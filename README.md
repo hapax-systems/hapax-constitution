@@ -83,6 +83,10 @@ python -m sdlc.render --all --check
 python -m sdlc.render --org-profile --check
 ```
 
+Rendering checks source consistency; it does not refresh external status.
+Before releasing an organization profile revision, run the
+[repository and release status recheck](docs/org-profile-status.md).
+
 ## License And Rights
 
 This repository has a split posture. Specification and publication metadata
@@ -99,5 +103,5 @@ framework, public support, or commercial service terms.
 ## Related Repositories
 
 - [hapax-council](https://github.com/hapax-systems/hapax-council): source-visible research/runtime artifact.
-- [agentgov](https://github.com/hapax-systems/agentgov): MIT adoption commons for portable governance hooks.
+- [agentgov](https://github.com/hapax-systems/agentgov): archived historical governance-hook source for inspection and citation; not the current adoption entry point.
 - [reins](https://github.com/hapax-systems/reins): source-available product front door for read and command-preview.

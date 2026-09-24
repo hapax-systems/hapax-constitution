@@ -558,7 +558,9 @@ def test_org_profile_matches_committed_bytes_and_full_hash(tmp_path: Path) -> No
         "agentgov",
     ],
 )
-@pytest.mark.parametrize("invalid_state", ["missing", "private", "local_only", "third_party"])
+@pytest.mark.parametrize(
+    "invalid_state", ["missing", "private", "local_only", "third_party", "outside_owner"]
+)
 def test_org_profile_rejects_ineligible_required_entries(repo_id: str, invalid_state: str) -> None:
     registry = load_registry()
     if invalid_state == "missing":
@@ -567,6 +569,10 @@ def test_org_profile_rejects_ineligible_required_entries(repo_id: str, invalid_s
     elif invalid_state == "third_party":
         registry[repo_id] = replace(registry[repo_id], is_first_party=False)
         reason = "not first-party"
+    elif invalid_state == "outside_owner":
+        registry[repo_id] = replace(registry[repo_id], github_owner="unapproved-owner")
+        assert registry[repo_id].is_first_party
+        reason = "github_owner=unapproved-owner; expected hapax-systems"
     else:
         registry[repo_id] = replace(registry[repo_id], visibility=RepoVisibility(invalid_state))
         reason = invalid_state
@@ -579,6 +585,18 @@ def test_org_profile_rejects_ineligible_required_entries(repo_id: str, invalid_s
     assert "Verify the approved public first-party inventory" in message
     assert "before rerendering" in message
     assert "visibility or ownership changes require separate authority" in message
+
+
+def test_constitution_readme_describes_agentgov_as_archived_evidence() -> None:
+    body = (Path(__file__).resolve().parents[1] / "README.md").read_text(encoding="utf-8")
+    related = body.split("## Related Repositories\n", 1)[1]
+    entry = next(line for line in related.splitlines() if line.startswith("- [agentgov]"))
+    assert "https://github.com/hapax-systems/agentgov" in entry
+    assert "archived historical governance-hook source" in entry
+    assert "inspection and citation" in entry
+    assert "not the current adoption entry point" in entry
+    assert "MIT adoption commons" not in body
+    assert "portable governance hooks" not in entry
 
 
 def test_org_profile_ignores_ineligible_entries_outside_required_portfolio() -> None:
