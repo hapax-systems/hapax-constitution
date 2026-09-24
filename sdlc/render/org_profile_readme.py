@@ -7,24 +7,42 @@ existing grant. Rendering does not publish or authorize publication.
 
 from __future__ import annotations
 
-from sdlc.render.repo_registry import DEFAULT_GITHUB_OWNER, RepoSpec, RepoVisibility
+from sdlc.render.repo_registry import DEFAULT_GITHUB_OWNER, LicenseClass, RepoSpec, RepoVisibility
 
 ORG_PROFILE_PATH = "profile/README.md"
 
-# These links follow the existing repository grants, including split-path and
-# per-asset notices. The known assets registry/grant discrepancy is a separate
-# legal-metadata decision; rendering must not silently choose a new grant.
+# Each entry binds reviewed registry metadata to an independently inspected grant
+# summary, not a grant inferred from license_class. Pinned source excerpts and
+# hashes live in tests/fixtures/org-profile-grant-evidence.json. Unexpected
+# metadata changes require reconciliation before rendering; grant freshness is
+# still a separate publication check. Keep the assets discrepancy and constitution
+# split explicit until their respective authorities approve a change.
 _LICENSE_LINKS = {
-    "hapax-mcp": ("MIT", "LICENSE"),
-    "reins": ("Business Source License 1.1", "LICENSE"),
-    "hapax-spine": ("Business Source License 1.1", "LICENSE"),
-    "hapax-council": ("PolyForm Strict 1.0.0", "LICENSE"),
-    "hapax-constitution": ("Split by path: CC BY-NC-ND 4.0 / Apache-2.0", "LICENSE"),
-    "hapax-research-ledger": ("CC0-1.0 for the declared data surface", "LICENSE"),
-    "hapax-officium": ("PolyForm Strict 1.0.0", "LICENSE"),
-    "hapax-phone": ("PolyForm Strict 1.0.0", "LICENSE"),
-    "hapax-watch": ("PolyForm Strict 1.0.0", "LICENSE"),
-    "hapax-assets": ("CC BY 4.0 default; per-asset notices take precedence", "LICENSE-SCOPE.md"),
+    "hapax-mcp": (LicenseClass.MIT, "MIT", "LICENSE"),
+    "reins": (LicenseClass.BUSL_1_1, "Business Source License 1.1", "LICENSE"),
+    "hapax-spine": (LicenseClass.BUSL_1_1, "Business Source License 1.1", "LICENSE"),
+    "hapax-council": (LicenseClass.POLYFORM_STRICT_1_0_0, "PolyForm Strict 1.0.0", "LICENSE"),
+    # Metadata names the specification bucket; tooling has a separate grant.
+    "hapax-constitution": (
+        LicenseClass.CC_BY_NC_ND_4_0,
+        "Split by path: CC BY-NC-ND 4.0 / Apache-2.0",
+        "LICENSE",
+    ),
+    "hapax-research-ledger": (
+        LicenseClass.CC0_1_0,
+        "CC0-1.0 for the declared data surface",
+        "LICENSE",
+    ),
+    "hapax-officium": (LicenseClass.POLYFORM_STRICT_1_0_0, "PolyForm Strict 1.0.0", "LICENSE"),
+    "hapax-phone": (LicenseClass.POLYFORM_STRICT_1_0_0, "PolyForm Strict 1.0.0", "LICENSE"),
+    "hapax-watch": (LicenseClass.POLYFORM_STRICT_1_0_0, "PolyForm Strict 1.0.0", "LICENSE"),
+    # Known metadata/grant discrepancy: registry SA; grant BY with exceptions.
+    "hapax-assets": (
+        LicenseClass.CC_BY_SA_4_0,
+        "CC BY 4.0 default; per-asset notices take precedence",
+        "LICENSE-SCOPE.md",
+    ),
+    "agentgov": (LicenseClass.MIT, "MIT", "LICENSE"),
 }
 
 _START_REPOS = (
@@ -126,6 +144,21 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "sdlc/render/repos.yaml with the profile's required entries before rerendering; "
             "visibility or ownership changes require separate authority."
         )
+    license_problems = []
+    for repo_id, (expected, _label, _path) in _LICENSE_LINKS.items():
+        actual = registry[repo_id].license_class
+        if actual is not expected:
+            license_problems.append(
+                f"{repo_id}: license_class={actual.value}; reviewed metadata={expected.value}"
+            )
+    if license_problems:
+        raise ValueError(
+            "Cannot render organization profile: " + "; ".join(license_problems) + ". "
+            "Inspect the repository grant and pinned grant evidence, then reconcile "
+            "sdlc/render/repos.yaml and sdlc/render/org_profile_readme.py before rerendering. "
+            "Registry metadata is not a legal grant; preserve known split-path and per-asset "
+            "exceptions. Grant or legal metadata changes require separate authority."
+        )
     public = {
         repo.id: repo
         for repo in registry.values()
@@ -144,7 +177,7 @@ def _table(public: dict[str, RepoSpec], repo_ids: tuple[str, ...], role: str) ->
     rows = [f"| Repository | {role} | License |", "|---|---|---|"]
     for repo_id in repo_ids:
         repo = public[repo_id]
-        label, path = _LICENSE_LINKS[repo_id]
+        _expected_class, label, path = _LICENSE_LINKS[repo_id]
         rows.append(
             f"| [{repo.name}]({repo.github_url}) | {_compact(repo.reader_promise)} | "
             f"[{label}]({repo.github_url}/blob/main/{path}) |"

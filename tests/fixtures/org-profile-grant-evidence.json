@@ -1,0 +1,142 @@
+{
+  "observed_at": "2026-09-24T13:04:10.005558+00:00",
+  "scope": "Pinned grant-source excerpts, not GitHub license detection or a new grant. Full-source SHA-256 and commit URLs permit independent recheck; excerpts are not complete legal terms. Live grant changes require a fresh review before publication.",
+  "repos": {
+    "hapax-mcp": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/hapax-mcp/blob/44c70eea4ca4ccb09044ce1fa4e5a9ab4ec03858/LICENSE",
+          "sha256": "90ff5e94372f7433c0b0a04d4520ffd026ce13fb4480caeb64e092122480d00e",
+          "bytes": 1070,
+          "excerpt": "MIT License\n\nCopyright (c) 2026 hapax-systems\n"
+        }
+      ]
+    },
+    "reins": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/reins/blob/38c7e395bd36e91f6cc380b280cd569de7fbffbb/LICENSE",
+          "sha256": "c9b919d17639c673976f9a0b36f561b9a1a1ce111f97a352a1b8730ecd085133",
+          "bytes": 4892,
+          "excerpt": "Business Source License 1.1\n\nLicense text copyright (c) 2020 MariaDB Corporation Ab, All Rights Reserved.\n"
+        }
+      ]
+    },
+    "hapax-spine": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/hapax-spine/blob/73411ee94c3dd5d71027b2aa3ffbf3bd40bc80d8/LICENSE",
+          "sha256": "79fab11254413a70c41ab7a7a5198c08047401fac1d712e294746f1340f2da20",
+          "bytes": 5075,
+          "excerpt": "Business Source License 1.1\n\nLicense text copyright (c) 2020 MariaDB Corporation Ab, All Rights Reserved.\n"
+        }
+      ]
+    },
+    "hapax-council": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/hapax-council/blob/d689ba7c61f12f99d356a5bbfb8ab3b9ab887376/LICENSE",
+          "sha256": "2183f4abce696be915854ba97c2f1e95d60eb1ff776777c13e787dfec2fa105b",
+          "bytes": 3790,
+          "excerpt": "PolyForm Strict License 1.0.0\n\n<https://polyformproject.org/licenses/strict/1.0.0>\n"
+        }
+      ]
+    },
+    "hapax-constitution": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/hapax-constitution/blob/b00982a1f3d9db6be5855a01831fa56c6e55e4df/LICENSE",
+          "sha256": "d6e741a2dc1c14059824b68871be854715c34686c21968e5c70a39ee438cab75",
+          "bytes": 1881,
+          "excerpt": "License scope map \u2014 hapax-constitution\n\nCopyright (c) Hapax Systems\n\nThis repository is dual-licensed BY PATH. It is not single-licensed as a\nwhole: no single license applies to the repository in its entirety. Each\npath falls into exactly one of the two buckets below.\n\n--------------------------------------------------------------------------\n\n1. Specification and publication content \u2014 CC BY-NC-ND 4.0\n   (full text: LICENSE-SPEC)\n\n   - axioms/**\n   - domains/**\n   - knowledge/**\n   - docs/**\n   - research/**\n   - demo/pipeline/domain_corpus/**\n   - root-level *.md (README.md, NOTICE.md, GOVERNANCE.md,\n     CONTRIBUTING.md, SECURITY.md, SUPPORT.md, and any other root\n     markdown)\n   - pattern-guide.md\n   - operations-manual.md\n\n2. Runnable tooling (the hapax-sdlc package) \u2014 Apache License 2.0\n   (full text: LICENSE-APACHE)\n\n   - sdlc/**\n   - scripts/**\n   - tests/**\n   - demo/** except domain_corpus\n   - .github/**\n   - pyproject.toml\n   - uv.lock\n   - and all other code/config paths\n\n--------------------------------------------------------------------------\n\nDefault rule: any path not matched above falls under Bucket 1 if it is\ndocumentation or specification text, and under Bucket 2 if it is code or\nconfiguration; when in doubt, treat it as Bucket 1 (the more restrictive\nposture for reuse).\n\nPrior distributions of this repository were made under the Apache License\n2.0 in their entirety; that grant is irrevocable for the versions so\ndistributed. The split posture above applies from commit\n35288e34d27d4afec5879c98b6518237791a5058 (2026-07-09) forward.\n\nNote: GitHub license detection is expected to report NOASSERTION for this\nlayout; that is the intended result of a per-path split, not an error.\nThe machine-readable posture for this repository lives in hapax-council\ndocs/repo-pres/repo-registry.yaml (the expected_github_license_detection\npin).\n"
+        }
+      ],
+      "exception": {
+        "registry_class": "CC-BY-NC-ND-4.0",
+        "reason": "Registry names specification bucket; LICENSE separately grants Apache-2.0 for runnable tooling. No repository-wide grant."
+      }
+    },
+    "hapax-research-ledger": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/hapax-research-ledger/blob/5c99dced93b84086ab86dce18d9de12888fad469/LICENSE",
+          "sha256": "2f976aeae6ab25f75a68b01189b58e9be68baac37f1bad7ca34621a82084d835",
+          "bytes": 7048,
+          "excerpt": "Creative Commons Legal Code\n\nCC0 1.0 Universal\n"
+        }
+      ]
+    },
+    "hapax-officium": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/hapax-officium/blob/69583619391b71507f03215cd0cd832788084c5a/LICENSE",
+          "sha256": "2183f4abce696be915854ba97c2f1e95d60eb1ff776777c13e787dfec2fa105b",
+          "bytes": 3790,
+          "excerpt": "PolyForm Strict License 1.0.0\n\n<https://polyformproject.org/licenses/strict/1.0.0>\n"
+        }
+      ]
+    },
+    "hapax-phone": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/hapax-phone/blob/f2843fc5dd770901021049f88e4ab8e2fa4b6648/LICENSE",
+          "sha256": "2183f4abce696be915854ba97c2f1e95d60eb1ff776777c13e787dfec2fa105b",
+          "bytes": 3790,
+          "excerpt": "PolyForm Strict License 1.0.0\n\n<https://polyformproject.org/licenses/strict/1.0.0>\n"
+        }
+      ]
+    },
+    "hapax-watch": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/hapax-watch/blob/f12bf995be38df197771f78c491249e595736231/LICENSE",
+          "sha256": "2183f4abce696be915854ba97c2f1e95d60eb1ff776777c13e787dfec2fa105b",
+          "bytes": 3790,
+          "excerpt": "PolyForm Strict License 1.0.0\n\n<https://polyformproject.org/licenses/strict/1.0.0>\n"
+        }
+      ]
+    },
+    "hapax-assets": {
+      "sources": [
+        {
+          "path": "LICENSE-SCOPE.md",
+          "url": "https://github.com/hapax-systems/hapax-assets/blob/bd8902f84e8ebef6bee325b77eedb71e3a6228ae/LICENSE-SCOPE.md",
+          "sha256": "ff22630119f08344cc0f833be093264e2bf2e97030a7ca9f8dfe7d9d902af0b5",
+          "bytes": 396,
+          "excerpt": "# License scope \u2014 hapax-assets\n\nCopyright (c) Hapax Systems\n\nRepository-level license: Creative Commons Attribution 4.0 International\n(CC-BY-4.0), full text in LICENSE. Estate-authored assets are CC-BY-4.0 unless a\nper-asset notice says otherwise; mirrored third-party assets retain their own\nlicense notices, which this repository preserves verbatim and which take\nprecedence for those files.\n"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/hapax-assets/blob/bd8902f84e8ebef6bee325b77eedb71e3a6228ae/LICENSE",
+          "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+          "bytes": 18657,
+          "excerpt": "Attribution 4.0 International\n\n=======================================================================\n"
+        }
+      ],
+      "exception": {
+        "registry_class": "CC-BY-SA-4.0",
+        "reason": "Registry metadata disagrees with CC-BY-4.0 root grant; per-asset notices take precedence. No legal metadata correction is authorized here."
+      }
+    },
+    "agentgov": {
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/hapax-systems/agentgov/blob/17b83b9286c8d5a17047cc64499287585270cca7/LICENSE",
+          "sha256": "90ff5e94372f7433c0b0a04d4520ffd026ce13fb4480caeb64e092122480d00e",
+          "bytes": 1070,
+          "excerpt": "MIT License\n\nCopyright (c) 2026 hapax-systems\n"
+        }
+      ]
+    }
+  }
+}

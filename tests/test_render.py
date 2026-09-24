@@ -612,31 +612,101 @@ def test_org_profile_ignores_ineligible_entries_outside_required_portfolio() -> 
     assert org_profile_readme.render(registry) == expected
 
 
-@pytest.mark.parametrize(
-    ("repo_id", "label", "path"),
-    [
-        ("hapax-mcp", "MIT", "LICENSE"),
-        ("reins", "Business Source License 1.1", "LICENSE"),
-        ("hapax-spine", "Business Source License 1.1", "LICENSE"),
-        ("hapax-council", "PolyForm Strict 1.0.0", "LICENSE"),
-        ("hapax-constitution", "Split by path: CC BY-NC-ND 4.0 / Apache-2.0", "LICENSE"),
-        ("hapax-research-ledger", "CC0-1.0 for the declared data surface", "LICENSE"),
-        ("hapax-officium", "PolyForm Strict 1.0.0", "LICENSE"),
-        ("hapax-phone", "PolyForm Strict 1.0.0", "LICENSE"),
-        ("hapax-watch", "PolyForm Strict 1.0.0", "LICENSE"),
-        (
-            "hapax-assets",
-            "CC BY 4.0 default; per-asset notices take precedence",
-            "LICENSE-SCOPE.md",
-        ),
-    ],
-)
+_PROFILE_GRANTS = json.loads(
+    (Path(__file__).parent / "fixtures/org-profile-grant-evidence.json").read_text()
+)["repos"]
+
+
+def _profile_grant_display(repo_id: str) -> tuple[str, str]:
+    """Interpret independently pinned grant excerpts, never renderer constants."""
+    evidence = _PROFILE_GRANTS[repo_id]
+    source = evidence["sources"][0]["excerpt"]
+    if repo_id == "hapax-assets":
+        assert "(CC-BY-4.0)" in source
+        assert "per-asset notice says otherwise" in source
+        assert "take\nprecedence for those files" in source
+        assert evidence["sources"][1]["excerpt"].startswith("Attribution 4.0 International")
+        return "CC-BY-4.0", "CC BY 4.0 default; per-asset notices take precedence"
+    if repo_id == "hapax-constitution":
+        assert "dual-licensed BY PATH" in source
+        assert "Specification and publication content — CC BY-NC-ND 4.0" in source
+        assert "Runnable tooling (the hapax-sdlc package) — Apache License 2.0" in source
+        assert "- sdlc/**" in source and "- axioms/**" in source
+        return "CC-BY-NC-ND-4.0 / Apache-2.0", "Split by path: CC BY-NC-ND 4.0 / Apache-2.0"
+    if source.startswith("MIT License\n"):
+        return "MIT", "MIT"
+    if source.startswith("Business Source License 1.1\n"):
+        return "BUSL-1.1", source.splitlines()[0]
+    if source.startswith("PolyForm Strict License 1.0.0\n"):
+        return "PolyForm-Strict-1.0.0", source.splitlines()[0].replace(" License", "")
+    assert source.startswith("Creative Commons Legal Code\n\nCC0 1.0 Universal")
+    return "CC0-1.0", "CC0-1.0 for the declared data surface"
+
+
+@pytest.mark.parametrize("repo_id", _PROFILE_GRANTS)
 def test_org_profile_license_links_use_existing_repository_authority(
-    repo_id: str, label: str, path: str
+    repo_id: str,
 ) -> None:
-    body = org_profile_readme.render(load_registry())
+    evidence = _PROFILE_GRANTS[repo_id]
+    grant, label = _profile_grant_display(repo_id)
+    registry = load_registry()
+    # A metadata exception is explicit and bounded to these two known cases.
+    if repo_id in {"hapax-assets", "hapax-constitution"}:
+        expected_class = evidence["exception"]["registry_class"]
+        assert expected_class != grant
+        assert evidence["exception"]["reason"]
+    else:
+        assert "exception" not in evidence
+        expected_class = grant
+    assert registry[repo_id].license_class.value == expected_class
+    body = org_profile_readme.render(registry)
+    if repo_id == "agentgov":
+        assert "Its MIT-licensed source" in body
+        return
+    path = evidence["sources"][0]["path"]
     row = next(line for line in body.splitlines() if line.startswith(f"| [{repo_id}]"))
     assert f"[{label}](https://github.com/hapax-systems/{repo_id}/blob/main/{path})" in row
+
+
+@pytest.mark.parametrize("repo_id", _PROFILE_GRANTS)
+def test_org_profile_rejects_registry_license_drift_before_writes(
+    repo_id: str,
+    tmp_path: Path,
+) -> None:
+    registry = load_registry()
+    old = registry[repo_id].license_class
+    changed = LicenseClass.APACHE_2_0 if old is LicenseClass.MIT else LicenseClass.MIT
+    registry[repo_id] = replace(registry[repo_id], license_class=changed)
+    with pytest.raises(ValueError) as exc:
+        org_profile_readme.render(registry)
+    message = str(exc.value)
+    for text in (
+        repo_id,
+        old.value,
+        changed.value,
+        "license_class",
+        "grant",
+        "repos.yaml",
+        "org_profile_readme.py",
+        "reconcile",
+        "rerender",
+        "separate authority",
+    ):
+        assert text in message
+    target = tmp_path / "profile/README.md"
+    target.parent.mkdir()
+    target.write_bytes(b"existing consumer bytes\n")
+    before = target.stat()
+    # Exercise the actual CLI and real changed registry file, not a mock writer.
+    raw = yaml.safe_load((Path(__file__).parents[1] / "sdlc/render/repos.yaml").read_text())
+    raw["repos"][repo_id]["license_class"] = changed.value
+    changed_registry = tmp_path / "repos.yaml"
+    changed_registry.write_text(yaml.safe_dump(raw))
+    with patch("sdlc.render.cli.load_registry", return_value=load_registry(changed_registry)):
+        with pytest.raises(ValueError, match="license_class"):
+            cli.main(["--org-profile", "--target-root", str(tmp_path)])
+    assert target.read_bytes() == b"existing consumer bytes\n"
+    assert target.stat().st_mtime_ns == before.st_mtime_ns
 
 
 def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec) -> None:
