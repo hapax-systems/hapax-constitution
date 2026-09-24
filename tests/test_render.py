@@ -13,6 +13,7 @@ import subprocess
 import sys
 from contextlib import redirect_stdout
 from dataclasses import replace
+from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
 from unittest.mock import patch
@@ -942,6 +943,162 @@ def test_cli_all_default_targets_converge(tmp_path: Path) -> None:
     for repo in registry.values():
         if repo.is_first_party:
             assert (tmp_path / repo.name / "SUPPORT.md").read_text() == support_md.render(repo)
+
+
+def test_org_profile_recheck_records_successful_observations(tmp_path: Path) -> None:
+    """Pin the real witness's read-only requests and output; no live API is used."""
+    root = Path(__file__).resolve().parents[1]
+    agentgov_head = "0123456789abcdef0123456789abcdef01234567"
+    release_fields = "{html_url, tag_name, target_commitish, draft, prerelease, published_at}"
+    expected_calls = [
+        [
+            "api",
+            "--paginate",
+            "orgs/hapax-systems/repos?type=public&per_page=100",
+            "--jq",
+            "[.[] | {full_name, html_url, visibility, archived, default_branch}]",
+        ],
+        ["api", "repos/hapax-systems/hapax-spine/releases/tags/v0.1.1", "--jq", release_fields],
+        ["api", "repos/hapax-systems/hapax-spine/releases/latest", "--jq", release_fields],
+        [
+            "api",
+            "repos/hapax-systems/agentgov",
+            "--jq",
+            "{full_name, html_url, visibility, archived, default_branch, license}",
+        ],
+        ["api", "repos/hapax-systems/agentgov/releases/latest", "--jq", release_fields],
+        ["api", "repos/hapax-systems/agentgov/commits/main", "--jq", ".sha"],
+        [
+            "api",
+            f"repos/hapax-systems/agentgov/license?ref={agentgov_head}",
+            "--jq",
+            "{html_url, path, sha, license}",
+        ],
+        [
+            "api",
+            "-H",
+            "Accept: application/vnd.github.raw+json",
+            f"repos/hapax-systems/agentgov/contents/LICENSE?ref={agentgov_head}",
+        ],
+    ]
+    archived = {
+        "full_name": "hapax-systems/agentgov",
+        "html_url": "https://github.com/hapax-systems/agentgov",
+        "visibility": "public",
+        "archived": True,
+        "default_branch": "main",
+    }
+    spine = {
+        **archived,
+        "full_name": "hapax-systems/hapax-spine",
+        "html_url": "https://github.com/hapax-systems/hapax-spine",
+        "archived": False,
+    }
+    linked_release = {
+        "html_url": "https://github.com/hapax-systems/hapax-spine/releases/tag/v0.1.1",
+        "tag_name": "v0.1.1",
+        "target_commitish": "main",
+        "draft": False,
+        "prerelease": False,
+        "published_at": "2026-09-01T12:00:00Z",
+    }
+    latest_release = {
+        **linked_release,
+        "tag_name": "v0.2.0",
+        "prerelease": True,
+        "html_url": "https://github.com/hapax-systems/hapax-spine/releases/tag/v0.2.0",
+        "published_at": "2026-09-23T12:00:00Z",
+    }
+    archived_release = {
+        **linked_release,
+        "tag_name": "v0.3.1",
+        "html_url": "https://github.com/hapax-systems/agentgov/releases/tag/v0.3.1",
+    }
+    license_info = {"key": "mit", "name": "MIT License", "spdx_id": "MIT"}
+    license_source = {
+        "html_url": f"https://github.com/hapax-systems/agentgov/blob/{agentgov_head}/LICENSE",
+        "path": "LICENSE",
+        "sha": "f" * 40,
+        "license": license_info,
+    }
+    # Deliberately synthetic text, distinct from GitHub's license detection.
+    license_text = "SYNTHETIC LICENSE SOURCE\nRead the pinned terms, not just SPDX.\n"
+    responses = [
+        *(
+            json.dumps(item) + "\n"
+            for item in [
+                [spine, archived],
+                linked_release,
+                latest_release,
+                {**archived, "license": license_info},
+                archived_release,
+            ]
+        ),
+        agentgov_head + "\n",
+        json.dumps(license_source) + "\n",
+        license_text,
+    ]
+    response_file = tmp_path / "responses.json"
+    response_file.write_text(json.dumps(responses))
+    trace = tmp_path / "calls.json"
+    stub = tmp_path / "gh"
+    stub.write_text(
+        f"#!{sys.executable}\n"
+        "import json, os, sys\n"
+        "from pathlib import Path\n"
+        "trace = Path(os.environ['RECHECK_TEST_TRACE'])\n"
+        "calls = json.loads(trace.read_text()) if trace.exists() else []\n"
+        "calls.append(sys.argv[1:])\n"
+        "trace.write_text(json.dumps(calls))\n"
+        "responses = json.loads(Path(os.environ['RECHECK_TEST_RESPONSES']).read_text())\n"
+        "sys.stdout.write(responses[len(calls) - 1])\n"
+    )
+    stub.chmod(0o755)
+    source_paths = [
+        "sdlc/render/org_profile_readme.py",
+        "sdlc/render/repos.yaml",
+        "tests/fixtures/org-profile-README.md",
+    ]
+    before = {path: ((root / path).read_bytes(), (root / path).stat()) for path in source_paths}
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True)
+    status = subprocess.check_output(["git", "status", "--short"], cwd=root, text=True)
+    start = datetime.now(timezone.utc).replace(microsecond=0)
+    result = subprocess.run(
+        ["bash", "docs/recheck-org-profile.sh"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        env={
+            **os.environ,
+            "PATH": f"{tmp_path}{os.pathsep}{os.environ['PATH']}",
+            "GH_TOKEN": "synthetic-test-token-do-not-emit",
+            "GITHUB_TOKEN": "synthetic-test-token-do-not-emit",
+            "RECHECK_TEST_TRACE": str(trace),
+            "RECHECK_TEST_RESPONSES": str(response_file),
+        },
+        check=False,
+    )
+    end = datetime.now(timezone.utc)
+    assert result.returncode == 0, result.stderr
+    assert result.stderr == ""
+    assert json.loads(trace.read_text()) == expected_calls
+    observed_line, remaining = result.stdout.split("\n", 1)
+    observed = datetime.strptime(observed_line, "Observed at: %Y-%m-%dT%H:%M:%SZ").replace(
+        tzinfo=timezone.utc
+    )
+    assert start <= observed <= end
+    expected = head + status
+    for path, (data, stat) in before.items():
+        expected += f"{sha256(data).hexdigest()}  {path}\n"
+        assert (root / path).read_bytes() == data
+        after = (root / path).stat()
+        assert (after.st_mode, after.st_mtime_ns) == (stat.st_mode, stat.st_mtime_ns)
+    expected += "Repository and release status checked September 24, 2026.\n"
+    expected += "".join(responses[:5])
+    expected += f"agentgov source commit: {agentgov_head}\n"
+    expected += "".join(responses[6:])
+    assert remaining == expected
+    assert "synthetic-test-token-do-not-emit" not in result.stdout + result.stderr
 
 
 @pytest.mark.parametrize("fail_at", range(1, 9))
