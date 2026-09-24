@@ -461,56 +461,46 @@ def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
 
 
 def test_org_profile_readme_orients_public_portfolio_without_private_repo_table() -> None:
-    registry = load_registry()
-    body = org_profile_readme.render(registry)
+    body = org_profile_readme.render(load_registry())
     assert body.startswith("# Hapax Systems")
-    assert "authority before action" in body
-    assert "receipts before claims" in body
-    assert "unsupported automation claims" in body
-    assert "Reader value" in body
-    assert "what evidence would have to exist" in body
-
-    assert "[reins](https://github.com/hapax-systems/reins)" in body
-    assert "[agentgov](https://github.com/hapax-systems/agentgov)" in body
-    assert "[hapax-council](https://github.com/hapax-systems/hapax-council)" in body
-    assert "[hapax-constitution](https://github.com/hapax-systems/hapax-constitution)" in body
-    assert "[hapax-mcp](https://github.com/hapax-systems/hapax-mcp)" in body
-    assert "[hapax-phone](https://github.com/hapax-systems/hapax-phone)" in body
-    assert "[hapax-watch](https://github.com/hapax-systems/hapax-watch)" in body
-    assert "Supporting Public Surfaces" in body
-    assert "Hapax Logos MCP Bridge" in body
-    assert "Mobile Context Source" in body
-    assert "Wrist Biometric Source" in body
-
-    assert "hapax-spine](https://github.com/hapax-systems/hapax-spine)" not in body
+    assert "public research program of Hapax Systems" in body
+    for repo_id in (
+        "hapax-mcp",
+        "reins",
+        "hapax-spine",
+        "hapax-council",
+        "hapax-constitution",
+        "hapax-research-ledger",
+        "hapax-officium",
+        "hapax-phone",
+        "hapax-watch",
+        "hapax-assets",
+        "agentgov",
+    ):
+        assert f"[{repo_id}](https://github.com/hapax-systems/{repo_id})" in body
     assert "hapax-coord](https://github.com/hapax-systems/hapax-coord)" not in body
+    assert "| [agentgov]" not in body
+    assert "**archived historical\nrepository**" in body
+    assert "not the current adoption entry point" in body
+    assert "releases/tag/v0.1.1" in body
+    assert "profile source" in body
+    assert "Corrections should identify" in body
 
 
 def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
     body = org_profile_readme.render(load_registry())
-    assert "open adoption commons" in body
-    assert "source-available commercial core" in body
-    assert "source-visible research apparatus" in body
-    assert "remains a read/preview surface" in body
-    assert "not a general-purpose lifecycle kernel" in body
-    # Spine went public 2026-07-09 (Part-4 decision): the profile states the
-    # source-available posture; visibility-vs-copy mismatch never returns in
-    # either direction.
-    assert "spine is the source-available BSL 1.1 runtime mechanism" in body
-    assert "private during restructure" not in body
-    # Capability Frontier embargo: scores are registry-asserted today;
-    # "measured capability" is claimable only once the measurement loop runs.
-    assert "registry-asserted today; measured calibration is planned" in body
-    assert "describe measured capability" not in body
-    assert "not as a supported framework" in body
-    assert "not claim autonomous write authority" in body
-    assert "full general lifecycle coverage" in body
-    assert "staffed community support" in body
-    assert "publication-bus channels" in body
-    assert "must not imply direct public" in body
-    assert "Hapax is open source" not in body
-    assert "generic agent OS" not in body
-    assert "guaranteed safe" not in body
+    assert "The license in each repository defines its terms" in body
+    assert "Split by path: CC BY-NC-ND 4.0 / Apache-2.0" in body
+    assert "per-asset notices take precedence" in body
+    assert "Business Source License 1.1" in body
+    assert "PolyForm Strict 1.0.0" in body
+    assert "Source availability does not" in body
+    assert "not a claim of an established prospective scoring record" in body
+    assert "numeric research ledger is not a prediction register" in body
+    assert "These are separate dimensions" in body
+    assert "Original predictions and timestamped amendments" in body
+    assert "late or omitted outcomes" in body
+    assert "registry-asserted today; measured calibration is planned" not in body
 
 
 def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec) -> None:
