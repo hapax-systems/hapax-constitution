@@ -57,8 +57,7 @@ repos:
       Source-visible strict research/runtime artifact; not open source,
       not a framework, not a supported distribution.
     reader_promise: >-
-      Inspect how AI-agent work is authorized, routed, reviewed, refused,
-      and surfaced publicly inside the Hapax estate.
+      Source-visible research and runtime apparatus for inspection
     reader_value: >-
       Lets technical leaders, researchers, and auditors evaluate concrete
       controls: what may run, what may write, what evidence exists, and
@@ -127,8 +126,7 @@ repos:
       CC BY-NC-ND; runnable hapax-sdlc tooling uses Apache-2.0. Do not
       describe the whole repository as Apache or open source.
     reader_promise: >-
-      Governance specification and repo-presentation authority for
-      Hapax Systems, with a clear hapax-sdlc tooling boundary.
+      Governance specification and enforcement/render tooling
     reader_value: >-
       Gives reviewers one auditable source for names, licenses, support
       boundaries, and claim ceilings, reducing public-surface drift.
@@ -186,8 +184,7 @@ repos:
       Source-visible strict runtime artifact pending product boundary;
       not open source and not an adoption or support surface.
     reader_promise: >-
-      Internal management decision-support runtime published for boundary
-      and governance review.
+      Management decision-support apparatus for boundary review
     reader_value: >-
       Shows how management-context software can preserve boundary
       discipline: preparation and context assembly without people-evaluation
@@ -244,8 +241,7 @@ repos:
       Single-operator device bridge; source-visible strict unless a
       separate productized device boundary is created.
     reader_promise: >-
-      Wrist biometric source for the Hapax environment, useful for
-      auditing device integration and privacy boundaries.
+      Wear OS sensor and awareness bridge
     reader_value: >-
       Makes biometric and context ingestion inspectable as a bounded,
       privacy-scoped signal path rather than a consumer health claim.
@@ -299,8 +295,7 @@ repos:
       Single-operator device bridge; source-visible strict unless a
       separate productized device boundary is created.
     reader_promise: >-
-      Mobile context source for the Hapax environment, useful for
-      auditing data sources, transport, and privacy boundaries.
+      Android context bridge
     reader_value: >-
       Shows which phone-derived signals enter the estate, which sensors
       are excluded, and how missing data degrades without becoming a
@@ -356,8 +351,7 @@ repos:
       Permissive integration bridge for MCP use; current copy must
       frame it as a Hapax logos bridge, not a general-purpose MCP library.
     reader_promise: >-
-      Hapax Logos MCP Bridge exposing Hapax API state and actions to
-      Claude Code and compatible MCP clients.
+      MCP bridge to Hapax Logos APIs; authority stays with the underlying APIs
     reader_value: >-
       Gives MCP clients a bounded bridge to live Hapax state while keeping
       authority with the underlying APIs rather than the connector.
@@ -417,8 +411,7 @@ repos:
       CC-BY-SA-4.0, and other asset-specific notices rather than implying
       a single repo-level license.
     reader_promise: >-
-      Public CDN mirror of approved aesthetic assets with per-asset
-      provenance and notices.
+      Public asset mirror with attribution and per-asset notices
     reader_value: >-
       Lets public pages reuse reviewed assets through stable URLs and
       license notices without turning the mirror into the source of truth.
@@ -454,27 +447,28 @@ repos:
   agentgov:
     name: agentgov
     description: >-
-      Standalone governance hooks for AI coding agents. Permissive public
-      adoption wedge for safety, git hygiene, and project-rule checks.
+      Archived historical governance-hook repository. MIT-licensed source and
+      releases remain available; see its README for successor research directions
+      and their limits.
     repo_type: library
     role_in_constellation: >-
-      Public adoption commons. Separate from council-local policyflow
-      primitives and from the Hapax council runtime.
+      Historical adoption commons retained for inspection. Not the current
+      adoption entry point; successor research directions do not establish a
+      supported replacement.
     license_class: MIT
     value_partition: adoption_commons
     license_posture: >-
       Permissive adoption surface; copy may say MIT for agentgov only and
       must not imply broader Hapax runtime rights or support obligations.
     reader_promise: >-
-      Portable governance hooks that an adopter can install, audit, and
-      pilot without inheriting the Hapax estate.
+      Archived MIT-licensed governance-hook source and historical releases, with
+      the archive disposition recorded in its README.
     reader_value: >-
-      Turns common AI coding-agent risks into installable pre-action
-      checks that teams can pilot before buying or building heavier
-      governance.
+      Preserves inspectable prior work and its limitations without inviting new
+      adoption of the archived project.
     claim_ceiling: >-
-      Adoption commons for hooks only; not the full Hapax governance
-      system, not policyflow, and not a staffed support service.
+      Historical artifact only; no current maintenance, support, effectiveness, or
+      successor-product claim.
     primary_audience:
       - external engineering adopters
       - security reviewers
@@ -518,8 +512,7 @@ repos:
       production use is permitted by the Additional Use Grant; offering the
       licensed work as a competing hosted or managed service remains reserved.
     reader_promise: >-
-      Runtime mechanism package for append-only events, policy-backed
-      routing, receipts, quotas, EDT, and projections.
+      Runtime mechanisms for events, routing, receipts, quotas and projections
     reader_value: >-
       Separates the commercial runtime mechanics behind Reins so dispatch,
       receipts, quotas, and projections can be inspected as mechanisms
@@ -572,8 +565,7 @@ repos:
       invited within the BSL grant; competing hosted-service rights are
       reserved.
     reader_promise: >-
-      Product front-door cockpit for observing and previewing governed
-      AI-agent delivery state.
+      Cockpit and API for inspecting delivery state and governed command paths
     reader_value: >-
       Lets operators and technical buyers see what an agent estate is
       doing and what a write would request before granting write authority.
@@ -671,8 +663,7 @@ repos:
       Public-domain data posture for the ledger only; does not license
       Hapax runtime code, Reins, or council internals.
     reader_promise: >-
-      Public numeric-only SCED evidence ledger published from the first
-      data point with caveats preserved.
+      Numeric observations with caveats and validation metadata
     reader_value: >-
       Lets skeptical readers audit early observations, caveats, nulls,
       and scorer substitutions as data rather than reading them as polished
