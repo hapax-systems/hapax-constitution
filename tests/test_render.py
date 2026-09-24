@@ -9,6 +9,8 @@ from __future__ import annotations
 import io
 import json
 from contextlib import redirect_stdout
+from dataclasses import replace
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -99,8 +101,13 @@ def test_registry_license_assignments_match_research_drop() -> None:
 
 def test_registry_value_partitions_match_ratified_license_posture() -> None:
     registry = load_registry()
-    assert registry["agentgov"].value_partition is ValuePartition.ADOPTION_COMMONS
-    assert registry["agentgov"].license_posture.startswith("Permissive adoption surface")
+    assert registry["agentgov"].value_partition is ValuePartition.EVIDENCE_ARTIFACT
+    assert registry["agentgov"].license_posture.startswith(
+        "Archived historical MIT-licensed source"
+    )
+    assert "must not imply broader Hapax runtime rights or support obligations" in (
+        registry["agentgov"].license_posture
+    )
 
     for repo_id in ("reins", "hapax-spine"):
         repo = registry[repo_id]
@@ -130,7 +137,7 @@ def test_registry_frontmatter_policy_fields_are_populated() -> None:
 
 def test_registry_surface_classes_match_portfolio_decisions() -> None:
     registry = load_registry()
-    assert registry["agentgov"].surface_class is SurfaceClass.ADOPTION_COMMONS
+    assert registry["agentgov"].surface_class is SurfaceClass.EVIDENCE_ARTIFACT
     assert registry["reins"].surface_class is SurfaceClass.PRODUCT_FRONT_DOOR
     assert registry["hapax-spine"].surface_class is SurfaceClass.RUNTIME_MECHANISM
     assert registry["hapax-council"].surface_class is SurfaceClass.RESEARCH_APPARATUS
@@ -406,14 +413,14 @@ def test_security_and_contributing_do_not_publish_operator_referent(
 def test_support_md_redirects_without_support_entitlement() -> None:
     registry = load_registry()
     body = support_md.render(registry["agentgov"])
-    assert "bounded adoption surface" in body
-    assert "staffed support channel" in body
+    assert "research or boundary artifact" in body
+    assert "not as a staffed support surface" in body
     assert "Blank issues are disabled" in body
     assert "no-perk research support only" in body
     assert "does not create an SLA" in body
 
 
-def test_product_and_adoption_preambles_do_not_use_generic_research_artifact_copy() -> None:
+def test_product_and_archived_preambles_follow_current_surface_classes() -> None:
     registry = load_registry()
 
     reins_body = readme_section.render(registry["reins"])
@@ -430,9 +437,9 @@ def test_product_and_adoption_preambles_do_not_use_generic_research_artifact_cop
     assert "hapax-manifesto-v0" not in reins_body
 
     agentgov_body = readme_section.render(registry["agentgov"])
-    assert "adoption-commons" in agentgov_body
-    assert "governance-hook surface" in agentgov_body
-    assert "Permissive adoption surface" in agentgov_body
+    assert "evidence-artifact repository" in agentgov_body
+    assert "governance-hook source" in agentgov_body
+    assert "Archived historical MIT-licensed source" in agentgov_body
     assert "not a product" not in agentgov_body
     assert "research infrastructure published as artifact" not in agentgov_body
 
@@ -455,7 +462,7 @@ def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
     assert "not a product" not in reins_notice
 
     agentgov_contributing = contributing_md.render(registry["agentgov"])
-    assert "bounded adoption surface" in agentgov_contributing
+    assert "not a staffed product, service, or community library" in agentgov_contributing
     assert "community maintenance" in agentgov_contributing
     assert "not a product" not in agentgov_contributing
 
@@ -506,6 +513,107 @@ def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
     assert "Original predictions and timestamped amendments" in body
     assert "late or omitted outcomes" in body
     assert "registry-asserted today; measured calibration is planned" not in body
+
+
+@pytest.mark.parametrize("renderer", [support_md, contributing_md, readme_section, notice_md])
+def test_archived_agentgov_consumers_do_not_invite_adoption(renderer) -> None:
+    body = renderer.render(load_registry()["agentgov"])
+    for invitation in (
+        "bounded adoption surface",
+        "bounded adoption-commons repository",
+        "Permissive adoption surface",
+        "inspect and pilot",
+        "pilot use",
+        "evaluate the adoption surface",
+    ):
+        assert invitation not in body
+
+
+def test_org_profile_matches_committed_bytes_and_full_hash(tmp_path: Path) -> None:
+    # This reviewed artifact is also the candidate for hapax-systems/.github#7.
+    # Update the fixture and digest only alongside a reviewed consumer update.
+    expected = (Path(__file__).parent / "fixtures" / "org-profile-README.md").read_bytes()
+    assert sha256(expected).hexdigest() == (
+        "899abd054d37be681894f88f2237d675b569987817d43b95e919818fad24009f"
+    )
+    assert org_profile_readme.render(load_registry()).encode("utf-8") == expected
+    assert cli.main(["--org-profile", "--target-root", str(tmp_path)]) == 0
+    assert (tmp_path / "profile" / "README.md").read_bytes() == expected
+    assert cli.main(["--org-profile", "--check", "--target-root", str(tmp_path)]) == 0
+
+
+@pytest.mark.parametrize(
+    "repo_id",
+    [
+        "hapax-mcp",
+        "reins",
+        "hapax-spine",
+        "hapax-council",
+        "hapax-constitution",
+        "hapax-research-ledger",
+        "hapax-officium",
+        "hapax-phone",
+        "hapax-watch",
+        "hapax-assets",
+        "agentgov",
+    ],
+)
+@pytest.mark.parametrize("invalid_state", ["missing", "private", "local_only", "third_party"])
+def test_org_profile_rejects_ineligible_required_entries(repo_id: str, invalid_state: str) -> None:
+    registry = load_registry()
+    if invalid_state == "missing":
+        del registry[repo_id]
+        reason = "missing"
+    elif invalid_state == "third_party":
+        registry[repo_id] = replace(registry[repo_id], is_first_party=False)
+        reason = "not first-party"
+    else:
+        registry[repo_id] = replace(registry[repo_id], visibility=RepoVisibility(invalid_state))
+        reason = invalid_state
+    with pytest.raises(ValueError) as error:
+        org_profile_readme.render(registry)
+    message = str(error.value)
+    assert repo_id in message
+    assert reason in message
+    assert "sdlc/render/repos.yaml" in message
+    assert "Verify the approved public first-party inventory" in message
+    assert "before rerendering" in message
+    assert "visibility or ownership changes require separate authority" in message
+
+
+def test_org_profile_ignores_ineligible_entries_outside_required_portfolio() -> None:
+    registry = load_registry()
+    expected = org_profile_readme.render(registry)
+    for repo_id in ("hapax-coord", "tabbyAPI", "atlas-voice-training"):
+        del registry[repo_id]
+    assert org_profile_readme.render(registry) == expected
+
+
+@pytest.mark.parametrize(
+    ("repo_id", "label", "path"),
+    [
+        ("hapax-mcp", "MIT", "LICENSE"),
+        ("reins", "Business Source License 1.1", "LICENSE"),
+        ("hapax-spine", "Business Source License 1.1", "LICENSE"),
+        ("hapax-council", "PolyForm Strict 1.0.0", "LICENSE"),
+        ("hapax-constitution", "Split by path: CC BY-NC-ND 4.0 / Apache-2.0", "LICENSE"),
+        ("hapax-research-ledger", "CC0-1.0 for the declared data surface", "LICENSE"),
+        ("hapax-officium", "PolyForm Strict 1.0.0", "LICENSE"),
+        ("hapax-phone", "PolyForm Strict 1.0.0", "LICENSE"),
+        ("hapax-watch", "PolyForm Strict 1.0.0", "LICENSE"),
+        (
+            "hapax-assets",
+            "CC BY 4.0 default; per-asset notices take precedence",
+            "LICENSE-SCOPE.md",
+        ),
+    ],
+)
+def test_org_profile_license_links_use_existing_repository_authority(
+    repo_id: str, label: str, path: str
+) -> None:
+    body = org_profile_readme.render(load_registry())
+    row = next(line for line in body.splitlines() if line.startswith(f"| [{repo_id}]"))
+    assert f"[{label}](https://github.com/hapax-systems/{repo_id}/blob/main/{path})" in row
 
 
 def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec) -> None:

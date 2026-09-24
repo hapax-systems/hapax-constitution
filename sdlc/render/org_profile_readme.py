@@ -11,6 +11,9 @@ from sdlc.render.repo_registry import RepoSpec, RepoVisibility
 
 ORG_PROFILE_PATH = "profile/README.md"
 
+# These links follow the existing repository grants, including split-path and
+# per-asset notices. The known assets registry/grant discrepancy is a separate
+# legal-metadata decision; rendering must not silently choose a new grant.
 _LICENSE_LINKS = {
     "hapax-mcp": ("MIT", "LICENSE"),
     "reins": ("Business Source License 1.1", "LICENSE"),
@@ -23,6 +26,16 @@ _LICENSE_LINKS = {
     "hapax-watch": ("PolyForm Strict 1.0.0", "LICENSE"),
     "hapax-assets": ("CC BY 4.0 default; per-asset notices take precedence", "LICENSE-SCOPE.md"),
 }
+
+_START_REPOS = (
+    "hapax-mcp",
+    "reins",
+    "hapax-spine",
+    "hapax-council",
+    "hapax-constitution",
+    "hapax-research-ledger",
+)
+_SUPPORTING_REPOS = ("hapax-officium", "hapax-phone", "hapax-watch", "hapax-assets")
 
 
 _INTRO = """# Hapax Systems
@@ -92,28 +105,33 @@ Repository and release status checked September 24, 2026. This page is generated
 
 def render(registry: dict[str, RepoSpec]) -> str:
     """Render the profile; missing or nonpublic required entries fail closed."""
+    # Validate the historical link as well as both tables before emitting copy.
+    problems = []
+    for repo_id in (*_START_REPOS, *_SUPPORTING_REPOS, "agentgov"):
+        repo = registry.get(repo_id)
+        if repo is None:
+            problems.append(f"{repo_id}: missing")
+        elif not repo.is_first_party:
+            problems.append(f"{repo_id}: not first-party")
+        elif repo.visibility is not RepoVisibility.PUBLIC:
+            problems.append(f"{repo_id}: visibility={repo.visibility.value}")
+    if problems:
+        raise ValueError(
+            "Cannot render organization profile: " + "; ".join(problems) + ". "
+            "Verify the approved public first-party inventory and reconcile "
+            "sdlc/render/repos.yaml with the profile's required entries before rerendering; "
+            "visibility or ownership changes require separate authority."
+        )
     public = {
         repo.id: repo
         for repo in registry.values()
         if repo.is_first_party and repo.visibility is RepoVisibility.PUBLIC
     }
-    public["agentgov"]  # The historical link also requires public first-party status.
     return (
         _INTRO
-        + _table(
-            public,
-            (
-                "hapax-mcp",
-                "reins",
-                "hapax-spine",
-                "hapax-council",
-                "hapax-constitution",
-                "hapax-research-ledger",
-            ),
-            "What to inspect",
-        )
+        + _table(public, _START_REPOS, "What to inspect")
         + _BETWEEN_TABLES
-        + _table(public, ("hapax-officium", "hapax-phone", "hapax-watch", "hapax-assets"), "Role")
+        + _table(public, _SUPPORTING_REPOS, "Role")
         + _AFTER_TABLES
     )
 

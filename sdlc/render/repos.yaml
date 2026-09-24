@@ -456,10 +456,10 @@ repos:
       adoption entry point; successor research directions do not establish a
       supported replacement.
     license_class: MIT
-    value_partition: adoption_commons
+    value_partition: evidence_artifact
     license_posture: >-
-      Permissive adoption surface; copy may say MIT for agentgov only and
-      must not imply broader Hapax runtime rights or support obligations.
+      Archived historical MIT-licensed source; the existing MIT grant remains
+      unchanged. Copy must not imply broader Hapax runtime rights or support obligations.
     reader_promise: >-
       Archived MIT-licensed governance-hook source and historical releases, with
       the archive disposition recorded in its README.
@@ -470,10 +470,10 @@ repos:
       Historical artifact only; no current maintenance, support, effectiveness, or
       successor-product claim.
     primary_audience:
-      - external engineering adopters
+      - governance researchers
       - security reviewers
-      - AI coding tool users
-    surface_class: adoption_commons
+      - historical source readers
+    surface_class: evidence_artifact
     visibility: public
     source_of_truth: constitution_registry
     public_files:
