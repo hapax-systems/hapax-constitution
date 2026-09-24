@@ -771,6 +771,59 @@ def test_cli_check_mode_detects_drift(tmp_path: Path) -> None:
     assert rc == 1  # every rendered file drifted
 
 
+@pytest.mark.parametrize(
+    ("target_args", "filename"),
+    [
+        (["--org-profile"], "profile/README.md"),
+        (["--repo", "hapax-council", "--file", "SUPPORT.md"], "SUPPORT.md"),
+        (["--all", "--file", "SUPPORT.md"], "SUPPORT.md"),
+    ],
+)
+@pytest.mark.parametrize("existing_consumer", [False, True], ids=["missing", "changed"])
+def test_cli_check_drift_is_actionable_and_preserves_consumers(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    target_args: list[str],
+    filename: str,
+    existing_consumer: bool,
+) -> None:
+    target_root = tmp_path / "consumer checkout"
+    target_root.mkdir()
+    target = target_root / filename
+    if existing_consumer:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(b"Existing consumer content that requires reconciliation.\n")
+    (target_root / "unrelated.txt").write_bytes(b"Preserve this consumer file too.\n")
+
+    def snapshot() -> dict[str, tuple[bytes, int, int]]:
+        return {
+            str(path.relative_to(target_root)): (
+                path.read_bytes(),
+                path.stat().st_mode,
+                path.stat().st_mtime_ns,
+            )
+            for path in target_root.rglob("*")
+            if path.is_file()
+        }
+
+    before = snapshot()
+    rc = cli.main([*target_args, "--check", "--target-root", str(target_root)])
+    output = capsys.readouterr()
+
+    assert rc == 1
+    assert snapshot() == before
+    assert output.out == ""
+    assert f"DRIFT {target}" in output.err
+    assert "check failed:" in output.err
+    assert "Next action:" in output.err
+    assert "sdlc/render/repos.yaml" in output.err
+    assert "renderer in sdlc/render/" in output.err
+    assert "Reconcile" in output.err
+    assert "same target/file options without --check" in output.err
+    assert "review the generated diff" in output.err
+    assert "then rerun --check" in output.err
+
+
 def test_cli_check_mode_clean_after_write(tmp_path: Path) -> None:
     """Write then re-check — should report zero drift."""
     rc_write = cli.main(

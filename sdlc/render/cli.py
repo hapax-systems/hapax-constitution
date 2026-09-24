@@ -159,6 +159,14 @@ def write_or_compare(target_root: Path, artifacts: dict[str, str], *, check_only
         else:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(new_body, encoding="utf-8")
+    if check_only and drift_count:
+        print(
+            "Next action: Reconcile the consumer with source registry "
+            "sdlc/render/repos.yaml and its renderer in sdlc/render/. "
+            "Rerender with the same target/file options without --check, "
+            "review the generated diff, then rerun --check.",
+            file=sys.stderr,
+        )
     return drift_count
 
 
