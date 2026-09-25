@@ -44,7 +44,7 @@ repos:
     description: >-
       Source-visible Hapax Systems research/runtime for evidence-bound
       AI-agent delivery: governed dispatch, route receipts, claim review,
-      refusal, and publication-egress controls in a single-operator estate.
+      refusal, and publication-egress controls.
     repo_type: runtime
     role_in_constellation: >-
       Primary research/runtime estate. Carries task authority, coordination,
@@ -91,7 +91,6 @@ repos:
     dependencies: [hapax-constitution]
     topics:
       - research-software
-      - single-operator
       - governed-sdlc
       - claim-authority
       - publication-egress
@@ -157,10 +156,8 @@ repos:
     dependencies: []
     topics:
       - research-software
-      - single-operator
-      - philosophy-of-science
       - governance
-      - infrastructure-as-argument
+      - governance-specification
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
@@ -190,8 +187,8 @@ repos:
       discipline: preparation and context assembly without people-evaluation
       or HR-software claims.
     claim_ceiling: >-
-      Single-operator management apparatus. Not HR SaaS, not an advice
-      engine, and not a staffed support surface.
+      Management decision-support apparatus published for inspection. Not HR
+      SaaS, not an advice engine, and not a staffed support surface.
     primary_audience:
       - governance auditors
       - boundary reviewers
@@ -214,10 +211,8 @@ repos:
     dependencies: [hapax-constitution]
     topics:
       - research-software
-      - single-operator
-      - philosophy-of-science
       - governance
-      - infrastructure-as-argument
+      - decision-support
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
@@ -238,8 +233,8 @@ repos:
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
-      Single-operator device bridge; source-visible strict unless a
-      separate productized device boundary is created.
+      Device-specific bridge; source-visible strict unless a separate
+      productized device boundary is created.
     reader_promise: >-
       Wear OS sensor and awareness bridge
     reader_value: >-
@@ -270,8 +265,7 @@ repos:
     dependencies: [hapax-council]
     topics:
       - research-software
-      - single-operator
-      - infrastructure-as-argument
+      - wear-os
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
@@ -292,8 +286,8 @@ repos:
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
-      Single-operator device bridge; source-visible strict unless a
-      separate productized device boundary is created.
+      Device-specific bridge; source-visible strict unless a separate
+      productized device boundary is created.
     reader_promise: >-
       Android context bridge
     reader_value: >-
@@ -325,8 +319,7 @@ repos:
     dependencies: [hapax-council]
     topics:
       - research-software
-      - single-operator
-      - infrastructure-as-argument
+      - android
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
@@ -380,8 +373,7 @@ repos:
     dependencies: [hapax-council, hapax-officium]
     topics:
       - research-software
-      - single-operator
-      - infrastructure-as-argument
+      - mcp
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
@@ -435,8 +427,7 @@ repos:
     dependencies: [hapax-council]
     topics:
       - research-software
-      - single-operator
-      - infrastructure-as-argument
+      - github-pages
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
@@ -539,7 +530,7 @@ repos:
       - governance
       - sdlc
       - research-software
-      - single-operator
+      - source-available
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
