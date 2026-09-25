@@ -8,8 +8,15 @@ from __future__ import annotations
 
 import io
 import json
+import os
+import subprocess
+import sys
 from contextlib import redirect_stdout
+from dataclasses import replace
+from datetime import datetime, timezone
+from hashlib import sha256
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 import yaml
@@ -99,8 +106,13 @@ def test_registry_license_assignments_match_research_drop() -> None:
 
 def test_registry_value_partitions_match_ratified_license_posture() -> None:
     registry = load_registry()
-    assert registry["agentgov"].value_partition is ValuePartition.ADOPTION_COMMONS
-    assert registry["agentgov"].license_posture.startswith("Permissive adoption surface")
+    assert registry["agentgov"].value_partition is ValuePartition.EVIDENCE_ARTIFACT
+    assert registry["agentgov"].license_posture.startswith(
+        "Archived historical MIT-licensed source"
+    )
+    assert "must not imply broader Hapax runtime rights or support obligations" in (
+        registry["agentgov"].license_posture
+    )
 
     for repo_id in ("reins", "hapax-spine"):
         repo = registry[repo_id]
@@ -130,7 +142,7 @@ def test_registry_frontmatter_policy_fields_are_populated() -> None:
 
 def test_registry_surface_classes_match_portfolio_decisions() -> None:
     registry = load_registry()
-    assert registry["agentgov"].surface_class is SurfaceClass.ADOPTION_COMMONS
+    assert registry["agentgov"].surface_class is SurfaceClass.EVIDENCE_ARTIFACT
     assert registry["reins"].surface_class is SurfaceClass.PRODUCT_FRONT_DOOR
     assert registry["hapax-spine"].surface_class is SurfaceClass.RUNTIME_MECHANISM
     assert registry["hapax-council"].surface_class is SurfaceClass.RESEARCH_APPARATUS
@@ -406,14 +418,14 @@ def test_security_and_contributing_do_not_publish_operator_referent(
 def test_support_md_redirects_without_support_entitlement() -> None:
     registry = load_registry()
     body = support_md.render(registry["agentgov"])
-    assert "bounded adoption surface" in body
-    assert "staffed support channel" in body
+    assert "research or boundary artifact" in body
+    assert "not as a staffed support surface" in body
     assert "Blank issues are disabled" in body
     assert "no-perk research support only" in body
     assert "does not create an SLA" in body
 
 
-def test_product_and_adoption_preambles_do_not_use_generic_research_artifact_copy() -> None:
+def test_product_and_archived_preambles_follow_current_surface_classes() -> None:
     registry = load_registry()
 
     reins_body = readme_section.render(registry["reins"])
@@ -430,9 +442,9 @@ def test_product_and_adoption_preambles_do_not_use_generic_research_artifact_cop
     assert "hapax-manifesto-v0" not in reins_body
 
     agentgov_body = readme_section.render(registry["agentgov"])
-    assert "adoption-commons" in agentgov_body
-    assert "governance-hook surface" in agentgov_body
-    assert "Permissive adoption surface" in agentgov_body
+    assert "evidence-artifact repository" in agentgov_body
+    assert "governance-hook source" in agentgov_body
+    assert "Archived historical MIT-licensed source" in agentgov_body
     assert "not a product" not in agentgov_body
     assert "research infrastructure published as artifact" not in agentgov_body
 
@@ -455,62 +467,258 @@ def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
     assert "not a product" not in reins_notice
 
     agentgov_contributing = contributing_md.render(registry["agentgov"])
-    assert "bounded adoption surface" in agentgov_contributing
+    assert "not a staffed product, service, or community library" in agentgov_contributing
     assert "community maintenance" in agentgov_contributing
     assert "not a product" not in agentgov_contributing
 
 
 def test_org_profile_readme_orients_public_portfolio_without_private_repo_table() -> None:
-    registry = load_registry()
-    body = org_profile_readme.render(registry)
-    assert body.startswith("# Hapax Systems")
-    assert "authority before action" in body
-    assert "receipts before claims" in body
-    assert "unsupported automation claims" in body
-    assert "Reader value" in body
-    assert "what evidence would have to exist" in body
-
-    assert "[reins](https://github.com/hapax-systems/reins)" in body
-    assert "[agentgov](https://github.com/hapax-systems/agentgov)" in body
-    assert "[hapax-council](https://github.com/hapax-systems/hapax-council)" in body
-    assert "[hapax-constitution](https://github.com/hapax-systems/hapax-constitution)" in body
-    assert "[hapax-mcp](https://github.com/hapax-systems/hapax-mcp)" in body
-    assert "[hapax-phone](https://github.com/hapax-systems/hapax-phone)" in body
-    assert "[hapax-watch](https://github.com/hapax-systems/hapax-watch)" in body
-    assert "Supporting Public Surfaces" in body
-    assert "Hapax Logos MCP Bridge" in body
-    assert "Mobile Context Source" in body
-    assert "Wrist Biometric Source" in body
-
-    assert "hapax-spine](https://github.com/hapax-systems/hapax-spine)" not in body
+    body = org_profile_readme.render(load_registry())
+    assert body.startswith("# Hapax Research Lab")
+    # Repair bc3abd52 finding 1: one lab name, and "Hapax Systems" is not an entity.
+    assert "Hapax Research Lab is an agent-staffed R&D laboratory." in body
+    assert "holds its public code, specifications and records" in body
+    assert "Hapax Research Labs" not in body
+    assert "public research program of Hapax Systems" not in body
+    for repo_id in (
+        "hapax-mcp",
+        "reins",
+        "hapax-spine",
+        "hapax-council",
+        "hapax-constitution",
+        "hapax-research-ledger",
+        "hapax-officium",
+        "hapax-phone",
+        "hapax-watch",
+        "hapax-assets",
+        "agentgov",
+    ):
+        assert f"[{repo_id}](https://github.com/hapax-systems/{repo_id})" in body
     assert "hapax-coord](https://github.com/hapax-systems/hapax-coord)" not in body
+    assert "| [agentgov]" not in body
+    assert "**archived historical\nrepository**" in body
+    assert "not the current adoption entry point" in body
+    assert "releases/tag/v0.1.1" in body
+    assert "profile source" in body
+    assert "Corrections should identify" in body
 
 
 def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
     body = org_profile_readme.render(load_registry())
-    assert "open adoption commons" in body
-    assert "source-available commercial core" in body
-    assert "source-visible research apparatus" in body
-    assert "remains a read/preview surface" in body
-    assert "not a general-purpose lifecycle kernel" in body
-    # Spine went public 2026-07-09 (Part-4 decision): the profile states the
-    # source-available posture; visibility-vs-copy mismatch never returns in
-    # either direction.
-    assert "spine is the source-available BSL 1.1 runtime mechanism" in body
     assert "private during restructure" not in body
-    # Capability Frontier embargo: scores are registry-asserted today;
-    # "measured capability" is claimable only once the measurement loop runs.
-    assert "registry-asserted today; measured calibration is planned" in body
     assert "describe measured capability" not in body
-    assert "not as a supported framework" in body
-    assert "not claim autonomous write authority" in body
-    assert "full general lifecycle coverage" in body
-    assert "staffed community support" in body
-    assert "publication-bus channels" in body
-    assert "must not imply direct public" in body
     assert "Hapax is open source" not in body
     assert "generic agent OS" not in body
     assert "guaranteed safe" not in body
+    assert "The license in each repository defines its terms" in body
+    assert "Split by path: CC BY-NC-ND 4.0 / Apache-2.0" in body
+    assert "per-asset notices take precedence" in body
+    assert "Business Source License 1.1" in body
+    assert "PolyForm Strict 1.0.0" in body
+    assert "Source availability does not" in body
+    assert "not a claim of an established prospective scoring record" in body
+    assert "numeric research ledger is not a prediction register" in body
+    assert "These are separate dimensions" in body
+    # Repairs bc3abd52 findings 2 and 4: the slogan and the register promise are
+    # off the org page. Pinned as absent so a re-render cannot quietly restore them.
+    assert "finding out, in public, with instruments" not in body
+    assert "in preparation" not in body
+    assert "Original predictions and timestamped amendments" not in body
+    assert "late or omitted outcomes" not in body
+    assert "The protocol commits" not in body
+    assert "registry-asserted today; measured calibration is planned" not in body
+
+
+@pytest.mark.parametrize("renderer", [support_md, contributing_md, readme_section, notice_md])
+def test_archived_agentgov_consumers_do_not_invite_adoption(renderer) -> None:
+    body = renderer.render(load_registry()["agentgov"])
+    for invitation in (
+        "bounded adoption surface",
+        "bounded adoption-commons repository",
+        "Permissive adoption surface",
+        "inspect and pilot",
+        "pilot use",
+        "evaluate the adoption surface",
+    ):
+        assert invitation not in body
+
+
+def test_org_profile_matches_committed_bytes_and_full_hash(tmp_path: Path) -> None:
+    # This reviewed artifact is also the candidate for hapax-systems/.github#7.
+    # Update the fixture and digest only alongside a reviewed consumer update.
+    # Updated 2026-09-25 for dev20's review of #7 @ bc3abd52
+    # (frame/public-estate/u2-panel/PR7-ORG-PROFILE-REVIEW-bc3abd52.md, repairs 1-4),
+    # which is the reviewed consumer update this comment requires.
+    expected = (Path(__file__).parent / "fixtures" / "org-profile-README.md").read_bytes()
+    assert sha256(expected).hexdigest() == (
+        "4b4203166c2b32fab5968e4435b55851a82a42170e313df50842985b961c976d"
+    )
+    assert org_profile_readme.render(load_registry()).encode("utf-8") == expected
+    assert cli.main(["--org-profile", "--target-root", str(tmp_path)]) == 0
+    assert (tmp_path / "profile" / "README.md").read_bytes() == expected
+    assert cli.main(["--org-profile", "--check", "--target-root", str(tmp_path)]) == 0
+
+
+@pytest.mark.parametrize(
+    "repo_id",
+    [
+        "hapax-mcp",
+        "reins",
+        "hapax-spine",
+        "hapax-council",
+        "hapax-constitution",
+        "hapax-research-ledger",
+        "hapax-officium",
+        "hapax-phone",
+        "hapax-watch",
+        "hapax-assets",
+        "agentgov",
+    ],
+)
+@pytest.mark.parametrize(
+    "invalid_state", ["missing", "private", "local_only", "third_party", "outside_owner"]
+)
+def test_org_profile_rejects_ineligible_required_entries(repo_id: str, invalid_state: str) -> None:
+    registry = load_registry()
+    if invalid_state == "missing":
+        del registry[repo_id]
+        reason = "missing"
+    elif invalid_state == "third_party":
+        registry[repo_id] = replace(registry[repo_id], is_first_party=False)
+        reason = "not first-party"
+    elif invalid_state == "outside_owner":
+        registry[repo_id] = replace(registry[repo_id], github_owner="unapproved-owner")
+        assert registry[repo_id].is_first_party
+        reason = "github_owner=unapproved-owner; expected hapax-systems"
+    else:
+        registry[repo_id] = replace(registry[repo_id], visibility=RepoVisibility(invalid_state))
+        reason = invalid_state
+    with pytest.raises(ValueError) as error:
+        org_profile_readme.render(registry)
+    message = str(error.value)
+    assert repo_id in message
+    assert reason in message
+    assert "sdlc/render/repos.yaml" in message
+    assert "Verify the approved public first-party inventory" in message
+    assert "before rerendering" in message
+    assert "visibility or ownership changes require separate authority" in message
+
+
+def test_constitution_readme_describes_agentgov_as_archived_evidence() -> None:
+    body = (Path(__file__).resolve().parents[1] / "README.md").read_text(encoding="utf-8")
+    related = body.split("## Related Repositories\n", 1)[1]
+    entry = next(line for line in related.splitlines() if line.startswith("- [agentgov]"))
+    assert "https://github.com/hapax-systems/agentgov" in entry
+    assert "archived historical governance-hook source" in entry
+    assert "inspection and citation" in entry
+    assert "not the current adoption entry point" in entry
+    assert "MIT adoption commons" not in body
+    assert "portable governance hooks" not in entry
+
+
+def test_org_profile_ignores_ineligible_entries_outside_required_portfolio() -> None:
+    registry = load_registry()
+    expected = org_profile_readme.render(registry)
+    for repo_id in ("hapax-coord", "tabbyAPI", "atlas-voice-training"):
+        del registry[repo_id]
+    assert org_profile_readme.render(registry) == expected
+
+
+_PROFILE_GRANTS = json.loads(
+    (Path(__file__).parent / "fixtures/org-profile-grant-evidence.json").read_text()
+)["repos"]
+
+
+def _profile_grant_display(repo_id: str) -> tuple[str, str]:
+    """Interpret independently pinned grant excerpts, never renderer constants."""
+    evidence = _PROFILE_GRANTS[repo_id]
+    source = evidence["sources"][0]["excerpt"]
+    if repo_id == "hapax-assets":
+        assert "(CC-BY-4.0)" in source
+        assert "per-asset notice says otherwise" in source
+        assert "take\nprecedence for those files" in source
+        assert evidence["sources"][1]["excerpt"].startswith("Attribution 4.0 International")
+        return "CC-BY-4.0", "CC BY 4.0 default; per-asset notices take precedence"
+    if repo_id == "hapax-constitution":
+        assert "dual-licensed BY PATH" in source
+        assert "Specification and publication content — CC BY-NC-ND 4.0" in source
+        assert "Runnable tooling (the hapax-sdlc package) — Apache License 2.0" in source
+        assert "- sdlc/**" in source and "- axioms/**" in source
+        return "CC-BY-NC-ND-4.0 / Apache-2.0", "Split by path: CC BY-NC-ND 4.0 / Apache-2.0"
+    if source.startswith("MIT License\n"):
+        return "MIT", "MIT"
+    if source.startswith("Business Source License 1.1\n"):
+        return "BUSL-1.1", source.splitlines()[0]
+    if source.startswith("PolyForm Strict License 1.0.0\n"):
+        return "PolyForm-Strict-1.0.0", source.splitlines()[0].replace(" License", "")
+    assert source.startswith("Creative Commons Legal Code\n\nCC0 1.0 Universal")
+    return "CC0-1.0", "CC0-1.0 for the declared data surface"
+
+
+@pytest.mark.parametrize("repo_id", _PROFILE_GRANTS)
+def test_org_profile_license_links_use_existing_repository_authority(
+    repo_id: str,
+) -> None:
+    evidence = _PROFILE_GRANTS[repo_id]
+    grant, label = _profile_grant_display(repo_id)
+    registry = load_registry()
+    # A metadata exception is explicit and bounded to these two known cases.
+    if repo_id in {"hapax-assets", "hapax-constitution"}:
+        expected_class = evidence["exception"]["registry_class"]
+        assert expected_class != grant
+        assert evidence["exception"]["reason"]
+    else:
+        assert "exception" not in evidence
+        expected_class = grant
+    assert registry[repo_id].license_class.value == expected_class
+    body = org_profile_readme.render(registry)
+    if repo_id == "agentgov":
+        assert "Its MIT-licensed source" in body
+        return
+    path = evidence["sources"][0]["path"]
+    row = next(line for line in body.splitlines() if line.startswith(f"| [{repo_id}]"))
+    assert f"[{label}](https://github.com/hapax-systems/{repo_id}/blob/main/{path})" in row
+
+
+@pytest.mark.parametrize("repo_id", _PROFILE_GRANTS)
+def test_org_profile_rejects_registry_license_drift_before_writes(
+    repo_id: str,
+    tmp_path: Path,
+) -> None:
+    registry = load_registry()
+    old = registry[repo_id].license_class
+    changed = LicenseClass.APACHE_2_0 if old is LicenseClass.MIT else LicenseClass.MIT
+    registry[repo_id] = replace(registry[repo_id], license_class=changed)
+    with pytest.raises(ValueError) as exc:
+        org_profile_readme.render(registry)
+    message = str(exc.value)
+    for text in (
+        repo_id,
+        old.value,
+        changed.value,
+        "license_class",
+        "grant",
+        "repos.yaml",
+        "org_profile_readme.py",
+        "reconcile",
+        "rerender",
+        "separate authority",
+    ):
+        assert text in message
+    target = tmp_path / "profile/README.md"
+    target.parent.mkdir()
+    target.write_bytes(b"existing consumer bytes\n")
+    before = target.stat()
+    # Exercise the actual CLI and real changed registry file, not a mock writer.
+    raw = yaml.safe_load((Path(__file__).parents[1] / "sdlc/render/repos.yaml").read_text())
+    raw["repos"][repo_id]["license_class"] = changed.value
+    changed_registry = tmp_path / "repos.yaml"
+    changed_registry.write_text(yaml.safe_dump(raw))
+    with patch("sdlc.render.cli.load_registry", return_value=load_registry(changed_registry)):
+        with pytest.raises(ValueError, match="license_class"):
+            cli.main(["--org-profile", "--target-root", str(tmp_path)])
+    assert target.read_bytes() == b"existing consumer bytes\n"
+    assert target.stat().st_mtime_ns == before.st_mtime_ns
 
 
 def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec) -> None:
@@ -619,7 +827,7 @@ def test_cli_dry_run_prints_org_profile() -> None:
     output = buf.getvalue()
     assert rc == 0
     assert "# profile/README.md" in output
-    assert "# Hapax Systems" in output
+    assert "# Hapax Research Lab" in output
     assert "https://github.com/hapax-systems/reins" in output
 
 
@@ -628,7 +836,7 @@ def test_cli_org_profile_write_creates_nested_profile_readme(tmp_path: Path) -> 
     assert rc == 0
     written = tmp_path / "profile" / "README.md"
     assert written.exists()
-    assert written.read_text(encoding="utf-8").startswith("# Hapax Systems")
+    assert written.read_text(encoding="utf-8").startswith("# Hapax Research Lab")
 
 
 def test_cli_unknown_repo_errors() -> None:
@@ -648,6 +856,70 @@ def test_cli_check_mode_detects_drift(tmp_path: Path) -> None:
         ]
     )
     assert rc == 1  # every rendered file drifted
+
+
+@pytest.mark.parametrize(
+    ("target_args", "filename"),
+    [
+        (["--org-profile"], "profile/README.md"),
+        (["--repo", "hapax-council", "--file", "SUPPORT.md"], "SUPPORT.md"),
+        (["--all", "--file", "SUPPORT.md"], "SUPPORT.md"),
+    ],
+)
+@pytest.mark.parametrize("existing_consumer", [False, True], ids=["missing", "changed"])
+def test_cli_check_drift_is_actionable_and_preserves_consumers(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    target_args: list[str],
+    filename: str,
+    existing_consumer: bool,
+) -> None:
+    target_root = tmp_path / "consumer checkout"
+    target_root.mkdir()
+    target = (
+        target_root / "hapax-council" / filename
+        if "--all" in target_args
+        else target_root / filename
+    )
+    if existing_consumer:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(b"Existing consumer content that requires reconciliation.\n")
+    (target_root / "unrelated.txt").write_bytes(b"Preserve this consumer file too.\n")
+
+    def snapshot() -> dict[str, tuple[bytes, int, int]]:
+        return {
+            str(path.relative_to(target_root)): (
+                path.read_bytes(),
+                path.stat().st_mode,
+                path.stat().st_mtime_ns,
+            )
+            for path in target_root.rglob("*")
+            if path.is_file()
+        }
+
+    before = snapshot()
+    args = list(target_args)
+    if "--all" not in args:
+        args.extend(["--target-root", str(target_root)])
+    with patch.object(cli, "default_target_root", side_effect=lambda repo: target_root / repo.name):
+        rc = cli.main([*args, "--check"])
+    output = capsys.readouterr()
+
+    assert rc == 1
+    assert snapshot() == before
+    assert output.out == ""
+    assert f"DRIFT {target}" in output.err
+    assert "check failed:" in output.err
+    assert "Next action:" in output.err
+    assert "sdlc/render/repos.yaml" in output.err
+    assert "renderer in sdlc/render/" in output.err
+    assert "Reconcile" in output.err
+    assert "same target/file options without --check" in output.err
+    assert "review the generated diff" in output.err
+    assert "then rerun --check" in output.err
+    with patch.object(cli, "default_target_root", side_effect=lambda repo: target_root / repo.name):
+        assert cli.main(args) == 0
+        assert cli.main([*args, "--check"]) == 0
 
 
 def test_cli_check_mode_clean_after_write(tmp_path: Path) -> None:
@@ -673,6 +945,288 @@ def test_cli_check_mode_clean_after_write(tmp_path: Path) -> None:
     assert rc_check == 0
 
 
+@pytest.mark.parametrize("mode", [[], ["--check"], ["--dry-run"]])
+@pytest.mark.parametrize("only_file", [[], ["--file", "SUPPORT.md"]])
+@pytest.mark.parametrize("existing_target", [False, True])
+def test_cli_all_rejects_shared_target_before_writes(
+    tmp_path: Path, mode: list[str], only_file: list[str], existing_target: bool
+) -> None:
+    """A shared destination must fail before creating or overwriting consumers."""
+    root = Path(__file__).resolve().parents[1]
+    target = tmp_path / "consumer checkout"
+    if existing_target:
+        target.mkdir()
+        (target / "SUPPORT.md").write_bytes(b"Keep existing support.\n")
+        (target / "README.md").write_bytes(b"Keep existing README.\n")
+    before = {
+        p.name: (p.read_bytes(), p.stat().st_mode, p.stat().st_mtime_ns) for p in target.glob("*")
+    }
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-B",
+            "-m",
+            "hapax_sdlc.render",
+            "--all",
+            "--target-root",
+            str(target),
+            *only_file,
+            *mode,
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 2
+    assert result.stdout == ""
+    assert "--all cannot be combined with --target-root" in result.stderr
+    assert "overwrite" in result.stderr
+    assert "--repo <id> --target-root <path>" in result.stderr
+    assert "--check" in result.stderr
+    assert target.exists() is existing_target
+    assert {
+        p.name: (p.read_bytes(), p.stat().st_mode, p.stat().st_mtime_ns) for p in target.glob("*")
+    } == before
+
+    # Follow the stated repair with the real CLI, retaining the artifact selection.
+    args = [
+        sys.executable,
+        "-B",
+        "-m",
+        "hapax_sdlc.render",
+        "--repo",
+        "hapax-council",
+        "--target-root",
+        str(target),
+        *only_file,
+    ]
+    for extra in ([], ["--check"]):
+        repaired = subprocess.run(
+            [*args, *extra], cwd=root, capture_output=True, text=True, check=False
+        )
+        assert repaired.returncode == 0, repaired.stderr
+        assert repaired.stderr == ""
+    assert (target / "SUPPORT.md").read_text() == support_md.render(
+        load_registry()["hapax-council"]
+    )
+
+
+def test_cli_all_default_targets_converge(tmp_path: Path) -> None:
+    """The supported --all form retains separate repository destinations."""
+    with patch.object(cli, "default_target_root", side_effect=lambda repo: tmp_path / repo.name):
+        args = ["--all", "--file", "SUPPORT.md"]
+        assert cli.main(args) == 0
+        assert cli.main([*args, "--check"]) == 0
+    registry = load_registry()
+    assert {p.name for p in tmp_path.iterdir()} == {
+        repo.name for repo in registry.values() if repo.is_first_party
+    }
+    for repo in registry.values():
+        if repo.is_first_party:
+            assert (tmp_path / repo.name / "SUPPORT.md").read_text() == support_md.render(repo)
+
+
+def test_org_profile_recheck_records_successful_observations(tmp_path: Path) -> None:
+    """Pin the real witness's read-only requests and output; no live API is used."""
+    root = Path(__file__).resolve().parents[1]
+    agentgov_head = "0123456789abcdef0123456789abcdef01234567"
+    release_fields = "{html_url, tag_name, target_commitish, draft, prerelease, published_at}"
+    expected_calls = [
+        [
+            "api",
+            "--paginate",
+            "orgs/hapax-systems/repos?type=public&per_page=100",
+            "--jq",
+            "[.[] | {full_name, html_url, visibility, archived, default_branch}]",
+        ],
+        ["api", "repos/hapax-systems/hapax-spine/releases/tags/v0.1.1", "--jq", release_fields],
+        ["api", "repos/hapax-systems/hapax-spine/releases/latest", "--jq", release_fields],
+        [
+            "api",
+            "repos/hapax-systems/agentgov",
+            "--jq",
+            "{full_name, html_url, visibility, archived, default_branch, license}",
+        ],
+        ["api", "repos/hapax-systems/agentgov/releases/latest", "--jq", release_fields],
+        ["api", "repos/hapax-systems/agentgov/commits/main", "--jq", ".sha"],
+        [
+            "api",
+            f"repos/hapax-systems/agentgov/license?ref={agentgov_head}",
+            "--jq",
+            "{html_url, path, sha, license}",
+        ],
+        [
+            "api",
+            "-H",
+            "Accept: application/vnd.github.raw+json",
+            f"repos/hapax-systems/agentgov/contents/LICENSE?ref={agentgov_head}",
+        ],
+    ]
+    archived = {
+        "full_name": "hapax-systems/agentgov",
+        "html_url": "https://github.com/hapax-systems/agentgov",
+        "visibility": "public",
+        "archived": True,
+        "default_branch": "main",
+    }
+    spine = {
+        **archived,
+        "full_name": "hapax-systems/hapax-spine",
+        "html_url": "https://github.com/hapax-systems/hapax-spine",
+        "archived": False,
+    }
+    linked_release = {
+        "html_url": "https://github.com/hapax-systems/hapax-spine/releases/tag/v0.1.1",
+        "tag_name": "v0.1.1",
+        "target_commitish": "main",
+        "draft": False,
+        "prerelease": False,
+        "published_at": "2026-09-01T12:00:00Z",
+    }
+    latest_release = {
+        **linked_release,
+        "tag_name": "v0.2.0",
+        "prerelease": True,
+        "html_url": "https://github.com/hapax-systems/hapax-spine/releases/tag/v0.2.0",
+        "published_at": "2026-09-23T12:00:00Z",
+    }
+    archived_release = {
+        **linked_release,
+        "tag_name": "v0.3.1",
+        "html_url": "https://github.com/hapax-systems/agentgov/releases/tag/v0.3.1",
+    }
+    license_info = {"key": "mit", "name": "MIT License", "spdx_id": "MIT"}
+    license_source = {
+        "html_url": f"https://github.com/hapax-systems/agentgov/blob/{agentgov_head}/LICENSE",
+        "path": "LICENSE",
+        "sha": "f" * 40,
+        "license": license_info,
+    }
+    # Deliberately synthetic text, distinct from GitHub's license detection.
+    license_text = "SYNTHETIC LICENSE SOURCE\nRead the pinned terms, not just SPDX.\n"
+    responses = [
+        *(
+            json.dumps(item) + "\n"
+            for item in [
+                [spine, archived],
+                linked_release,
+                latest_release,
+                {**archived, "license": license_info},
+                archived_release,
+            ]
+        ),
+        agentgov_head + "\n",
+        json.dumps(license_source) + "\n",
+        license_text,
+    ]
+    response_file = tmp_path / "responses.json"
+    response_file.write_text(json.dumps(responses))
+    trace = tmp_path / "calls.json"
+    stub = tmp_path / "gh"
+    stub.write_text(
+        f"#!{sys.executable}\n"
+        "import json, os, sys\n"
+        "from pathlib import Path\n"
+        "trace = Path(os.environ['RECHECK_TEST_TRACE'])\n"
+        "calls = json.loads(trace.read_text()) if trace.exists() else []\n"
+        "calls.append(sys.argv[1:])\n"
+        "trace.write_text(json.dumps(calls))\n"
+        "responses = json.loads(Path(os.environ['RECHECK_TEST_RESPONSES']).read_text())\n"
+        "sys.stdout.write(responses[len(calls) - 1])\n"
+    )
+    stub.chmod(0o755)
+    source_paths = [
+        "sdlc/render/org_profile_readme.py",
+        "sdlc/render/repos.yaml",
+        "tests/fixtures/org-profile-README.md",
+    ]
+    before = {path: ((root / path).read_bytes(), (root / path).stat()) for path in source_paths}
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True)
+    status = subprocess.check_output(["git", "status", "--short"], cwd=root, text=True)
+    start = datetime.now(timezone.utc).replace(microsecond=0)
+    result = subprocess.run(
+        ["bash", "docs/recheck-org-profile.sh"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        env={
+            **os.environ,
+            "PATH": f"{tmp_path}{os.pathsep}{os.environ['PATH']}",
+            "GH_TOKEN": "synthetic-test-token-do-not-emit",
+            "GITHUB_TOKEN": "synthetic-test-token-do-not-emit",
+            "RECHECK_TEST_TRACE": str(trace),
+            "RECHECK_TEST_RESPONSES": str(response_file),
+        },
+        check=False,
+    )
+    end = datetime.now(timezone.utc)
+    assert result.returncode == 0, result.stderr
+    assert result.stderr == ""
+    assert json.loads(trace.read_text()) == expected_calls
+    observed_line, remaining = result.stdout.split("\n", 1)
+    observed = datetime.strptime(observed_line, "Observed at: %Y-%m-%dT%H:%M:%SZ").replace(
+        tzinfo=timezone.utc
+    )
+    assert start <= observed <= end
+    expected = head + status
+    for path, (data, stat) in before.items():
+        expected += f"{sha256(data).hexdigest()}  {path}\n"
+        assert (root / path).read_bytes() == data
+        after = (root / path).stat()
+        assert (after.st_mode, after.st_mtime_ns) == (stat.st_mode, stat.st_mtime_ns)
+    expected += "Repository and release status checked September 24, 2026.\n"
+    expected += "".join(responses[:5])
+    expected += f"agentgov source commit: {agentgov_head}\n"
+    expected += "".join(responses[6:])
+    assert remaining == expected
+    assert "synthetic-test-token-do-not-emit" not in result.stdout + result.stderr
+
+
+@pytest.mark.parametrize("fail_at", range(1, 9))
+def test_org_profile_recheck_stops_on_failed_observation(tmp_path: Path, fail_at: int) -> None:
+    """Run the real shell witness; each failed API call must stop later observations."""
+    root = Path(__file__).resolve().parents[1]
+    stub = tmp_path / "gh"
+    stub.write_text(
+        f"#!{sys.executable}\n"
+        "import os, sys\n"
+        "from pathlib import Path\n"
+        "trace = Path(os.environ['RECHECK_TEST_TRACE'])\n"
+        "calls = trace.read_text().splitlines() if trace.exists() else []\n"
+        "calls.append(' '.join(sys.argv[1:]))\n"
+        "trace.write_text('\\n'.join(calls) + '\\n')\n"
+        "if len(calls) == int(os.environ['RECHECK_TEST_FAIL_AT']):\n"
+        "    print('simulated API observation failure', file=sys.stderr)\n"
+        "    sys.exit(42)\n"
+        "print('0123456789abcdef0123456789abcdef01234567' if len(calls) == 6 else '{}')\n"
+    )
+    stub.chmod(0o755)
+    trace = tmp_path / "calls.txt"
+    env = {
+        **os.environ,
+        "PATH": f"{tmp_path}{os.pathsep}{os.environ['PATH']}",
+        "GH_TOKEN": "synthetic-test-token-do-not-emit",
+        "GITHUB_TOKEN": "synthetic-test-token-do-not-emit",
+        "RECHECK_TEST_TRACE": str(trace),
+        "RECHECK_TEST_FAIL_AT": str(fail_at),
+    }
+    result = subprocess.run(
+        ["bash", "docs/recheck-org-profile.sh"],
+        cwd=root,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 42
+    assert result.stderr == "simulated API observation failure\n"
+    assert len(trace.read_text().splitlines()) == fail_at
+    assert "synthetic-test-token-do-not-emit" not in result.stdout + result.stderr
+    if fail_at <= 6:
+        assert "agentgov source commit:" not in result.stdout
+
+
 def test_cli_write_creates_nested_issue_template_config(tmp_path: Path) -> None:
     rc = cli.main(
         [
@@ -691,10 +1245,7 @@ def test_cli_write_creates_nested_issue_template_config(tmp_path: Path) -> None:
 
 
 def test_cli_all_mode_renders_first_party_repos(tmp_path: Path) -> None:
-    """``--all`` renders every first-party repo. Each gets its own
-    target subdirectory under ``--target-root`` is not yet supported —
-    here we just verify the dry-run path handles --all without error.
-    """
+    """The supported --all dry-run form includes every first-party repo."""
     buf = io.StringIO()
     with redirect_stdout(buf):
         rc = cli.main(["--all", "--dry-run"])
