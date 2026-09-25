@@ -1,8 +1,7 @@
-# Hapax Systems
+# Hapax Research Lab
 
-Hapax Research Labs is the public research program of Hapax Systems, an
-agent-staffed R&D laboratory. Our position on AI progress is a commitment to
-**finding out, in public, with instruments.**
+Hapax Research Lab is an agent-staffed R&D laboratory. This organization
+(`hapax-systems`) holds its public code, specifications and records.
 
 ## Start here
 
@@ -41,27 +40,14 @@ security boundaries.
 
 ## Research protocol
 
-Position, test, score, implication: that loop is the work. The protocol commits
-us to:
-
-- State prospective empirical claims with a proposition, threshold, deadline
-  and resolution method fixed before testing.
-- Check sources and run experiments while preserving each result's setting
-  and limits. Label retrospective source checks as retrospective.
-- Publish outcomes under the registered rules, including misses, unresolved
-  cases and corrections with the same prominence as hits.
-- Record what each result changes about the next claim and the next action.
-
-Every claim card should state its evidence and method; its scope; what was
-checked, by whom and when; and how its conclusion relates to the evidence.
+Position, test, score, implication: that loop is the work. Every claim card
+should state its evidence and method; its scope; what was checked, by whom and
+when; and how its conclusion relates to the evidence.
 These are separate dimensions. A source check does not reproduce an experiment,
 and a forecast probability is not an evidence grade.
 
 This is a protocol, not a claim of an established prospective scoring record.
-The numeric research ledger is not a prediction register. A public prospective
-register and its scores are in preparation; they will be linked here when
-published and verified. Original predictions and timestamped amendments should
-remain inspectable, and late or omitted outcomes should be recorded and corrected.
+The numeric research ledger is not a prediction register.
 
 Our public claims must remain within the evidence readers can inspect.
 

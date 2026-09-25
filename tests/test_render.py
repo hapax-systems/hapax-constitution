@@ -474,8 +474,12 @@ def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
 
 def test_org_profile_readme_orients_public_portfolio_without_private_repo_table() -> None:
     body = org_profile_readme.render(load_registry())
-    assert body.startswith("# Hapax Systems")
-    assert "public research program of Hapax Systems" in body
+    assert body.startswith("# Hapax Research Lab")
+    # Repair bc3abd52 finding 1: one lab name, and "Hapax Systems" is not an entity.
+    assert "Hapax Research Lab is an agent-staffed R&D laboratory." in body
+    assert "holds its public code, specifications and records" in body
+    assert "Hapax Research Labs" not in body
+    assert "public research program of Hapax Systems" not in body
     for repo_id in (
         "hapax-mcp",
         "reins",
@@ -515,8 +519,13 @@ def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
     assert "not a claim of an established prospective scoring record" in body
     assert "numeric research ledger is not a prediction register" in body
     assert "These are separate dimensions" in body
-    assert "Original predictions and timestamped amendments" in body
-    assert "late or omitted outcomes" in body
+    # Repairs bc3abd52 findings 2 and 4: the slogan and the register promise are
+    # off the org page. Pinned as absent so a re-render cannot quietly restore them.
+    assert "finding out, in public, with instruments" not in body
+    assert "in preparation" not in body
+    assert "Original predictions and timestamped amendments" not in body
+    assert "late or omitted outcomes" not in body
+    assert "The protocol commits" not in body
     assert "registry-asserted today; measured calibration is planned" not in body
 
 
@@ -537,9 +546,12 @@ def test_archived_agentgov_consumers_do_not_invite_adoption(renderer) -> None:
 def test_org_profile_matches_committed_bytes_and_full_hash(tmp_path: Path) -> None:
     # This reviewed artifact is also the candidate for hapax-systems/.github#7.
     # Update the fixture and digest only alongside a reviewed consumer update.
+    # Updated 2026-09-25 for dev20's review of #7 @ bc3abd52
+    # (frame/public-estate/u2-panel/PR7-ORG-PROFILE-REVIEW-bc3abd52.md, repairs 1-4),
+    # which is the reviewed consumer update this comment requires.
     expected = (Path(__file__).parent / "fixtures" / "org-profile-README.md").read_bytes()
     assert sha256(expected).hexdigest() == (
-        "899abd054d37be681894f88f2237d675b569987817d43b95e919818fad24009f"
+        "4b4203166c2b32fab5968e4435b55851a82a42170e313df50842985b961c976d"
     )
     assert org_profile_readme.render(load_registry()).encode("utf-8") == expected
     assert cli.main(["--org-profile", "--target-root", str(tmp_path)]) == 0
@@ -815,7 +827,7 @@ def test_cli_dry_run_prints_org_profile() -> None:
     output = buf.getvalue()
     assert rc == 0
     assert "# profile/README.md" in output
-    assert "# Hapax Systems" in output
+    assert "# Hapax Research Lab" in output
     assert "https://github.com/hapax-systems/reins" in output
 
 
@@ -824,7 +836,7 @@ def test_cli_org_profile_write_creates_nested_profile_readme(tmp_path: Path) -> 
     assert rc == 0
     written = tmp_path / "profile" / "README.md"
     assert written.exists()
-    assert written.read_text(encoding="utf-8").startswith("# Hapax Systems")
+    assert written.read_text(encoding="utf-8").startswith("# Hapax Research Lab")
 
 
 def test_cli_unknown_repo_errors() -> None:
