@@ -42,9 +42,8 @@ repos:
   hapax-council:
     name: hapax-council
     description: >-
-      Source-visible Hapax Systems research/runtime for evidence-bound
-      AI-agent delivery: governed dispatch, route receipts, claim review,
-      refusal, and publication-egress controls.
+      Source-visible research/runtime showing dispatch, receipts, claim
+      review, refusal, and publication-egress controls for inspection.
     repo_type: runtime
     role_in_constellation: >-
       Primary research/runtime estate. Carries task authority, coordination,
@@ -90,11 +89,11 @@ repos:
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: [hapax-constitution]
     topics:
-      - research-software
-      - governed-sdlc
       - claim-authority
+      - governed-sdlc
       - publication-egress
       - refusal-systems
+      - research-software
     is_first_party: true
     zenodo_doi: "10.5281/zenodo.20113515"
     zenodo_concept_doi: "10.5281/zenodo.20113514"
@@ -155,7 +154,6 @@ repos:
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: []
     topics:
-      - research-software
       - governance
       - governance-specification
     is_first_party: true
@@ -210,9 +208,8 @@ repos:
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: [hapax-constitution]
     topics:
-      - research-software
-      - governance
       - decision-support
+      - governance
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
@@ -264,7 +261,6 @@ repos:
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: [hapax-council]
     topics:
-      - research-software
       - wear-os
     is_first_party: true
     zenodo_concept_doi: null
@@ -318,7 +314,6 @@ repos:
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: [hapax-council]
     topics:
-      - research-software
       - android
     is_first_party: true
     zenodo_concept_doi: null
@@ -372,7 +367,6 @@ repos:
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: [hapax-council, hapax-officium]
     topics:
-      - research-software
       - mcp
     is_first_party: true
     zenodo_concept_doi: null
@@ -426,7 +420,6 @@ repos:
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: [hapax-council]
     topics:
-      - research-software
       - github-pages
     is_first_party: true
     zenodo_concept_doi: null
@@ -528,8 +521,6 @@ repos:
     dependencies: [hapax-council]
     topics:
       - governance
-      - sdlc
-      - research-software
       - source-available
     is_first_party: true
     zenodo_concept_doi: null
