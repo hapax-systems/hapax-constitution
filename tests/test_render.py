@@ -561,7 +561,7 @@ def test_org_profile_matches_committed_bytes_and_full_hash(tmp_path: Path) -> No
     # Publication still requires independent re-panel at the new head.
     expected = (Path(__file__).parent / "fixtures" / "org-profile-README.md").read_bytes()
     assert sha256(expected).hexdigest() == (
-        "f18ca764aea20cc59542d32e6c909b15359cfb66a60a90558b803f14c9600043"
+        "436ae230bdd9dde60538d9c1e7f0193fae9550e46969f136dc8e7612900b3eb1"
     )
     assert org_profile_readme.render(load_registry()).encode("utf-8") == expected
     assert cli.main(["--org-profile", "--target-root", str(tmp_path)]) == 0

@@ -55,7 +55,7 @@ _START_REPOS = (
 )
 _SUPPORTING_REPOS = ("hapax-officium", "hapax-phone", "hapax-watch", "hapax-assets")
 
-_PROVENANCE = "Generated on September 28, 2026 from hapax-constitution source commit PENDING."
+_PROVENANCE = "Generated on September 28, 2026 from hapax-constitution source commit aeca3f50d47084ec3fcf92a4034342f71bf447d5."
 
 # Reviewed public summaries, grounded in each linked repository README. These
 # describe the artifact; they do not change the registry's other consumers.

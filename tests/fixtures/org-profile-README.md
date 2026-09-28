@@ -38,4 +38,4 @@ The tables list the main repositories; the [full list](https://github.com/orgs/h
 
 This page is generated from the [profile source](https://github.com/hapax-systems/hapax-constitution/blob/main/sdlc/render/org_profile_readme.py) and [repository descriptions](https://github.com/hapax-systems/hapax-constitution/blob/main/sdlc/render/repos.yaml). [Earlier revisions](https://github.com/hapax-systems/hapax-constitution/commits/main/sdlc/render/org_profile_readme.py) remain inspectable. Corrections should identify the affected source revision and remain attached to its history. See the [published intake boundary](https://github.com/hapax-systems/hapax-constitution/blob/main/SUPPORT.md) before reporting a problem; it does not accept general pull requests or GitHub support requests.
 
-Generated on September 28, 2026 from hapax-constitution source commit PENDING.
+Generated on September 28, 2026 from hapax-constitution source commit aeca3f50d47084ec3fcf92a4034342f71bf447d5.
