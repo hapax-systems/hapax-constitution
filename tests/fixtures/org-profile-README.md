@@ -8,7 +8,7 @@ Byline: `hrl-han`. Legal entity (as filed): Hapax Research LLC, organized in Wyo
 
 | Repository | What to inspect | Use | License |
 |---|---|---|---|
-| [hapax-mcp](https://github.com/hapax-systems/hapax-mcp) | MCP bridge to the existing logos APIs for compatible clients | Use under MIT; see its README for requirements | [MIT](https://github.com/hapax-systems/hapax-mcp/blob/main/LICENSE) |
+| [hapax-mcp](https://github.com/hapax-systems/hapax-mcp) | MCP bridge that presents the council and officium HTTP APIs as bounded tools for compatible MCP clients | Use under MIT; see its README for requirements | [MIT](https://github.com/hapax-systems/hapax-mcp/blob/main/LICENSE) |
 | [reins](https://github.com/hapax-systems/reins) | Terminal cockpit for inspecting agent work and delivery state | Inspect; production use limited by BSL 1.1; see its README for requirements | [Business Source License 1.1](https://github.com/hapax-systems/reins/blob/main/LICENSE) |
 | [hapax-spine](https://github.com/hapax-systems/hapax-spine) | Runtime package for events, routing, receipts, quotas and projections | Inspect; production use limited by BSL 1.1; see its README for requirements | [Business Source License 1.1](https://github.com/hapax-systems/hapax-spine/blob/main/LICENSE) |
 | [hapax-council](https://github.com/hapax-systems/hapax-council) | Source for the agent-work coordination and review environment | Inspect only under PolyForm Strict; see its README for requirements | [PolyForm Strict 1.0.0](https://github.com/hapax-systems/hapax-council/blob/main/LICENSE) |
@@ -25,9 +25,9 @@ No repository here is offered as a supported product or hosted service. For depl
 
 | Repository | Role | Use | License |
 |---|---|---|---|
-| [hapax-officium](https://github.com/hapax-systems/hapax-officium) | Internal management decision support, published for inspection rather than offered as a service | Inspect only under PolyForm Strict; see its README for requirements | [PolyForm Strict 1.0.0](https://github.com/hapax-systems/hapax-officium/blob/main/LICENSE) |
-| [hapax-phone](https://github.com/hapax-systems/hapax-phone) | Android source documenting phone context signals and privacy boundaries | Inspect only under PolyForm Strict; see its README for requirements | [PolyForm Strict 1.0.0](https://github.com/hapax-systems/hapax-phone/blob/main/LICENSE) |
-| [hapax-watch](https://github.com/hapax-systems/hapax-watch) | Wear OS source documenting biometric and context signals and privacy boundaries | Inspect only under PolyForm Strict; see its README for requirements | [PolyForm Strict 1.0.0](https://github.com/hapax-systems/hapax-watch/blob/main/LICENSE) |
+| [hapax-officium](https://github.com/hapax-systems/hapax-officium) | Internal management decision support, published for inspection; not HR software and not offered as a service | Inspect only under PolyForm Strict; see its README for requirements | [PolyForm Strict 1.0.0](https://github.com/hapax-systems/hapax-officium/blob/main/LICENSE) |
+| [hapax-phone](https://github.com/hapax-systems/hapax-phone) | Android source documenting phone context signals and privacy boundaries; not a health claim | Inspect only under PolyForm Strict; see its README for requirements | [PolyForm Strict 1.0.0](https://github.com/hapax-systems/hapax-phone/blob/main/LICENSE) |
+| [hapax-watch](https://github.com/hapax-systems/hapax-watch) | Wear OS source documenting biometric and context signals and privacy boundaries; not a health claim | Inspect only under PolyForm Strict; see its README for requirements | [PolyForm Strict 1.0.0](https://github.com/hapax-systems/hapax-watch/blob/main/LICENSE) |
 | [hapax-assets](https://github.com/hapax-systems/hapax-assets) | Mirror of approved public assets with provenance and per-asset notices | Use subject to the grant and each asset's notice | [CC BY 4.0 default; per-asset notices take precedence](https://github.com/hapax-systems/hapax-assets/blob/main/LICENSE-SCOPE.md) |
 
 [agentgov](https://github.com/hapax-systems/agentgov) was retired on 24 September 2026 at v0.3.1. Its MIT-licensed source and published release remain available. Its README explains the retirement and says it is not a current recommendation to deploy.
@@ -38,4 +38,4 @@ The tables list the main repositories; the [full list](https://github.com/orgs/h
 
 This page is generated from the [profile source](https://github.com/hapax-systems/hapax-constitution/blob/main/sdlc/render/org_profile_readme.py) and [repository descriptions](https://github.com/hapax-systems/hapax-constitution/blob/main/sdlc/render/repos.yaml). [Earlier revisions](https://github.com/hapax-systems/hapax-constitution/commits/main/sdlc/render/org_profile_readme.py) remain inspectable. Corrections should identify the affected source revision and remain attached to its history. See the [published intake boundary](https://github.com/hapax-systems/hapax-constitution/blob/main/SUPPORT.md) before reporting a problem; it does not accept general pull requests or GitHub support requests.
 
-Generated on September 28, 2026 from hapax-constitution source commit aeca3f50d47084ec3fcf92a4034342f71bf447d5.
+Generated on {{GENERATED_ON}} from hapax-constitution source commit {{SOURCE_COMMIT}}.

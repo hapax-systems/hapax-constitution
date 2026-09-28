@@ -7,8 +7,13 @@ git rev-parse HEAD
 git status --short
 sha256sum sdlc/render/org_profile_readme.py sdlc/render/repos.yaml \
   tests/fixtures/org-profile-README.md
+profile_readme="${ORG_PROFILE_CONSUMER_README:-../hapax-systems--github/profile/README.md}"
+if [ ! -f "$profile_readme" ]; then
+  echo "profile consumer missing: $profile_readme. Next action: set ORG_PROFILE_CONSUMER_README to the checked-out .github profile/README.md." >&2
+  exit 1
+fi
 rg -o 'Generated on [^.]+ from hapax-constitution source commit [0-9a-f]{40}\.' \
-  tests/fixtures/org-profile-README.md
+  "$profile_readme"
 
 gh api --paginate 'orgs/hapax-systems/repos?type=public&per_page=100' \
   --jq '[.[] | {full_name, html_url, visibility, archived, default_branch}]'

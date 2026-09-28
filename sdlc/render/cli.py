@@ -27,8 +27,8 @@ from __future__ import annotations
 
 import argparse
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 from sdlc.render import (
     citation_cff,
@@ -73,6 +73,14 @@ def build_parser() -> argparse.ArgumentParser:
         "--org-profile",
         action="store_true",
         help="Render the public Hapax Systems organization profile README",
+    )
+    parser.add_argument(
+        "--org-profile-source-commit",
+        help="40-character constitution commit used to generate the organization profile",
+    )
+    parser.add_argument(
+        "--org-profile-generated-on",
+        help="Organization profile generation date (YYYY-MM-DD)",
     )
     parser.add_argument(
         "--check",
@@ -218,7 +226,25 @@ def main(argv: Iterable[str] | None = None) -> int:
     if args.org_profile:
         if args.file:
             parser.error("--file is only valid with --repo or --all")
-        artifacts = {org_profile_readme.ORG_PROFILE_PATH: org_profile_readme.render(registry)}
+        if not args.org_profile_source_commit or not args.org_profile_generated_on:
+            parser.error(
+                "--org-profile requires --org-profile-source-commit and "
+                "--org-profile-generated-on; use the constitution commit that lands on main "
+                "when generating the public page"
+            )
+        try:
+            org_profile_readme.provenance_line(
+                source_commit=args.org_profile_source_commit,
+                generated_on=args.org_profile_generated_on,
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
+        body = org_profile_readme.render(
+            registry,
+            source_commit=args.org_profile_source_commit,
+            generated_on=args.org_profile_generated_on,
+        )
+        artifacts = {org_profile_readme.ORG_PROFILE_PATH: body}
         if args.dry_run:
             sep = "=" * 70
             print(f"\n{sep}\n# {org_profile_readme.ORG_PROFILE_PATH}\n{sep}")
@@ -230,6 +256,11 @@ def main(argv: Iterable[str] | None = None) -> int:
             print(f"check failed: {drift} drift(s)", file=sys.stderr)
             return 1
         return 0
+
+    if args.org_profile_source_commit or args.org_profile_generated_on:
+        parser.error(
+            "--org-profile-source-commit and --org-profile-generated-on require --org-profile"
+        )
 
     repo_ids: list[str]
     if args.all:

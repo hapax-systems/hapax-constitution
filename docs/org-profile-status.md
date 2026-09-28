@@ -1,6 +1,10 @@
 # Recheck organization profile status
 
-The profile carries the date and source commit used for its generated revision.
+The public profile carries the date and source commit used for its generated revision.
+The pinned fixture holds placeholders for that line, because a source commit
+cannot name itself. Supply the date and the constitution commit that landed on
+`main` when generating the `.github` page; a PR-branch commit is not a public
+source revision.
 Rendering the page does not repeat repository-status inspection. Before
 releasing a profile revision, run this read-only witness from the repository
 root with Bash, Git, GitHub CLI, ripgrep and sha256sum available. GitHub CLI must
@@ -10,10 +14,12 @@ command or captured output.
 ```bash
 # Use a new output path for each observation; preserve previous evidence.
 (set -o noclobber; bash docs/recheck-org-profile.sh > /tmp/org-profile-status-NEW.txt)
+# For a checkout with a different sibling name, set
+# ORG_PROFILE_CONSUMER_README=/path/to/.github/profile/README.md.
 ```
 
 The command records the observation time, source revision and content hashes,
-the profile's generation line, the current public repository inventory,
+the checked-out `.github` profile's generation line, the current public repository inventory,
 the explicitly linked spine v0.1.1 release, GitHub's latest spine release, and
 agentgov's archive state, published release and license source at a pinned commit. It stops on a
 failed command; a partial capture is failed evidence, not a passing recheck.
@@ -30,5 +36,5 @@ Keep the original dated evidence and this fresh observation separate. A recheck
 today cannot establish what was available on an earlier date. If current facts
 contradict the copy, hold publication and correct the source under its review
 process. Any change to the generation line or other generated copy requires a new
-byte fixture and digest, a matching `.github/profile/README.md` candidate and
+template fixture and digest, a matching `.github/profile/README.md` candidate and
 independent review. Never advance the generation date just because rendering succeeded.

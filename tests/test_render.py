@@ -13,7 +13,7 @@ import subprocess
 import sys
 from contextlib import redirect_stdout
 from dataclasses import replace
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
 from unittest.mock import patch
@@ -48,8 +48,69 @@ from sdlc.render.repo_registry import (
     load_registry,
 )
 
+_PROFILE_SOURCE_COMMIT = "a" * 40
+_PROFILE_GENERATED_ON = "2026-09-28"
+_PROFILE_CLI_ARGS = [
+    "--org-profile",
+    "--org-profile-source-commit",
+    _PROFILE_SOURCE_COMMIT,
+    "--org-profile-generated-on",
+    _PROFILE_GENERATED_ON,
+]
+
+
+def _profile_render(registry: dict[str, RepoSpec]) -> str:
+    return org_profile_readme.render(
+        registry, source_commit=_PROFILE_SOURCE_COMMIT, generated_on=_PROFILE_GENERATED_ON
+    )
+
 
 # --- Registry --------------------------------------------------------------
+
+
+def test_org_profile_provenance_comes_from_generation_inputs() -> None:
+    registry = load_registry()
+    first = org_profile_readme.render(registry, source_commit="a" * 40, generated_on="2026-09-28")
+    second = org_profile_readme.render(registry, source_commit="b" * 40, generated_on="2026-09-29")
+    assert (
+        "Generated on September 28, 2026 from hapax-constitution source commit " + "a" * 40 + "."
+        in first
+    )
+    assert (
+        "Generated on September 29, 2026 from hapax-constitution source commit " + "b" * 40 + "."
+        in second
+    )
+    assert "PENDING" not in first + second
+    with pytest.raises(ValueError, match="40 lowercase hexadecimal"):
+        org_profile_readme.render(registry, source_commit="PENDING", generated_on="2026-09-28")
+
+
+def test_org_profile_r3_summaries_carry_readme_limits() -> None:
+    body = org_profile_readme.render(
+        load_registry(), source_commit="a" * 40, generated_on="2026-09-28"
+    )
+    assert "council and officium HTTP APIs as bounded tools" in body
+    assert "logos APIs" not in body
+    assert "not HR software and not offered as a service" in body
+    assert body.count("; not a health claim") == 2
+
+
+def test_org_profile_cli_refuses_generation_without_source_identity() -> None:
+    with pytest.raises(SystemExit) as missing:
+        cli.main(["--org-profile", "--dry-run"])
+    assert missing.value.code == 2
+    with pytest.raises(SystemExit) as invalid:
+        cli.main(
+            [
+                "--org-profile",
+                "--dry-run",
+                "--org-profile-source-commit",
+                "PENDING",
+                "--org-profile-generated-on",
+                "2026-09-28",
+            ]
+        )
+    assert invalid.value.code == 2
 
 
 def test_registry_has_current_first_party_repos() -> None:
@@ -473,7 +534,7 @@ def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
 
 
 def test_org_profile_readme_orients_public_portfolio_without_private_repo_table() -> None:
-    body = org_profile_readme.render(load_registry())
+    body = _profile_render(load_registry())
     assert body.startswith("# Hapax Research Lab")
     assert "research and engineering staff are AI agents" in body
     assert "under the GitHub organization handle `hapax-systems`" in body
@@ -504,7 +565,7 @@ def test_org_profile_readme_orients_public_portfolio_without_private_repo_table(
 
 
 def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
-    body = org_profile_readme.render(load_registry())
+    body = _profile_render(load_registry())
     assert "private during restructure" not in body
     assert "describe measured capability" not in body
     assert "Hapax is open source" not in body
@@ -559,14 +620,19 @@ def test_org_profile_matches_committed_bytes_and_full_hash(tmp_path: Path) -> No
     # Update the fixture and digest only alongside a reviewed consumer update.
     # Candidate regeneration for the R1-R9 repair of #7 @ 4f7809df.
     # Publication still requires independent re-panel at the new head.
-    expected = (Path(__file__).parent / "fixtures" / "org-profile-README.md").read_bytes()
-    assert sha256(expected).hexdigest() == (
-        "436ae230bdd9dde60538d9c1e7f0193fae9550e46969f136dc8e7612900b3eb1"
+    template = (Path(__file__).parent / "fixtures" / "org-profile-README.md").read_text()
+    assert sha256(template.encode()).hexdigest() == (
+        "ff6fbbf29bec0e87eeeb6a930115aa72dc177b9aefbcb92976dc180ace1cb39e"
     )
-    assert org_profile_readme.render(load_registry()).encode("utf-8") == expected
-    assert cli.main(["--org-profile", "--target-root", str(tmp_path)]) == 0
+    expected = (
+        template.replace("{{GENERATED_ON}}", "September 28, 2026")
+        .replace("{{SOURCE_COMMIT}}", _PROFILE_SOURCE_COMMIT)
+        .encode()
+    )
+    assert _profile_render(load_registry()).encode("utf-8") == expected
+    assert cli.main([*_PROFILE_CLI_ARGS, "--target-root", str(tmp_path)]) == 0
     assert (tmp_path / "profile" / "README.md").read_bytes() == expected
-    assert cli.main(["--org-profile", "--check", "--target-root", str(tmp_path)]) == 0
+    assert cli.main([*_PROFILE_CLI_ARGS, "--check", "--target-root", str(tmp_path)]) == 0
 
 
 @pytest.mark.parametrize(
@@ -604,7 +670,7 @@ def test_org_profile_rejects_ineligible_required_entries(repo_id: str, invalid_s
         registry[repo_id] = replace(registry[repo_id], visibility=RepoVisibility(invalid_state))
         reason = invalid_state
     with pytest.raises(ValueError) as error:
-        org_profile_readme.render(registry)
+        _profile_render(registry)
     message = str(error.value)
     assert repo_id in message
     assert reason in message
@@ -628,10 +694,10 @@ def test_constitution_readme_describes_agentgov_as_archived_evidence() -> None:
 
 def test_org_profile_ignores_ineligible_entries_outside_required_portfolio() -> None:
     registry = load_registry()
-    expected = org_profile_readme.render(registry)
+    expected = _profile_render(registry)
     for repo_id in ("hapax-coord", "tabbyAPI", "atlas-voice-training"):
         del registry[repo_id]
-    assert org_profile_readme.render(registry) == expected
+    assert _profile_render(registry) == expected
 
 
 _PROFILE_GRANTS = json.loads(
@@ -681,7 +747,7 @@ def test_org_profile_license_links_use_existing_repository_authority(
         assert "exception" not in evidence
         expected_class = grant
     assert registry[repo_id].license_class.value == expected_class
-    body = org_profile_readme.render(registry)
+    body = _profile_render(registry)
     if repo_id == "agentgov":
         assert "Its MIT-licensed source" in body
         return
@@ -700,7 +766,7 @@ def test_org_profile_rejects_registry_license_drift_before_writes(
     changed = LicenseClass.APACHE_2_0 if old is LicenseClass.MIT else LicenseClass.MIT
     registry[repo_id] = replace(registry[repo_id], license_class=changed)
     with pytest.raises(ValueError) as exc:
-        org_profile_readme.render(registry)
+        _profile_render(registry)
     message = str(exc.value)
     for text in (
         repo_id,
@@ -724,9 +790,11 @@ def test_org_profile_rejects_registry_license_drift_before_writes(
     raw["repos"][repo_id]["license_class"] = changed.value
     changed_registry = tmp_path / "repos.yaml"
     changed_registry.write_text(yaml.safe_dump(raw))
-    with patch("sdlc.render.cli.load_registry", return_value=load_registry(changed_registry)):
-        with pytest.raises(ValueError, match="license_class"):
-            cli.main(["--org-profile", "--target-root", str(tmp_path)])
+    with (
+        patch("sdlc.render.cli.load_registry", return_value=load_registry(changed_registry)),
+        pytest.raises(ValueError, match="license_class"),
+    ):
+        cli.main([*_PROFILE_CLI_ARGS, "--target-root", str(tmp_path)])
     assert target.read_bytes() == b"existing consumer bytes\n"
     assert target.stat().st_mtime_ns == before.st_mtime_ns
 
@@ -833,7 +901,7 @@ def test_cli_dry_run_prints_all_artifacts() -> None:
 def test_cli_dry_run_prints_org_profile() -> None:
     buf = io.StringIO()
     with redirect_stdout(buf):
-        rc = cli.main(["--org-profile", "--dry-run"])
+        rc = cli.main([*_PROFILE_CLI_ARGS, "--dry-run"])
     output = buf.getvalue()
     assert rc == 0
     assert "# profile/README.md" in output
@@ -842,7 +910,7 @@ def test_cli_dry_run_prints_org_profile() -> None:
 
 
 def test_cli_org_profile_write_creates_nested_profile_readme(tmp_path: Path) -> None:
-    rc = cli.main(["--org-profile", "--target-root", str(tmp_path)])
+    rc = cli.main([*_PROFILE_CLI_ARGS, "--target-root", str(tmp_path)])
     assert rc == 0
     written = tmp_path / "profile" / "README.md"
     assert written.exists()
@@ -871,7 +939,7 @@ def test_cli_check_mode_detects_drift(tmp_path: Path) -> None:
 @pytest.mark.parametrize(
     ("target_args", "filename"),
     [
-        (["--org-profile"], "profile/README.md"),
+        (_PROFILE_CLI_ARGS, "profile/README.md"),
         (["--repo", "hapax-council", "--file", "SUPPORT.md"], "SUPPORT.md"),
         (["--all", "--file", "SUPPORT.md"], "SUPPORT.md"),
     ],
@@ -1151,10 +1219,12 @@ def test_org_profile_recheck_records_successful_observations(tmp_path: Path) -> 
         "sdlc/render/repos.yaml",
         "tests/fixtures/org-profile-README.md",
     ]
+    consumer = tmp_path / "profile-README.md"
+    consumer.write_text(_profile_render(load_registry()))
     before = {path: ((root / path).read_bytes(), (root / path).stat()) for path in source_paths}
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True)
     status = subprocess.check_output(["git", "status", "--short"], cwd=root, text=True)
-    start = datetime.now(timezone.utc).replace(microsecond=0)
+    start = datetime.now(UTC).replace(microsecond=0)
     result = subprocess.run(
         ["bash", "docs/recheck-org-profile.sh"],
         cwd=root,
@@ -1167,16 +1237,17 @@ def test_org_profile_recheck_records_successful_observations(tmp_path: Path) -> 
             "GITHUB_TOKEN": "synthetic-test-token-do-not-emit",
             "RECHECK_TEST_TRACE": str(trace),
             "RECHECK_TEST_RESPONSES": str(response_file),
+            "ORG_PROFILE_CONSUMER_README": str(consumer),
         },
         check=False,
     )
-    end = datetime.now(timezone.utc)
+    end = datetime.now(UTC)
     assert result.returncode == 0, result.stderr
     assert result.stderr == ""
     assert json.loads(trace.read_text()) == expected_calls
     observed_line, remaining = result.stdout.split("\n", 1)
     observed = datetime.strptime(observed_line, "Observed at: %Y-%m-%dT%H:%M:%SZ").replace(
-        tzinfo=timezone.utc
+        tzinfo=UTC
     )
     assert start <= observed <= end
     expected = head + status
@@ -1185,7 +1256,7 @@ def test_org_profile_recheck_records_successful_observations(tmp_path: Path) -> 
         assert (root / path).read_bytes() == data
         after = (root / path).stat()
         assert (after.st_mode, after.st_mtime_ns) == (stat.st_mode, stat.st_mtime_ns)
-    profile_text = (root / "tests/fixtures/org-profile-README.md").read_text()
+    profile_text = consumer.read_text()
     expected += next(
         line + "\n" for line in profile_text.splitlines() if line.startswith("Generated on ")
     )
@@ -1216,6 +1287,8 @@ def test_org_profile_recheck_stops_on_failed_observation(tmp_path: Path, fail_at
     )
     stub.chmod(0o755)
     trace = tmp_path / "calls.txt"
+    consumer = tmp_path / "profile-README.md"
+    consumer.write_text(_profile_render(load_registry()))
     env = {
         **os.environ,
         "PATH": f"{tmp_path}{os.pathsep}{os.environ['PATH']}",
@@ -1223,6 +1296,7 @@ def test_org_profile_recheck_stops_on_failed_observation(tmp_path: Path, fail_at
         "GITHUB_TOKEN": "synthetic-test-token-do-not-emit",
         "RECHECK_TEST_TRACE": str(trace),
         "RECHECK_TEST_FAIL_AT": str(fail_at),
+        "ORG_PROFILE_CONSUMER_README": str(consumer),
     }
     result = subprocess.run(
         ["bash", "docs/recheck-org-profile.sh"],

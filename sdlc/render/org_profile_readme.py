@@ -7,6 +7,10 @@ existing grant. Rendering does not publish or authorize publication.
 
 from __future__ import annotations
 
+import re
+from calendar import month_name
+from datetime import date
+
 from sdlc.render.repo_registry import DEFAULT_GITHUB_OWNER, LicenseClass, RepoSpec, RepoVisibility
 
 ORG_PROFILE_PATH = "profile/README.md"
@@ -55,20 +59,18 @@ _START_REPOS = (
 )
 _SUPPORTING_REPOS = ("hapax-officium", "hapax-phone", "hapax-watch", "hapax-assets")
 
-_PROVENANCE = "Generated on September 28, 2026 from hapax-constitution source commit aeca3f50d47084ec3fcf92a4034342f71bf447d5."
-
 # Reviewed public summaries, grounded in each linked repository README. These
 # describe the artifact; they do not change the registry's other consumers.
 _PROFILE_SUMMARIES = {
-    "hapax-mcp": "MCP bridge to the existing logos APIs for compatible clients",
+    "hapax-mcp": "MCP bridge that presents the council and officium HTTP APIs as bounded tools for compatible MCP clients",
     "reins": "Terminal cockpit for inspecting agent work and delivery state",
     "hapax-spine": "Runtime package for events, routing, receipts, quotas and projections",
     "hapax-council": "Source for the agent-work coordination and review environment",
     "hapax-constitution": "Governance specification and repository presentation tooling",
     "hapax-research-ledger": "Numeric observations with caveats and validation metadata",
-    "hapax-officium": "Internal management decision support, published for inspection rather than offered as a service",
-    "hapax-phone": "Android source documenting phone context signals and privacy boundaries",
-    "hapax-watch": "Wear OS source documenting biometric and context signals and privacy boundaries",
+    "hapax-officium": "Internal management decision support, published for inspection; not HR software and not offered as a service",
+    "hapax-phone": "Android source documenting phone context signals and privacy boundaries; not a health claim",
+    "hapax-watch": "Wear OS source documenting biometric and context signals and privacy boundaries; not a health claim",
     "hapax-assets": "Mirror of approved public assets with provenance and per-asset notices",
 }
 
@@ -120,8 +122,22 @@ This page is generated from the [profile source](https://github.com/hapax-system
 """
 
 
-def render(registry: dict[str, RepoSpec]) -> str:
+def provenance_line(*, source_commit: str, generated_on: str) -> str:
+    """Format a caller-supplied source revision and generation date."""
+    if not re.fullmatch(r"[0-9a-f]{40}", source_commit):
+        raise ValueError("source_commit must be 40 lowercase hexadecimal characters")
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", generated_on):
+        raise ValueError("generated_on must be an ISO calendar date (YYYY-MM-DD)")
+    day = date.fromisoformat(generated_on)
+    return (
+        f"Generated on {month_name[day.month]} {day.day}, {day.year} "
+        f"from hapax-constitution source commit {source_commit}."
+    )
+
+
+def render(registry: dict[str, RepoSpec], *, source_commit: str, generated_on: str) -> str:
     """Render only required entries with approved public first-party ownership."""
+    provenance = provenance_line(source_commit=source_commit, generated_on=generated_on)
     # Validate the historical link as well as both tables before emitting copy.
     problems = []
     for repo_id in (*_START_REPOS, *_SUPPORTING_REPOS, "agentgov"):
@@ -169,7 +185,9 @@ def render(registry: dict[str, RepoSpec]) -> str:
         + _BETWEEN_TABLES
         + _table(public, _SUPPORTING_REPOS, "Role")
         + _AFTER_TABLES
-        + "\n" + _PROVENANCE + "\n"
+        + "\n"
+        + provenance
+        + "\n"
     )
 
 
