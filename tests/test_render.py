@@ -475,9 +475,9 @@ def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
 def test_org_profile_readme_orients_public_portfolio_without_private_repo_table() -> None:
     body = org_profile_readme.render(load_registry())
     assert body.startswith("# Hapax Research Lab")
-    # Repair bc3abd52 finding 1: one lab name, and "Hapax Systems" is not an entity.
-    assert "Hapax Research Lab is an agent-staffed R&D laboratory." in body
-    assert "holds its public code, specifications and records" in body
+    assert "research and engineering staff are AI agents" in body
+    assert "under the GitHub organization handle `hapax-systems`" in body
+    assert "Byline: `hrl-han`. Legal entity (as filed):" in body
     assert "Hapax Research Labs" not in body
     assert "public research program of Hapax Systems" not in body
     for repo_id in (
@@ -496,8 +496,8 @@ def test_org_profile_readme_orients_public_portfolio_without_private_repo_table(
         assert f"[{repo_id}](https://github.com/hapax-systems/{repo_id})" in body
     assert "hapax-coord](https://github.com/hapax-systems/hapax-coord)" not in body
     assert "| [agentgov]" not in body
-    assert "**archived historical\nrepository**" in body
-    assert "not the current adoption entry point" in body
+    assert "was retired on 24 September 2026 at v0.3.1" in body
+    assert "not a current recommendation to deploy" in body
     assert "releases/tag/v0.1.1" in body
     assert "profile source" in body
     assert "Corrections should identify" in body
@@ -516,9 +516,20 @@ def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
     assert "Business Source License 1.1" in body
     assert "PolyForm Strict 1.0.0" in body
     assert "Source availability does not" in body
-    assert "not a claim of an established prospective scoring record" in body
-    assert "numeric research ledger is not a prediction register" in body
-    assert "These are separate dimensions" in body
+    assert "No repository here is offered as a supported product or hosted service" in body
+    assert "| Repository | What to inspect | Use | License |" in body
+    assert "| Repository | Role | Use | License |" in body
+    assert "Inspect; production use limited by BSL 1.1" in body
+    assert "Inspect only under PolyForm Strict" in body
+    assert "Specification: CC BY-NC-ND; tooling: Apache-2.0" in body
+    assert "Data: CC0" in body
+    assert "Hapax Logos APIs" not in body
+    assert "Cockpit and API for inspecting delivery state and governed command paths" not in body
+    assert "Management decision-support apparatus" not in body
+    assert "Our public claims must remain" not in body
+    assert "Position, test, score, implication" not in body
+    assert "The tables list the main repositories" in body
+    assert "For deployment requirements, see the READMEs" in body
     # Repairs bc3abd52 findings 2 and 4: the slogan and the register promise are
     # off the org page. Pinned as absent so a re-render cannot quietly restore them.
     assert "finding out, in public, with instruments" not in body
@@ -546,12 +557,11 @@ def test_archived_agentgov_consumers_do_not_invite_adoption(renderer) -> None:
 def test_org_profile_matches_committed_bytes_and_full_hash(tmp_path: Path) -> None:
     # This reviewed artifact is also the candidate for hapax-systems/.github#7.
     # Update the fixture and digest only alongside a reviewed consumer update.
-    # Updated 2026-09-25 for dev20's review of #7 @ bc3abd52
-    # (frame/public-estate/u2-panel/PR7-ORG-PROFILE-REVIEW-bc3abd52.md, repairs 1-4),
-    # which is the reviewed consumer update this comment requires.
+    # Candidate regeneration for the R1-R9 repair of #7 @ 4f7809df.
+    # Publication still requires independent re-panel at the new head.
     expected = (Path(__file__).parent / "fixtures" / "org-profile-README.md").read_bytes()
     assert sha256(expected).hexdigest() == (
-        "4b4203166c2b32fab5968e4435b55851a82a42170e313df50842985b961c976d"
+        "f18ca764aea20cc59542d32e6c909b15359cfb66a60a90558b803f14c9600043"
     )
     assert org_profile_readme.render(load_registry()).encode("utf-8") == expected
     assert cli.main(["--org-profile", "--target-root", str(tmp_path)]) == 0
@@ -1175,7 +1185,10 @@ def test_org_profile_recheck_records_successful_observations(tmp_path: Path) -> 
         assert (root / path).read_bytes() == data
         after = (root / path).stat()
         assert (after.st_mode, after.st_mtime_ns) == (stat.st_mode, stat.st_mtime_ns)
-    expected += "Repository and release status checked September 24, 2026.\n"
+    profile_text = (root / "tests/fixtures/org-profile-README.md").read_text()
+    expected += next(
+        line + "\n" for line in profile_text.splitlines() if line.startswith("Generated on ")
+    )
     expected += "".join(responses[:5])
     expected += f"agentgov source commit: {agentgov_head}\n"
     expected += "".join(responses[6:])

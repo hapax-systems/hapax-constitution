@@ -1,7 +1,7 @@
 # Recheck organization profile status
 
-The profile's September 24, 2026 status date describes a historical inspection.
-Rendering the page does not repeat that inspection or update the date. Before
+The profile carries the date and source commit used for its generated revision.
+Rendering the page does not repeat repository-status inspection. Before
 releasing a profile revision, run this read-only witness from the repository
 root with Bash, Git, GitHub CLI, ripgrep and sha256sum available. GitHub CLI must
 already have its normal authenticated access; do not put credentials in the
@@ -13,7 +13,7 @@ command or captured output.
 ```
 
 The command records the observation time, source revision and content hashes,
-the profile's historical status line, the current public repository inventory,
+the profile's generation line, the current public repository inventory,
 the explicitly linked spine v0.1.1 release, GitHub's latest spine release, and
 agentgov's archive state, published release and license source at a pinned commit. It stops on a
 failed command; a partial capture is failed evidence, not a passing recheck.
@@ -29,6 +29,6 @@ snapshot link. This witness does not install a package or prove runtime behavior
 Keep the original dated evidence and this fresh observation separate. A recheck
 today cannot establish what was available on an earlier date. If current facts
 contradict the copy, hold publication and correct the source under its review
-process. Any change to the status date or other generated copy requires a new
+process. Any change to the generation line or other generated copy requires a new
 byte fixture and digest, a matching `.github/profile/README.md` candidate and
-independent review. Never advance the date just because rendering succeeded.
+independent review. Never advance the generation date just because rendering succeeded.

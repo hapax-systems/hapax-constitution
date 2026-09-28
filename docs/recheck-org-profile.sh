@@ -7,7 +7,7 @@ git rev-parse HEAD
 git status --short
 sha256sum sdlc/render/org_profile_readme.py sdlc/render/repos.yaml \
   tests/fixtures/org-profile-README.md
-rg -o 'Repository and release status checked [^.]+\.' \
+rg -o 'Generated on [^.]+ from hapax-constitution source commit [0-9a-f]{40}\.' \
   tests/fixtures/org-profile-README.md
 
 gh api --paginate 'orgs/hapax-systems/repos?type=public&per_page=100' \
