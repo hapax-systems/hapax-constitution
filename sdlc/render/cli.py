@@ -6,7 +6,7 @@ Modes:
     --org-profile         render hapax-systems/.github profile/README.md
     --check               diff-mode (no-write); exit 1 on drift
     --dry-run             print to stdout instead of writing
-    --target-root <path>  override the directory where files are written
+    --target-root <path>  override the directory for --repo or --org-profile
                           (defaults to a sibling of hapax-constitution
                           named after the repo id)
 
@@ -27,8 +27,8 @@ from __future__ import annotations
 
 import argparse
 import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 from sdlc.render import (
     citation_cff,
@@ -75,6 +75,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Render the public Hapax Systems organization profile README",
     )
     parser.add_argument(
+        "--org-profile-source-commit",
+        help="40-character constitution commit used to generate the organization profile",
+    )
+    parser.add_argument(
+        "--org-profile-generated-on",
+        help="Organization profile generation date (YYYY-MM-DD)",
+    )
+    parser.add_argument(
         "--check",
         action="store_true",
         help="Drift-detection mode: print diffs and exit 1 if any drift exists",
@@ -89,7 +97,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=None,
         help=(
-            "Override the directory where files are written. Defaults to "
+            "Override the directory for --repo or --org-profile (not --all). Defaults to "
             "`<hapax-constitution-parent>/<repo_id>/`."
         ),
     )
@@ -159,6 +167,14 @@ def write_or_compare(target_root: Path, artifacts: dict[str, str], *, check_only
         else:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(new_body, encoding="utf-8")
+    if check_only and drift_count:
+        print(
+            "Next action: Reconcile the consumer with source registry "
+            "sdlc/render/repos.yaml and its renderer in sdlc/render/. "
+            "Rerender with the same target/file options without --check, "
+            "review the generated diff, then rerun --check.",
+            file=sys.stderr,
+        )
     return drift_count
 
 
@@ -195,13 +211,40 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
 
+    if args.all and args.target_root is not None:
+        parser.error(
+            "--all cannot be combined with --target-root: repositories would "
+            "overwrite the same files. Next action: use --repo <id> --target-root <path> "
+            "for each repository, retaining any --file selection; review the generated "
+            "diff, then repeat with --check. Use --all without --target-root only when "
+            "the default sibling checkouts are the intended destinations."
+        )
+
     registry = load_registry()
     identity = load_operator_identity()
 
     if args.org_profile:
         if args.file:
             parser.error("--file is only valid with --repo or --all")
-        artifacts = {org_profile_readme.ORG_PROFILE_PATH: org_profile_readme.render(registry)}
+        if not args.org_profile_source_commit or not args.org_profile_generated_on:
+            parser.error(
+                "--org-profile requires --org-profile-source-commit and "
+                "--org-profile-generated-on; use the constitution commit that lands on main "
+                "when generating the public page"
+            )
+        try:
+            org_profile_readme.provenance_line(
+                source_commit=args.org_profile_source_commit,
+                generated_on=args.org_profile_generated_on,
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
+        body = org_profile_readme.render(
+            registry,
+            source_commit=args.org_profile_source_commit,
+            generated_on=args.org_profile_generated_on,
+        )
+        artifacts = {org_profile_readme.ORG_PROFILE_PATH: body}
         if args.dry_run:
             sep = "=" * 70
             print(f"\n{sep}\n# {org_profile_readme.ORG_PROFILE_PATH}\n{sep}")
@@ -213,6 +256,11 @@ def main(argv: Iterable[str] | None = None) -> int:
             print(f"check failed: {drift} drift(s)", file=sys.stderr)
             return 1
         return 0
+
+    if args.org_profile_source_commit or args.org_profile_generated_on:
+        parser.error(
+            "--org-profile-source-commit and --org-profile-generated-on require --org-profile"
+        )
 
     repo_ids: list[str]
     if args.all:

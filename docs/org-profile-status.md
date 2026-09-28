@@ -1,0 +1,40 @@
+# Recheck organization profile status
+
+The public profile carries the date and source commit used for its generated revision.
+The pinned fixture holds placeholders for that line, because a source commit
+cannot name itself. Supply the date and the constitution commit that landed on
+`main` when generating the `.github` page; a PR-branch commit is not a public
+source revision.
+Rendering the page does not repeat repository-status inspection. Before
+releasing a profile revision, run this read-only witness from the repository
+root with Bash, Git, GitHub CLI, ripgrep and sha256sum available. GitHub CLI must
+already have its normal authenticated access; do not put credentials in the
+command or captured output.
+
+```bash
+# Use a new output path for each observation; preserve previous evidence.
+(set -o noclobber; bash docs/recheck-org-profile.sh > /tmp/org-profile-status-NEW.txt)
+# For a checkout with a different sibling name, set
+# ORG_PROFILE_CONSUMER_README=/path/to/.github/profile/README.md.
+```
+
+The command records the observation time, source revision and content hashes,
+the checked-out `.github` profile's generation line, the current public repository inventory,
+the explicitly linked spine v0.1.1 release, GitHub's latest spine release, and
+agentgov's archive state, published release and license source at a pinned commit. It stops on a
+failed command; a partial capture is failed evidence, not a passing recheck.
+It performs no source, registry, repository-setting or publication mutations.
+
+Compare the inventory with every repository linked in the generated profile.
+Confirm that agentgov is still archived and inspect its pinned license text;
+GitHub's SPDX detection alone is not license authority. Confirm that spine's
+linked v0.1.1 release is public and not a draft. The profile names a particular
+artifact, not the latest release, so a newer release does not invalidate that
+snapshot link. This witness does not install a package or prove runtime behavior.
+
+Keep the original dated evidence and this fresh observation separate. A recheck
+today cannot establish what was available on an earlier date. If current facts
+contradict the copy, hold publication and correct the source under its review
+process. Any change to the generation line or other generated copy requires a new
+template fixture and digest, a matching `.github/profile/README.md` candidate and
+independent review. Never advance the generation date just because rendering succeeded.
