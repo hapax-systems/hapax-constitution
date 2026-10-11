@@ -8,10 +8,12 @@ from __future__ import annotations
 
 import io
 import json
+import re
 import subprocess
 from contextlib import redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
+from urllib.parse import urldefrag
 
 import pytest
 import yaml
@@ -466,14 +468,96 @@ def test_contributing_md_refuses_explicitly(council_repo: RepoSpec) -> None:
     assert "Refusal Brief" in body
 
 
-def test_security_md_publishes_sigstore_path_not_email(
+_EMAIL_TOKEN = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
+_RECHECK_LEG = re.compile(r"^curl -fsSL (\S+) \| grep -qF '(.*)'$")
+
+
+def _recheck_legs(body: str) -> list[tuple[str, str]]:
+    """Parse the rendered address check into (url, grep-pattern) legs."""
+    block = body.split("```bash\n", 1)[1].split("\n```", 1)[0]
+    legs = []
+    for leg in block.strip("\n").split(" && "):
+        match = _RECHECK_LEG.match(leg)
+        assert match is not None, f"unparsable recheck leg: {leg!r}"
+        legs.append((match.group(1), match.group(2)))
+    return legs
+
+
+def _run_recheck(legs: list[tuple[str, str]], page: str) -> int:
+    """Evaluate the parsed recheck against a page body, as the shell would."""
+    for _url, pattern in legs:
+        if pattern not in page:
+            return 1
+    return 0
+
+
+def _fragment_identity() -> OperatorIdentity:
+    return OperatorIdentity(
+        full_name="Quentin Zarbacaster",
+        orcid=None,
+        contact_url="https://lab.example/about/#contact",
+        contact_email="security@lab.example",
+    )
+
+
+def test_security_md_publishes_sigstore_path_and_network_contact(
     council_repo: RepoSpec, identity: OperatorIdentity
 ) -> None:
     body = security_md.render(council_repo, identity)
     assert identity.contact_url in body
     assert "Sigstore" in body
-    # No email pattern (rough heuristic — no '@example' or similar)
-    assert "@" not in body or "@type" in body  # JSON-LD @type is fine
+    tokens = _EMAIL_TOKEN.findall(body)
+    assert tokens, "expected the network contact address in the body"
+    assert set(tokens) == {identity.contact_email}
+
+
+def test_security_md_recheck_derives_page_and_inputs_from_identity(
+    council_repo: RepoSpec, identity: OperatorIdentity
+) -> None:
+    for operator in (_fragment_identity(), identity):
+        body = security_md.render(council_repo, operator)
+        page, _fragment = urldefrag(operator.contact_url)
+        legs = _recheck_legs(body)
+        assert legs, "rendered recheck has no legs"
+        for url, _pattern in legs:
+            assert url == page, f"recheck fetches {url!r}, not the fragmentless page"
+        assert any(pattern == operator.contact_email for _url, pattern in legs)
+        assert "-fsSIL" not in body
+        assert "curl -I" not in body
+
+
+def test_security_md_recheck_fails_without_anchor_or_address(
+    council_repo: RepoSpec,
+) -> None:
+    body = security_md.render(council_repo, _fragment_identity())
+    legs = _recheck_legs(body)
+    both = '<section id="contact">write to security@lab.example</section>'
+    no_anchor = "write to security@lab.example"
+    no_address = '<section id="contact">write to the lab</section>'
+    assert _run_recheck(legs, both) == 0
+    assert _run_recheck(legs, no_anchor) != 0
+    assert _run_recheck(legs, no_address) != 0
+
+
+def test_security_md_recheck_renders_fragment_and_fragmentless_shapes(
+    council_repo: RepoSpec, identity: OperatorIdentity
+) -> None:
+    with_anchor = _recheck_legs(security_md.render(council_repo, _fragment_identity()))
+    assert len(with_anchor) == 2
+    assert with_anchor[0] == ("https://lab.example/about/", 'id="contact"')
+    assert with_anchor[1] == ("https://lab.example/about/", "security@lab.example")
+
+    without = _recheck_legs(security_md.render(council_repo, identity))
+    assert len(without) == 1
+    assert without[0][1] == identity.contact_email
+    assert all('id="' not in pattern for _url, pattern in without)
+
+
+def test_no_rendered_security_md_carries_retired_contact_address() -> None:
+    identity = load_operator_identity()
+    for repo in load_registry().values():
+        body = security_md.render(repo, identity)
+        assert "hapax.weblog.lol/contact" not in body, repo.id
 
 
 def test_security_md_keeps_critical_disclosures_out_of_band(
