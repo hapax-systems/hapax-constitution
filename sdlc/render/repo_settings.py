@@ -61,11 +61,22 @@ class RepoNotBootstrapped(RuntimeError):
     """
 
 
+class RepoArchived(RuntimeError):
+    """Raised when a repository is archived on GitHub.
+
+    GitHub refuses settings changes on archived repositories ("To make
+    changes in an archived repository, you must unarchive the repository
+    first"). Callers skip and warn; no settings are read or written.
+    """
+
+
 def current_settings(owner: str, repo_name: str) -> RepoSettings:
     """Read live settings from GitHub via the ``gh`` CLI.
 
     Raises :class:`RepoNotBootstrapped` on 404 so callers can skip-and-
     warn for registry-declared repos the operator hasn't created yet.
+    Raises :class:`RepoArchived` when GitHub reports the repository
+    archived; archived repos refuse all settings changes.
     """
     result = subprocess.run(
         ["gh", "api", f"repos/{owner}/{repo_name}"],
@@ -81,6 +92,10 @@ def current_settings(owner: str, repo_name: str) -> RepoSettings:
             result.returncode, result.args, output=result.stdout, stderr=result.stderr
         )
     data = json.loads(result.stdout)
+    if data.get("archived"):
+        raise RepoArchived(
+            f"{owner}/{repo_name} is archived on GitHub; unarchive it before changing settings"
+        )
     return RepoSettings(
         has_issues=bool(data.get("has_issues")),
         has_wiki=bool(data.get("has_wiki")),
@@ -142,16 +157,20 @@ def detect_drift(
     """Compare desired vs observed for every first-party repo.
 
     Returns ``(reports, skipped)`` where ``skipped`` lists repo names
-    that don't yet exist on GitHub (registry-declared but not
-    bootstrapped). The drift-check workflow surfaces these as warnings.
+    that can't be governed on GitHub right now: registry-declared but
+    not yet bootstrapped, or archived. The drift-check workflow
+    surfaces these as warnings.
     """
     repos = repos if repos is not None else first_party_repos()
     reports: list[DriftReport] = []
     skipped: list[str] = []
     for r in repos:
+        if r.archived:
+            skipped.append(r.name)
+            continue
         try:
             observed = current_settings(owner, r.name)
-        except RepoNotBootstrapped:
+        except (RepoNotBootstrapped, RepoArchived):
             skipped.append(r.name)
             continue
         reports.append(
@@ -185,7 +204,9 @@ def main(argv: list[str] | None = None) -> int:
             f"discussions={r.observed.has_discussions!s:5s} (want {r.desired.has_discussions!s})"
         )
     for name in skipped:
-        print(f"SKIP  {args.owner}/{name:25s} (not yet bootstrapped on GitHub)")
+        print(
+            f"SKIP  {args.owner}/{name:25s} (not bootstrapped or archived on GitHub; never patched)"
+        )
 
     if not drifted:
         return 0
@@ -201,10 +222,11 @@ def main(argv: list[str] | None = None) -> int:
 
 
 __all__ = [
+    "WIKI_REPURPOSED",
     "DriftReport",
+    "RepoArchived",
     "RepoNotBootstrapped",
     "RepoSettings",
-    "WIKI_REPURPOSED",
     "apply_settings",
     "current_settings",
     "desired_settings",

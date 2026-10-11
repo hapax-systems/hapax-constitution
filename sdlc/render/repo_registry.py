@@ -110,6 +110,7 @@ class RepoSpec:
     dependencies: tuple[str, ...] = ()  # other repo ids this depends on
     topics: tuple[str, ...] = ()
     is_first_party: bool = True
+    archived: bool = False
     github_owner: str = DEFAULT_GITHUB_OWNER
     zenodo_doi: str | None = None  # populated post-first-version-mint; None pre-mint
     zenodo_concept_doi: str | None = None  # populated post-first-concept-mint; None pre-mint
@@ -191,6 +192,7 @@ def load_registry(path: Path = REGISTRY_PATH) -> dict[str, RepoSpec]:
             dependencies=tuple(payload.get("dependencies", [])),
             topics=tuple(payload.get("topics", [])),
             is_first_party=payload.get("is_first_party", True),
+            archived=payload.get("archived", False),
             github_owner=payload.get("github_owner", DEFAULT_GITHUB_OWNER),
             zenodo_doi=payload.get("zenodo_doi"),
             zenodo_concept_doi=payload.get("zenodo_concept_doi"),

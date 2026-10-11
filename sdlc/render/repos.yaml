@@ -42,9 +42,10 @@ repos:
   hapax-council:
     name: hapax-council
     description: >-
-      Source-visible Hapax Systems research/runtime for evidence-bound
-      AI-agent delivery: governed dispatch, route receipts, claim review,
-      refusal, and publication-egress controls in a single-operator estate.
+      Source-visible research/runtime from Hapax Research Lab: governed dispatch, route
+      receipts, claim review, refusal records and publication-egress controls for
+      AI-agent delivery. Published for inspection and citation; not a supported
+      framework.
     repo_type: runtime
     role_in_constellation: >-
       Primary research/runtime estate. Carries task authority, coordination,
@@ -111,10 +112,9 @@ repos:
   hapax-constitution:
     name: hapax-constitution
     description: >-
-      Governance specification for the Hapax operating environment.
-      Publishes specification/publication material plus the hapax-sdlc
-      enforcement/render tooling consumed by hapax-council and
-      hapax-officium. Not seeking contributors.
+      Governance specification and public-metadata authority for Hapax Research Lab
+      repositories, with the hapax-sdlc render/enforcement tooling. Not seeking
+      contributors.
     repo_type: spec
     role_in_constellation: >-
       Anchor for repo metadata and governance. Defines axioms,
@@ -173,9 +173,9 @@ repos:
   hapax-officium:
     name: hapax-officium
     description: >-
-      Source-visible internal management decision-support runtime for
-      Hapax Systems boundary review. Published as an artifact, not as
-      HR software, SaaS, or an adoption surface.
+      Source-visible internal management decision-support runtime from Hapax Research
+      Lab, published for boundary and governance review. Not HR software, not a SaaS
+      product, not an adoption surface.
     repo_type: runtime
     role_in_constellation: >-
       Management-domain runtime. Consumes the constitution and management
@@ -231,9 +231,9 @@ repos:
   hapax-watch:
     name: hapax-watch
     description: >-
-      Wrist biometric source for Hapax Systems. Public source-visible
-      Wear OS bridge for approved sensor/context data and local operator
-      awareness display.
+      Source-visible Wear OS bridge from Hapax Research Lab: approved sensor/context
+      data to the lab's receiver, plus a local awareness tile. Not a consumer health
+      product.
     repo_type: wear-os
     role_in_constellation: >-
       Wrist biometric source for context ingestion and local awareness
@@ -286,9 +286,9 @@ repos:
   hapax-phone:
     name: hapax-phone
     description: >-
-      Mobile context source for Hapax Systems. Public source-visible
-      Android bridge for approved daily health/context summaries and
-      local operator awareness display.
+      Source-visible Android bridge from Hapax Research Lab: approved daily context
+      summaries to the lab's receiver, plus a local awareness surface. Not a public
+      mobile product.
     repo_type: android
     role_in_constellation: >-
       Mobile context source for Hapax. It is not a public mobile product
@@ -342,9 +342,8 @@ repos:
   hapax-mcp:
     name: hapax-mcp
     description: >-
-      Hapax Logos MCP Bridge. Public source-visible integration bridge
-      for Hapax Systems logos APIs without becoming a general-purpose MCP
-      framework.
+      MCP bridge exposing Hapax Research Lab's Logos API state and actions to MCP
+      clients. An integration bridge, not a general-purpose MCP framework. MIT.
     repo_type: library
     role_in_constellation: >-
       Logos MCP Bridge. Consumes council and officium logos APIs over
@@ -401,9 +400,9 @@ repos:
   hapax-assets:
     name: hapax-assets
     description: >-
-      Public asset mirror for approved Hapax Systems web and publication
-      surfaces. Serves reviewed artifacts and preserves per-asset license
-      notices.
+      Public asset mirror for Hapax Research Lab's web and publication surfaces:
+      reviewed artifacts at stable URLs with per-asset license notices. Not the source
+      of truth for asset selection.
     repo_type: library
     role_in_constellation: >-
       CDN-only public mirror of aesthetic-library asset bundle. Source
@@ -495,6 +494,7 @@ repos:
       - governance
       - safety
     is_first_party: true
+    archived: true
     zenodo_concept_doi: null
     related_identifiers:
       - identifier: https://github.com/hapax-systems/hapax-council
@@ -504,8 +504,9 @@ repos:
   hapax-spine:
     name: hapax-spine
     description: >-
-      SDLC-runtime mechanism package for Hapax/Reins: route projection,
-      capability receipts, quota arithmetic, and gate-event production.
+      Source-available runtime mechanism from Hapax Research Lab (BSL 1.1): append-only
+      event ledgers, policy-backed routing, receipts, quotas, EDT, projections. The
+      mechanism layer behind Reins; not a general-purpose lifecycle kernel.
     repo_type: engine
     role_in_constellation: >-
       Source-visible commercial core consumed by Reins and extracted from
@@ -557,8 +558,9 @@ repos:
   reins:
     name: reins
     description: >-
-      Read and command-preview cockpit for governed lifecycle automation.
-      Presents Hapax/Reins state without granting authority on its own.
+      Terminal cockpit from Hapax Research Lab for observing and previewing a governed
+      AI-agent delivery lifecycle. Read and command-preview today; write commands mint
+      nothing. BSL 1.1. Demo: reins --demo.
     repo_type: app
     role_in_constellation: >-
       Public product/front-door cockpit consuming hapax-spine and read
@@ -659,8 +661,9 @@ repos:
   hapax-research-ledger:
     name: hapax-research-ledger
     description: >-
-      Public-domain numeric evidence ledger for the Hapax research
-      program. Numeric and evidence-oriented, not runtime code.
+      Public-domain numeric evidence ledger for Hapax Research Lab's research program:
+      append-only records, controlled vocabularies, hashes, caveats. Data, not runtime
+      code.
     repo_type: data
     role_in_constellation: >-
       Evidence/artifact output for public research and citation. Carries
