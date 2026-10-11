@@ -56,7 +56,7 @@ def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
         "log.\n"
         "\n"
         "Address check (fails if the contact page no longer carries its "
-        "contact section or this address):\n"
+        "contact anchor or this address):\n"
         "\n"
         "```bash\n"
         f"{_recheck(identity)}\n"
