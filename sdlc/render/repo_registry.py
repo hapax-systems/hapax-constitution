@@ -131,7 +131,8 @@ class OperatorIdentity:
 
     full_name: str
     orcid: str | None
-    contact_url: str  # operator-public URL, NOT email — Sigstore disclosure path
+    contact_url: str  # public contact page for security disclosure; may carry a fragment
+    contact_email: str = "security@example.invalid"  # network disclosure address (A16)
     omg_lol_address: str = "hapax"
 
 
@@ -251,11 +252,13 @@ def load_operator_identity(
             full_name="<operator-name-unset>",
             orcid=None,
             contact_url="https://example.invalid/contact",
+            contact_email="security@example.invalid",
         )
     raw = yaml.safe_load(target.read_text(encoding="utf-8")) or {}
     return OperatorIdentity(
         full_name=raw.get("full_name", "<operator-name-unset>"),
         orcid=raw.get("orcid"),
         contact_url=raw.get("contact_url", "https://example.invalid/contact"),
+        contact_email=raw.get("contact_email", "security@example.invalid"),
         omg_lol_address=raw.get("omg_lol_address", "hapax"),
     )
