@@ -1,8 +1,12 @@
 """SECURITY.md renderer.
 
-Per the operational checklist, the disclosure path is **not** an email
-address — it is a Sigstore-signed disclosure path. Constitutional
-requirement: operator does not publish email on repository surfaces.
+The disclosure path names the network's public contact address (A16) and
+links the contact page; disclosures attach Sigstore-signed artifacts when
+applicable. The practice of not publishing an address on repository
+surfaces comes from the "Operational checklist" of
+hapax-council/docs/research/2026-04-25-github-repo-presentation.md —
+agent-written research, not a constitutional rule — and the seat's ruling
+does not apply it to the network's address.
 """
 
 from __future__ import annotations
