@@ -8,8 +8,10 @@ from __future__ import annotations
 
 import io
 import json
+import subprocess
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 import yaml
@@ -24,6 +26,7 @@ from sdlc.render import (
     notice_md,
     org_profile_readme,
     readme_section,
+    repo_settings,
     security_md,
     support_md,
     zenodo_json,
@@ -40,7 +43,6 @@ from sdlc.render.repo_registry import (
     load_operator_identity,
     load_registry,
 )
-
 
 # --- Registry --------------------------------------------------------------
 
@@ -260,6 +262,101 @@ def test_operator_referent_differs_across_seeds() -> None:
     ]
     picks = {OperatorReferentPicker.pick_for_artifact(r) for r in repo_ids}
     assert len(picks) >= 2
+
+
+# --- G3: live descriptions and the archived boundary ------------------------
+
+
+REVIEWED_LIVE_DESCRIPTIONS: dict[str, str] = {
+    "hapax-council": "Source-visible research/runtime from Hapax Research Lab: governed dispatch, route receipts, claim review, refusal records and publication-egress controls for AI-agent delivery. Published for inspection and citation; not a supported framework.",
+    "hapax-constitution": "Governance specification and public-metadata authority for Hapax Research Lab repositories, with the hapax-sdlc render/enforcement tooling. Not seeking contributors.",
+    "hapax-officium": "Source-visible internal management decision-support runtime from Hapax Research Lab, published for boundary and governance review. Not HR software, not a SaaS product, not an adoption surface.",
+    "hapax-watch": "Source-visible Wear OS bridge from Hapax Research Lab: approved sensor/context data to the lab's receiver, plus a local awareness tile. Not a consumer health product.",
+    "hapax-phone": "Source-visible Android bridge from Hapax Research Lab: approved daily context summaries to the lab's receiver, plus a local awareness surface. Not a public mobile product.",
+    "hapax-mcp": "MCP bridge exposing Hapax Research Lab's Logos API state and actions to MCP clients. An integration bridge, not a general-purpose MCP framework. MIT.",
+    "hapax-assets": "Public asset mirror for Hapax Research Lab's web and publication surfaces: reviewed artifacts at stable URLs with per-asset license notices. Not the source of truth for asset selection.",
+    "hapax-spine": "Source-available runtime mechanism from Hapax Research Lab (BSL 1.1): append-only event ledgers, policy-backed routing, receipts, quotas, EDT, projections. The mechanism layer behind Reins; not a general-purpose lifecycle kernel.",
+    "reins": "Terminal cockpit from Hapax Research Lab for observing and previewing a governed AI-agent delivery lifecycle. Read and command-preview today; write commands mint nothing. BSL 1.1. Demo: reins --demo.",
+    "hapax-research-ledger": "Public-domain numeric evidence ledger for Hapax Research Lab's research program: append-only records, controlled vocabularies, hashes, caveats. Data, not runtime code.",
+}
+
+
+def test_registry_descriptions_match_reviewed_live_table() -> None:
+    registry = load_registry()
+    for repo_id, reviewed in REVIEWED_LIVE_DESCRIPTIONS.items():
+        assert registry[repo_id].description == reviewed
+    active_public = {
+        repo_id
+        for repo_id, spec in registry.items()
+        if spec.is_first_party and spec.visibility is RepoVisibility.PUBLIC and not spec.archived
+    }
+    assert active_public == set(REVIEWED_LIVE_DESCRIPTIONS)
+
+
+def test_archived_registry_entries_are_skipped_without_api_read() -> None:
+    agentgov = load_registry()["agentgov"]
+    assert agentgov.archived is True
+
+    def refuse_read(owner: str, repo_name: str) -> None:
+        raise AssertionError(f"settings read attempted for archived {repo_name}")
+
+    with patch.object(repo_settings, "current_settings", side_effect=refuse_read):
+        reports, skipped = repo_settings.detect_drift("hapax-systems", [agentgov])
+    assert skipped == ["agentgov"]
+    assert reports == []
+
+
+def test_api_observed_archived_repository_is_skipped() -> None:
+    live_spec = load_registry()["hapax-council"]
+    payload = json.dumps(
+        {
+            "has_issues": True,
+            "has_wiki": False,
+            "has_projects": False,
+            "has_discussions": False,
+            "archived": True,
+        }
+    )
+    completed = subprocess.CompletedProcess(args=[], returncode=0, stdout=payload, stderr="")
+    with patch.object(repo_settings.subprocess, "run", return_value=completed):
+        reports, skipped = repo_settings.detect_drift("hapax-systems", [live_spec])
+    assert skipped == ["hapax-council"]
+    assert reports == []
+
+
+def test_enforce_never_patches_archived_repositories() -> None:
+    council = load_registry()["hapax-council"]
+    drifted = repo_settings.DriftReport(
+        repo_name=council.name,
+        desired=repo_settings.desired_settings(council),
+        observed=repo_settings.RepoSettings(
+            has_issues=True, has_wiki=True, has_projects=False, has_discussions=False
+        ),
+    )
+    with (
+        patch.object(repo_settings, "detect_drift", return_value=([drifted], ["agentgov"])),
+        patch.object(repo_settings, "apply_settings") as apply,
+    ):
+        exit_code = repo_settings.main(["--enforce"])
+    assert exit_code == 0
+    assert [call.args[1] for call in apply.call_args_list] == ["hapax-council"]
+
+
+def test_skip_line_names_archived_repositories_exactly() -> None:
+    buffer = io.StringIO()
+    with (
+        patch.object(repo_settings, "detect_drift", return_value=([], ["agentgov"])),
+        patch.object(repo_settings, "apply_settings") as apply,
+        redirect_stdout(buffer),
+    ):
+        exit_code = repo_settings.main(["--enforce"])
+    assert exit_code == 0
+    apply.assert_not_called()
+    expected = (
+        f"SKIP  hapax-systems/{'agentgov':25s} "
+        "(not bootstrapped or archived on GitHub; never patched)\n"
+    )
+    assert buffer.getvalue() == expected
 
 
 # --- Renderer outputs -------------------------------------------------------
