@@ -36,6 +36,7 @@ from sdlc.render import (
 )
 from sdlc.render.operator_referent import REFERENTS, OperatorReferentPicker
 from sdlc.render.repo_registry import (
+    OPERATOR_PATH,
     LicenseClass,
     OperatorIdentity,
     RepoSpec,
@@ -512,53 +513,82 @@ def test_security_md_publishes_sigstore_path_and_network_contact(
     assert set(tokens) == {identity.contact_email}
 
 
-def test_security_md_disclosure_defaults_to_unsigned(
-    council_repo: RepoSpec, identity: OperatorIdentity
-) -> None:
-    body = security_md.render(council_repo, identity)
-    assert "An unsigned message is enough" in body
+_R9_TARGET_BYTES = 2372
+_R9_TARGET_SHA256 = "8b632ae6267a4d8e8b0ad7cf146404c3197eb2b2c4978815f71c70398747f8f2"
+_R8_RENDER_BYTES = 2259
+_R8_RENDER_SHA256 = "e2745d5b57c60d6e2beb5902a62f9c7051a865cd145a453fc11fd0209ce02e6e"
+_R8_RENDER_FIXTURE = Path(__file__).resolve().parent / "fixtures" / "security_md_r8.md"
+
+_PIN_UNSIGNED_DEFAULT = "An unsigned message is enough"
+_PIN_PUBLIC_LOG_COST = "the signer's identity and the artifact's hash enter Rekor's log permanently"
+_PIN_SIGNING_ADVICE = "Sigstore's keyless signing associates"
+
+
+def _r9_pins_failed_by(body: str) -> list[str]:
+    """Return the R9 pins a rendered SECURITY.md body fails (empty = all pass).
+
+    A missing anchor is a failed pin, never an exception.
+    """
+    failed = []
+    if _PIN_UNSIGNED_DEFAULT not in body:
+        failed.append("unsigned default")
+    anchor_positions = (
+        body.find(_PIN_UNSIGNED_DEFAULT),
+        body.find(_PIN_PUBLIC_LOG_COST),
+        body.find(_PIN_SIGNING_ADVICE),
+    )
+    anchors_found = -1 not in anchor_positions
+    anchors_ordered = anchor_positions[0] < anchor_positions[1] < anchor_positions[2]
+    if not (anchors_found and anchors_ordered):
+        failed.append("public-log cost before signing advice")
+    if hashlib.sha256(body.encode("utf-8")).hexdigest() != _R9_TARGET_SHA256:
+        failed.append("golden R9 target bytes")
+    return failed
+
+
+def _committed_identity() -> OperatorIdentity:
+    """The identity committed in ``sdlc/operator.yaml``, with the local
+    override pointed at a path that does not exist. If operator.yaml drifts,
+    the golden pin goes red instead of passing while the real render moves.
+    """
+    local_override = OPERATOR_PATH.parent / "operator.local.absent.yaml"
+    assert not local_override.exists(), "committed-identity pin requires no local override"
+    return load_operator_identity(path=OPERATOR_PATH, local_path=local_override)
+
+
+def test_security_md_disclosure_defaults_to_unsigned(council_repo: RepoSpec) -> None:
+    assert _r9_pins_failed_by(security_md.render(council_repo, _committed_identity())) == []
 
 
 def test_security_md_disclosure_states_public_log_cost_before_signing_advice(
-    council_repo: RepoSpec, identity: OperatorIdentity
+    council_repo: RepoSpec,
 ) -> None:
-    body = security_md.render(council_repo, identity)
-    unsigned = body.index("An unsigned message is enough")
-    cost = body.index("the signer's identity and the artifact's hash enter Rekor's log permanently")
-    advice = body.index("Sigstore's keyless signing associates")
-    assert unsigned < cost < advice, (
-        "the unsigned default and the public-log cost must precede signing advice"
-    )
-
-
-_R9_TARGET_BYTES = 2372
-_R9_TARGET_SHA256 = "8b632ae6267a4d8e8b0ad7cf146404c3197eb2b2c4978815f71c70398747f8f2"
+    assert _r9_pins_failed_by(security_md.render(council_repo, _committed_identity())) == []
 
 
 def test_security_md_render_at_committed_identity_is_the_r9_target(
     council_repo: RepoSpec,
 ) -> None:
-    committed = OperatorIdentity(
-        full_name=" Quentin Zarbacaster ",
-        orcid=None,
-        contact_url="https://hapaxresearch.com/about/#contact",
-        contact_email="hrl-han@hapaxresearch.com",
+    body = security_md.render(council_repo, _committed_identity())
+    assert len(body.encode("utf-8")) == _R9_TARGET_BYTES
+    assert _r9_pins_failed_by(body) == []
+
+
+def test_r8_render_fails_the_r9_pins() -> None:
+    """R8's own rendered SECURITY.md, frozen at the pre-R9 bytes, fails every
+    R9 pin — that is what distinguishes R8 from R9. The fixture's hash is
+    asserted before use, so a hand-edited fixture cannot pass as R8.
+    """
+    data = _R8_RENDER_FIXTURE.read_bytes()
+    assert len(data) == _R8_RENDER_BYTES
+    assert hashlib.sha256(data).hexdigest() == _R8_RENDER_SHA256, (
+        "fixture is not R8's render; it must be the exact pre-R9 bytes"
     )
-    data = security_md.render(council_repo, committed).encode("utf-8")
-    assert len(data) == _R9_TARGET_BYTES
-    assert hashlib.sha256(data).hexdigest() == _R9_TARGET_SHA256
-
-
-_R8_DISCLOSURE_PARAGRAPH = (
-    "Send security disclosures to hrl-han@hapaxresearch.com, the address on the "
-    "lab's contact page. Attach Sigstore-signed disclosure artifacts when "
-    "applicable. The commitment that covers this address is on that page:"
-)
-
-
-def test_r8_disclosure_paragraph_fails_the_r9_pins() -> None:
-    assert "An unsigned message is enough" not in _R8_DISCLOSURE_PARAGRAPH
-    assert "enter Rekor's log permanently" not in _R8_DISCLOSURE_PARAGRAPH
+    assert _r9_pins_failed_by(data.decode("utf-8")) == [
+        "unsigned default",
+        "public-log cost before signing advice",
+        "golden R9 target bytes",
+    ]
 
 
 def test_security_md_recheck_derives_page_and_inputs_from_identity(
