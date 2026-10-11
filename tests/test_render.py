@@ -6,6 +6,7 @@ no shared conftest fixtures.
 
 from __future__ import annotations
 
+import hashlib
 import io
 import json
 import re
@@ -509,6 +510,55 @@ def test_security_md_publishes_sigstore_path_and_network_contact(
     tokens = _EMAIL_TOKEN.findall(body)
     assert tokens, "expected the network contact address in the body"
     assert set(tokens) == {identity.contact_email}
+
+
+def test_security_md_disclosure_defaults_to_unsigned(
+    council_repo: RepoSpec, identity: OperatorIdentity
+) -> None:
+    body = security_md.render(council_repo, identity)
+    assert "An unsigned message is enough" in body
+
+
+def test_security_md_disclosure_states_public_log_cost_before_signing_advice(
+    council_repo: RepoSpec, identity: OperatorIdentity
+) -> None:
+    body = security_md.render(council_repo, identity)
+    unsigned = body.index("An unsigned message is enough")
+    cost = body.index("the signer's identity and the artifact's hash enter Rekor's log permanently")
+    advice = body.index("Sigstore's keyless signing associates")
+    assert unsigned < cost < advice, (
+        "the unsigned default and the public-log cost must precede signing advice"
+    )
+
+
+_R9_TARGET_BYTES = 2372
+_R9_TARGET_SHA256 = "8b632ae6267a4d8e8b0ad7cf146404c3197eb2b2c4978815f71c70398747f8f2"
+
+
+def test_security_md_render_at_committed_identity_is_the_r9_target(
+    council_repo: RepoSpec,
+) -> None:
+    committed = OperatorIdentity(
+        full_name=" Quentin Zarbacaster ",
+        orcid=None,
+        contact_url="https://hapaxresearch.com/about/#contact",
+        contact_email="hrl-han@hapaxresearch.com",
+    )
+    data = security_md.render(council_repo, committed).encode("utf-8")
+    assert len(data) == _R9_TARGET_BYTES
+    assert hashlib.sha256(data).hexdigest() == _R9_TARGET_SHA256
+
+
+_R8_DISCLOSURE_PARAGRAPH = (
+    "Send security disclosures to hrl-han@hapaxresearch.com, the address on the "
+    "lab's contact page. Attach Sigstore-signed disclosure artifacts when "
+    "applicable. The commitment that covers this address is on that page:"
+)
+
+
+def test_r8_disclosure_paragraph_fails_the_r9_pins() -> None:
+    assert "An unsigned message is enough" not in _R8_DISCLOSURE_PARAGRAPH
+    assert "enter Rekor's log permanently" not in _R8_DISCLOSURE_PARAGRAPH
 
 
 def test_security_md_recheck_derives_page_and_inputs_from_identity(
