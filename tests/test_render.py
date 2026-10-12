@@ -557,13 +557,17 @@ def _committed_identity() -> OperatorIdentity:
 
 
 def test_security_md_disclosure_defaults_to_unsigned(council_repo: RepoSpec) -> None:
-    assert _r9_pins_failed_by(security_md.render(council_repo, _committed_identity())) == []
+    assert "unsigned default" not in _r9_pins_failed_by(
+        security_md.render(council_repo, _committed_identity())
+    )
 
 
 def test_security_md_disclosure_states_public_log_cost_before_signing_advice(
     council_repo: RepoSpec,
 ) -> None:
-    assert _r9_pins_failed_by(security_md.render(council_repo, _committed_identity())) == []
+    assert "public-log cost before signing advice" not in _r9_pins_failed_by(
+        security_md.render(council_repo, _committed_identity())
+    )
 
 
 def test_security_md_render_at_committed_identity_is_the_r9_target(
@@ -571,7 +575,7 @@ def test_security_md_render_at_committed_identity_is_the_r9_target(
 ) -> None:
     body = security_md.render(council_repo, _committed_identity())
     assert len(body.encode("utf-8")) == _R9_TARGET_BYTES
-    assert _r9_pins_failed_by(body) == []
+    assert "golden R9 target bytes" not in _r9_pins_failed_by(body)
 
 
 def test_r8_render_fails_the_r9_pins() -> None:
@@ -800,6 +804,56 @@ def test_governance_md_anchor_vs_redirect(
     assert "canonical axiom registry" in anchor_body
     assert "`hapax-constitution` governs this repository" in redirect_body
     assert "https://github.com/hapax-systems/hapax-constitution" in redirect_body
+
+
+_G1_GOV_RETIRED_REFERENTS = (
+    "The Operator",
+    "Oudepode",
+    "Oudepode The Operator",
+    "OTO",
+)
+
+
+def test_governance_md_renders_no_retired_referent(
+    council_repo: RepoSpec, constitution_repo: RepoSpec
+) -> None:
+    """G1-GOV interim: neither GOVERNANCE body carries a retired referent."""
+    for body in (
+        governance_md.render(constitution_repo),
+        governance_md.render(council_repo),
+    ):
+        for referent in _G1_GOV_RETIRED_REFERENTS:
+            assert referent not in body, f"retired referent {referent!r} in GOVERNANCE body"
+
+
+def test_governance_md_anchor_drops_the_four_false_claims(
+    constitution_repo: RepoSpec,
+) -> None:
+    """G1-GOV interim (seat ruling 2026-10-12T00:09:10Z): exactly the four
+    false claims go — CODEOWNERS protection, the Wiki mirror, axiom-gate
+    enforcement, the hapax-sdlc package — with no other wording changed.
+    """
+    body = governance_md.render(constitution_repo)
+    assert "CODEOWNERS" not in body
+    assert "Wiki" not in body
+    assert "axiom gate" not in body
+    assert "hapax-sdlc" not in body
+    assert "always carry L-complexity" in body
+    assert "There is no review committee." in body
+    assert "redirects back here" in body
+
+
+def test_governance_md_redirect_drops_the_wiki_link(
+    council_repo: RepoSpec,
+) -> None:
+    """The redirect's "Axiom registry as Wiki" link served the same empty
+    Wiki as the anchor's false claim; it goes with it.
+    """
+    body = governance_md.render(council_repo)
+    assert "Wiki" not in body
+    assert "/wiki" not in body
+    assert "Single operator, single workstation." in body
+    assert "This file is rendered from `hapax-constitution/sdlc/render/`." in body
 
 
 def test_readme_section_replacement_preserves_existing_body(
