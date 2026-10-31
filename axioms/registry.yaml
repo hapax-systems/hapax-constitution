@@ -76,22 +76,31 @@ axioms:
     domain:
 
   - id: interpersonal_transparency
+    # R-2 axiom:interpersonal_transparency; lineage and part hash in docs/governance/axiom-88-purview-restatement-20261030.md
     text: >
-      The system must not maintain persistent state about any non-operator
-      person who uses, interacts with, or is perceived by the system, without
-      an active consent contract. A consent contract requires explicit opt-in
-      by the subject, grants the subject inspection access to all data the
-      system holds about them, and is revocable by either party at any time.
-      Upon revocation, the system purges all subject-specific persistent
-      state. This axiom does not govern attention to public figures,
-      organizations, or their public statements in matters of public
-      discourse: the system may record their public positions and publish its
-      own sourced, revisable evaluation of them, each statement remaining open
-      to requested revision and correction via unpaid THIEH.
+      This axiom protects users of this system and household or studio sensor subjects
+      only. Within that purview, the system must not maintain persistent state about a
+      non-operator person without an active consent contract. A consent contract requires
+      explicit opt-in by the subject, grants the subject inspection access to all data the
+      system holds about them, and is revocable by either party at any time. Upon
+      revocation, the system purges all subject-specific persistent state. This axiom has
+      zero jurisdiction over public conduct and discourse of persons of public interest,
+      or modeling or understanding behavior and outcomes outside its protected purview.
+      Household or studio sensor data stays protected whoever the subject is, including
+      persons of public interest. Modeling or understanding behavior and outcomes does
+      not remove this protection.
+    # R-2 axiom:interpersonal_transparency; declarative jurisdiction, not a runtime exemption.
+    purview:
+      type: subject-data-context-v1
+      subjects: [system_user, household_sensor_subject, studio_sensor_subject]
+      data: [system_user, household_sensor, studio_sensor]
+      outside_subjects: [public_interest_person, non_person]
+      outside_data: [public_discourse, behavior_outcome_model, non_personal]
+      mixed: protected_data_prevails
     weight: 88
     type: hardcoded
     created: "2026-03-13"
     status: active
-    supersedes:
+    supersedes: docs/governance/axiom-88-purview-restatement-20261030.md#superseded-registry-text
     scope: constitutional
     domain:
