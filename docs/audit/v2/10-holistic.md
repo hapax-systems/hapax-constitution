@@ -51,7 +51,7 @@ All components share a clear identity: three-tier autonomous agent system for a 
 The operator model is consistent: experienced developer with executive function needs, music production background, management responsibilities. This is woven through:
 - Profiler (13 dimensions, multiple sources)
 - Accommodations system (negotiated behavior changes)
-- Neurocognitive axiom in operator.json
+- Ergonomics axiom in operator.json
 - System prompt injection via context tools
 - Management prep agent + vault bridge
 
@@ -115,7 +115,7 @@ Seven primary data flows were verified as complete:
 1. **Health loop:** timer → health-monitor → history.jsonl → activity-analyzer → briefing → vault + ntfy
 2. **Profile loop:** sources → profiler → operator.json → context tools → agent system prompts
 3. **Knowledge loop:** documents → RAG ingest → Qdrant → research agent → stdout
-4. **Vault egress:** agents → vault_writer → 30-system/ → Obsidian Sync → all devices
+4. **Vault egress:** agents → vault_writer → 30-system/ → encrypted lab-vault replication → lab devices
 5. **Vault ingress:** 31-system-inbox/ → RAG ingest → Qdrant; profiler reads vault-inbox
 6. **Management loop:** vault people/coaching → management_bridge → profiler → operator.json
 7. **Scout loop:** component-registry → scout → scout-report → briefing integration
@@ -143,7 +143,7 @@ The probes serve as ephemeral conversation starters in the chat system, but the 
 
 ## Lens 4: Operator Fit
 
-*Does the system serve THIS operator with THEIR neurocognitive profile?*
+*Does the system serve THIS operator with THEIR cognitive-ergonomics profile?*
 
 ### Core Design: Excellent
 

@@ -1,6 +1,6 @@
 License scope map — hapax-constitution
 
-Copyright (c) Hapax Systems
+Copyright (c) Hapax Research Lab
 
 This repository is dual-licensed BY PATH. It is not single-licensed as a
 whole: no single license applies to the repository in its entirety. Each
@@ -49,6 +49,5 @@ distributed. The split posture above applies from commit
 
 Note: GitHub license detection is expected to report NOASSERTION for this
 layout; that is the intended result of a per-path split, not an error.
-The machine-readable posture for this repository lives in hapax-council
-docs/repo-pres/repo-registry.yaml (the expected_github_license_detection
-pin).
+The machine-readable posture for this repository lives in
+sdlc/render/repos.yaml.

@@ -33,8 +33,8 @@ def render(repo: RepoSpec) -> str:
         "- Issues are redirect-only; `.github/ISSUE_TEMPLATE/config.yml` "
         "disables blank issues.\n"
         "- Pull requests are not an intake path for this repository.\n"
-        "- Repositories disable Discussions and Wiki except for the "
-        "`hapax-constitution` Wiki, which mirrors the axiom registry.\n"
+        "- Repositories disable Discussions, Projects, and Wiki across the "
+        "constellation.\n"
         "- Funding links, if present, are no-perk research support only.\n"
         "- This file is rendered from `hapax-constitution/sdlc/render/`; "
         "edits are overwritten on next render.\n"
@@ -55,13 +55,13 @@ def _why(repo: RepoSpec) -> str:
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
             f"`{repo.name}` is the bounded adoption surface for the Hapax "
-            "Systems portfolio. It is usable and auditable, but this "
+            "Research Lab portfolio. It is usable and auditable, but this "
             "repository is still operated through a single-operator release "
             "process rather than community maintenance."
         )
     if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
         return (
-            f"`{repo.name}` is the Hapax Systems product front door. GitHub is "
+            f"`{repo.name}` is the Hapax Research Lab product front door. GitHub is "
             "an inspection and source-available evaluation surface, not the "
             "support, roadmap, or commercial intake channel."
         )

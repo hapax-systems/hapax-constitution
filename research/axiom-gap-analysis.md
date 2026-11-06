@@ -1,5 +1,7 @@
 # Axiom Governance Gap Analysis: Viable Solutions
 
+> **[2026-11 Architectural Supersession Note]:** This early-2026 note documents a pre-hardening baseline (such as prompt-level "trusted agent" assumptions, dormant Layer 5-7 audit hooks, or single-family deliberation prototypes). Those baselines were superseded in the Hapax Research Lab architecture by unprivileged structural confinement (`reins` + container/microVM execution boundaries and `hapax-spine` append-only receipt ledgers) and live heterogeneous multi-family cross-examination published at [https://hapaxresearch.com](https://hapaxresearch.com). Retained for historical design lineage.
+
 Research conducted 2026-03-05. Evaluates the 4 primary gaps identified in `axiom-governance-evaluation.md` with concrete, implementable solutions grounded in the research literature.
 
 ---
@@ -134,7 +136,7 @@ fi
 
 **Evidence from push governance research:**
 - Taiwan's digital governance reform (2019-2023): Shifted from "citizens must apply" to "government proactively delivers." Result: 40% increase in service utilization among populations with access barriers.
-- ADHD executive function research consistently shows that *prompting* (external cues to initiate) is more effective than *expecting* (assuming the person will remember to check). The literature calls this "environmental scaffolding" — restructuring the environment so the desired action is the default path.
+- Prospective-memory and human-factors research consistently shows that *prompting* (external cues at the point of execution) is more reliable than *expecting* (assuming unassisted recall across concurrent workflows). The literature calls this "environmental scaffolding" — restructuring the environment so the desired action is the default path.
 
 **Current state:**
 - `check_axiom_compliance()` is registered on 10 agents but called at agent discretion (Langfuse data suggested low usage)
@@ -293,7 +295,7 @@ elif echo "$COMMAND" | grep -qE '\b(curl|wget)\b'; then
     echo "Axiom advisory (T1/corporate_boundary): External API call detected" >&2
     echo "URL: $URL" >&2
     echo "Corporate boundary axiom requires sanctioned providers only (OpenAI, Anthropic)." >&2
-    echo "If this is intentional, ensure the endpoint is employer-approved." >&2
+    echo "If this is intentional, ensure the endpoint is compartment-sanctioned." >&2
     # Advisory only (exit 0), not blocking — external calls have legitimate uses
     exit 0
   fi
@@ -345,4 +347,4 @@ The "do first" items are all <30 lines of code each and address the highest-impa
 - **From Craft to Constitution:** arXiv:2503.07608 (Mar 2025)
 - **Claude Code hooks:** GitHub anthropics/claude-code issue #29709
 - **Taiwan digital governance:** NDC proactive service delivery reform (2019-2023)
-- **ADHD environmental scaffolding:** Barkley (2015), executive function compensation strategies
+- **Prospective-memory & environmental scaffolding:** Einstein & McDaniel (2005); Hutchins (1995), externalized cognitive scaffolding

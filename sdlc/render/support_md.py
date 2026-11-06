@@ -55,7 +55,7 @@ def render(repo: RepoSpec) -> str:
 def _opening(repo: RepoSpec) -> str:
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
-            f"`{repo.name}` is the bounded adoption surface for Hapax Systems. "
+            f"`{repo.name}` is the bounded adoption surface for Hapax Research Lab. "
             "It is published to make the adopter-facing governance primitives "
             "inspectable and usable without turning the repository into a "
             "staffed support channel."
@@ -68,19 +68,19 @@ def _opening(repo: RepoSpec) -> str:
         )
     if repo.surface_class is SurfaceClass.RUNTIME_MECHANISM:
         return (
-            f"`{repo.name}` describes a runtime mechanism in the Hapax Systems "
+            f"`{repo.name}` describes a runtime mechanism in the Hapax Research Lab "
             "portfolio. Public repository affordances are for inspection and "
             "citation, not support intake."
         )
     if repo.surface_class is SurfaceClass.GOVERNANCE_SPEC:
         return (
             f"`{repo.name}` is the governance-specification anchor for the "
-            "Hapax Systems repository constellation. Support is limited to "
+            "Hapax Research Lab repository constellation. Support is limited to "
             "the published specification, rendered metadata, and security "
             "disclosure path."
         )
     return (
-        f"`{repo.name}` is published as a Hapax Systems research or boundary "
+        f"`{repo.name}` is published as a Hapax Research Lab research or boundary "
         "artifact. The repository is available for inspection, citation, and "
         "governance review, not as a staffed support surface."
     )

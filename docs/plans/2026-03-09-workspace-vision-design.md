@@ -83,7 +83,7 @@ This design covers the foundational capture primitive, five primary capability a
 **Resolution strategy:** All captures at 1280x720 (MJPEG input). This balances quality, token cost, and processing speed:
 - Gemini Flash token cost: ~516 tokens per 720p image (~2 tiles at 258 tokens each)
 - Three images (screen + BRIO + C920) per analysis: ~1,548 image tokens + prompt
-- Cost: ~$0.00015 per three-image analysis at Gemini 2.0 Flash pricing ($0.10/M input tokens)
+- Cost: ~0.00015 USD per three-image analysis at Gemini 2.0 Flash pricing (0.10 USD/M input tokens)
 - Latency: ~0.5-1.2s end-to-end for a three-image Gemini Flash call
 
 **Capture cadences:**
@@ -435,9 +435,9 @@ timelapse_path: str = "<local-share>/hapax-daimonion/timelapse"
 - System prompt + RAG context: ~2,000 tokens
 - Output: ~500 tokens
 - Total: ~4,048 tokens per analysis
-- At $0.10/M input + $0.40/M output: ~$0.0006 per analysis
+- At 0.10 USD/M input + 0.40 USD/M output: ~0.0006 USD per analysis
 - At one analysis per 45 seconds, 12 hours/day: ~960 analyses/day
-- **Daily cost: ~$0.58** (up from ~$0.19 for screen-only at one image per call)
+- **Daily cost: ~0.58 USD** (up from ~0.19 USD for screen-only at one image per call)
 
 **MediaPipe face detection:** Zero cost (local CPU inference).
 

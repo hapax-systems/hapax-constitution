@@ -1,5 +1,7 @@
 # Deliberative Process Analysis: Cross-Tradition Feature Classification
 
+> **[2026-11 Architectural Supersession Note]:** This early-2026 note documents a pre-hardening baseline (such as prompt-level "trusted agent" assumptions, dormant Layer 5-7 audit hooks, or single-family deliberation prototypes). Those baselines were superseded in the Hapax Research Lab architecture by unprivileged structural confinement (`reins` + container/microVM execution boundaries and `hapax-spine` append-only receipt ledgers) and live heterogeneous multi-family cross-examination published at [https://hapaxresearch.com](https://hapaxresearch.com). Retained for historical design lineage.
+
 Classifying structural features of deliberative processes as necessary-and-valuable, incidental-and-valuable, or incidental-and-not-valuable for LLM agent governance. Grounded in empirical evidence across 8 deliberative traditions, not anchored to any single model.
 
 Source research: `distro-work/research/deliberative-practices-structural-analysis.md`
@@ -258,13 +260,13 @@ At 4 rounds (8 messages) + pre-mortem (2 messages), using `fast` (Gemini 2.5 Fla
 - ~10 LLM calls per deliberation
 - Each call: ~2.5K input tokens (context + previous rounds grow), ~600 output tokens (structured, more fields)
 - Total: ~31K tokens per deliberation
-- At Gemini 2.5 Flash pricing: ~$0.015 per deliberation
-- 6 deliberations: ~$0.09
+- At Gemini 2.5 Flash pricing: ~0.015 USD per deliberation
+- 6 deliberations: ~0.09 USD
 
 At `balanced` (Claude Sonnet 4):
 - Same token counts
-- ~$0.15 per deliberation
-- 6 deliberations: ~$0.90
+- ~0.15 USD per deliberation
+- 6 deliberations: ~0.90 USD
 
 The cost increase over the first prototype (~50%) is negligible. The constraint remains operator attention, not cost.
 

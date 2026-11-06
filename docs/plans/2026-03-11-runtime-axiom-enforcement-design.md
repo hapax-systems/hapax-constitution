@@ -179,7 +179,7 @@ class JudgeViolation(BaseModel):
 - `full` paths: every output, synchronous before delivery
 - `fast` paths: pattern-only. No judge call, sync or async. Layer 1 audit callback provides pattern-level post-hoc coverage.
 - `deferred` paths: judge runs as a background task immediately after delivery. Results logged to Langfuse. T0 violations trigger operator notification via ntfy. The background task is dispatched by the enforcer, not by Layer 1.
-- Cost: ~$0.001/check with haiku, negligible relative to primary agent LLM costs
+- Cost: ~0.001 USD/check with haiku, negligible relative to primary agent LLM costs
 
 ## Application Enforcer
 

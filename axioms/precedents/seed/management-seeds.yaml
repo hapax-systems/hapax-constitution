@@ -55,13 +55,13 @@ precedents:
 
   - id: sp-mgmt-004
     axiom_id: management_governance
-    situation: "Bridge zone (32-bridge/) separates work-specific employer-provided LLM tools prompts from home system"
+    situation: "Bridge zone (32-bridge/) isolates external-compartment LLM prompt templates from lab runtime"
     decision: compliant
     reasoning: >
-      Work data requiring corporate LLM tools stays in the bridge zone.
-      Home-only features (chat, RAG search, agent commands) require localhost
-      access. The Zscaler boundary is bridged by Obsidian Sync for notes,
-      but system tooling remains home-only.
+      External institutional artifacts requiring compartment-sanctioned LLM
+      providers remain isolated in their compartment boundary. Lab-local
+      features (chat, RAG search, agent commands) require local network
+      access; cross-compartment credential or runtime ingress is prohibited.
     tier: T1
     distinguishing_facts:
       - "32-bridge/ folder in vault with explicit data boundary guides"

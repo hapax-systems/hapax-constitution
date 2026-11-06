@@ -74,7 +74,7 @@ Obsidian has emerged as the dominant tool for technical PKM practitioners. Its k
 
 **Plugin ecosystem.** Obsidian's community plugin system enables extensive customization. The system uses 8 community plugins (Templater, Dataview, Tasks, Periodic Notes, Calendar, QuickAdd, Linter, and the custom Hapax Chat plugin) plus 6 Bases dashboards. This extensibility transforms Obsidian from a note editor into a personal operating system.
 
-**Obsidian Sync.** End-to-end encrypted sync across devices, operating independently of the local network. This is critical for the corporate boundary constraint — vault content syncs to the work laptop without requiring any home network connectivity.
+**Encrypted Vault Replication.** End-to-end encrypted replication across single-compartment devices, operating independently of lab-local services. Under institutional compartment air-gap rules, cross-compartment sync-vault ingress is prohibited and isolated compartments exchange approved text artifacts only through sanctioned git remotes without lab-network connectivity.
 
 **Dataview and Bases.** Dataview treats the vault as a queryable database, executing SQL-like queries over note frontmatter. Bases provides a spreadsheet-like dashboard view. Together, they enable the vault to function as both a knowledge repository and an operational dashboard.
 

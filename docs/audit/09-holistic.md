@@ -18,9 +18,9 @@ The operator is not a user; the operator is a component. The human-system bounda
 
 | # | Severity | Lens | Finding |
 |---|----------|------|---------|
-| H-1.1 | HIGH | coherence | 5 of 9 LLM agents lack neurocognitive awareness in their system prompts |
+| H-1.1 | HIGH | coherence | 5 of 9 LLM agents lack cognitive-ergonomics awareness in their system prompts |
 | H-1.2 | HIGH | coherence | Digest agent has no context tools — cannot look up operator constraints on demand |
-| H-1.3 | MEDIUM | coherence | Briefing system prompt contradicts operator model — "technical and wants precision" without neurocognitive framing |
+| H-1.3 | MEDIUM | coherence | Briefing system prompt contradicts operator model — "technical and wants precision" without cognitive-ergonomics framing |
 | H-1.4 | MEDIUM | coherence | Obsidian plugin has separate identity model disconnected from Python SYSTEM_CONTEXT |
 | H-2.1 | HIGH | unity | `profile-facts` Qdrant collection invisible to knowledge maintenance, health monitor, and digest |
 | H-2.2 | MEDIUM | unity | PROFILES_DIR defined independently in 3 modules instead of single import |
@@ -34,7 +34,7 @@ The operator is not a user; the operator is a component. The human-system bounda
 | H-3.5 | LOW | flow | Profile → agent behavior path is pull-only — agents never re-read profile mid-conversation |
 | H-4.1 | MEDIUM | purpose | InfraPanel and ScoutPanel widgets exist but are not mounted in any screen |
 | H-4.2 | MEDIUM | purpose | `store_to_qdrant()` (claude-memory) is legacy code with an active CLI flag but no consumers |
-| H-4.3 | LOW | purpose | 8 micro-probes all target neurocognitive_profile — 12 other dimensions get zero probe coverage |
+| H-4.3 | LOW | purpose | 8 micro-probes all target ergonomics_profile — 12 other dimensions get zero probe coverage |
 | H-5.1 | HIGH | interface | No typed contract between Python dataclasses and TypeScript interfaces — 4 endpoints missing types entirely |
 | H-5.2 | MEDIUM | interface | Nudge attention budget is uncapped — system can present unbounded nudges per session |
 | H-5.3 | MEDIUM | interface | Three operator channels (TUI, web, Obsidian) have incompatible capability sets with no feature parity documentation |
@@ -58,11 +58,11 @@ constraints the system exists to support...
 
 This is the ground truth. Every component that interacts with the operator should behave as though this is true. The question is whether they do.
 
-### H-1.1 — HIGH: 5 of 9 LLM agents lack neurocognitive awareness in system prompts
+### H-1.1 — HIGH: 5 of 9 LLM agents lack cognitive-ergonomics awareness in system prompts
 
 **Evidence:**
 
-`get_system_prompt_fragment()` in `shared/operator.py` builds a Tier 0 context that includes neurocognitive accommodations. Only 4 agents call it:
+`get_system_prompt_fragment()` in `shared/operator.py` builds a Tier 0 context that includes cognitive-ergonomics accommodations. Only 4 agents call it:
 
 | Agent | Uses `get_system_prompt_fragment()`? | Has context tools? |
 |-------|--------------------------------------|-------------------|
@@ -100,7 +100,7 @@ digest_agent = Agent(
 
 No `get_context_tools()` registration follows. Every other LLM agent in the system registers context tools. The digest agent cannot look up operator constraints, patterns, or profile even if its model wanted to.
 
-This was noted in domain audit 5 (finding C-5.1) but the holistic implication is larger: the digest is consumed by the briefing agent (`agents/briefing.py:42` reads `profiles/digest.json`). A digest that doesn't understand the operator's information processing preferences produces content that the briefing agent then has to present — potentially in a format that doesn't serve the operator's neurocognitive needs.
+This was noted in domain audit 5 (finding C-5.1) but the holistic implication is larger: the digest is consumed by the briefing agent (`agents/briefing.py:42` reads `profiles/digest.json`). A digest that doesn't understand the operator's information processing preferences produces content that the briefing agent then has to present — potentially in a format that doesn't serve the operator's cognitive-ergonomics needs.
 
 **So what**: The information supply chain (digest -> briefing -> operator) has a context-blind link at the start.
 
@@ -140,7 +140,7 @@ This is a separate identity ("Hapax") with a separate personality description. T
 
 The plugin does load dynamic context from `30-system/hapax-context.md` on every message (confirmed in `chat-view.ts:135`), which can provide operator context. But the base identity is disconnected — it's a different character with different framing.
 
-**Mitigating factor**: The vault context file can be updated to include the neurocognitive model. But the default system prompt in `types.ts` is what new installations get, and it doesn't mention executive function support.
+**Mitigating factor**: The vault context file can be updated to include the cognitive-ergonomics model. But the default system prompt in `types.ts` is what new installations get, and it doesn't mention executive function support.
 
 ---
 
@@ -257,7 +257,7 @@ All three read the same environment variable with the same default. The duplicat
 
 1. **`shared/config.py`** — Model aliases (`MODELS` dict), `EMBEDDING_MODEL`, `PROFILES_DIR`, `QDRANT_URL`. These are code-level constants + environment variable reads (`LITELLM_API_BASE`, `LITELLM_API_KEY`, `QDRANT_URL`).
 2. **`.envrc`** — Runtime secrets and service URLs loaded via `direnv`. Contains `LITELLM_API_KEY` (from `pass`), `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `TAVILY_API_KEY`, `OBSIDIAN_VAULT_PATH`. These are environment variables consumed by `config.py` and other modules.
-3. **`profiles/operator.json`** — Operator identity, axioms, constraints, patterns, goals, neurocognitive profile, agent context map. Read by `shared/operator.py` and cached. This is the operator manifest — it defines *who* the system serves, not *how* it runs.
+3. **`profiles/operator.json`** — Operator identity, axioms, constraints, patterns, goals, cognitive-ergonomics profile, agent context map. Read by `shared/operator.py` and cached. This is the operator manifest — it defines *who* the system serves, not *how* it runs.
 
 **Verdict**: These are not three competing sources — they serve different purposes. `config.py` handles infrastructure (how to connect to services), `.envrc` handles secrets (credentials), `operator.json` handles identity (who the operator is). The separation is intentional and appropriate. The only overlap is `OBSIDIAN_VAULT_PATH` which is in `.envrc` and independently read by 3 modules (H-2.5). No conflicting values were found.
 
@@ -266,13 +266,13 @@ All three read the same environment variable with the same default. The duplicat
 **Expected**: Consistent naming across Python/TypeScript/YAML.
 
 **Actual**:
-- **Python**: `snake_case` throughout — module names (`chat_agent.py`, `profile_store.py`), function names, variable names. Profile dimensions use `snake_case` (`neurocognitive_profile`, `team_leadership`). Profile fact keys use `snake_case` (enforced by profiler prompts: "Use snake_case keys"). Consistent.
+- **Python**: `snake_case` throughout — module names (`chat_agent.py`, `profile_store.py`), function names, variable names. Profile dimensions use `snake_case` (`ergonomics_profile`, `team_leadership`). Profile fact keys use `snake_case` (enforced by profiler prompts: "Use snake_case keys"). Consistent.
 - **TypeScript** (obsidian-hapax): `camelCase` for variables/functions, `PascalCase` for interfaces/types (`HapaxSettings`, `ChatMessage`, `QdrantSearchResult`). Standard TypeScript conventions. Consistent within the TS codebase.
 - **YAML** (`component-registry.yaml`): `kebab-case` for component names (`embedding-model`, `vector-database`), `snake_case` for field names (`search_hints`, `eval_notes`). This is a minor inconsistency — the component keys use kebab-case while the property keys use snake_case.
 - **systemd units**: `kebab-case` for service/timer names (`health-monitor.timer`, `daily-briefing.service`). Standard systemd convention.
 - **File names**: Python files use `snake_case`, TypeScript files use `kebab-case` (`chat-view.ts`, `qdrant-client.ts`). Both follow their ecosystem conventions.
 
-**Verdict**: Each language ecosystem follows its own convention correctly. The only cross-boundary naming issue is that Python profile dimensions use `snake_case` (`neurocognitive_profile`) while YAML component names use `kebab-case` (`embedding-model`). This is cosmetic — no code crosses this boundary programmatically.
+**Verdict**: Each language ecosystem follows its own convention correctly. The only cross-boundary naming issue is that Python profile dimensions use `snake_case` (`ergonomics_profile`) while YAML component names use `kebab-case` (`embedding-model`). This is cosmetic — no code crosses this boundary programmatically.
 
 ---
 
@@ -353,7 +353,7 @@ The accommodation system proposes behavior changes (time anchoring, soft framing
 
 The profiler reads decisions but has no way to correlate decision patterns with accommodation states. The accommodations are a one-way configuration — set and forget, never evaluated.
 
-**So what**: Accommodations are the system's most direct expression of neurocognitive awareness, but they operate open-loop. For a system that aspires to externalized executive function, the accommodation layer should be the most instrumented part — instead it's the least.
+**So what**: Accommodations are the system's most direct expression of cognitive-ergonomics awareness, but they operate open-loop. For a system that aspires to externalized executive function, the accommodation layer should be the most instrumented part — instead it's the least.
 
 ---
 
@@ -434,7 +434,7 @@ Traced through 3 codebases:
 1. `daily-briefing.timer` — Fires at `07:00` daily (`OnCalendar=*-*-* 07:00:00`, Persistent=true so missed runs catch up).
 2. `briefing-watchdog` (bash script) — Runs `briefing --hours 24 --save --json`. The `--save` flag triggers two writes:
    - `profiles/briefing.md` (local file, read by cockpit)
-   - `vault_writer.write_briefing_to_vault()` -> `<personal-vault>/30-system/briefings/YYYY-MM-DD.md` (Obsidian Sync picks this up)
+   - `vault_writer.write_briefing_to_vault()` -> `<personal-vault>/30-system/briefings/YYYY-MM-DD.md` (encrypted lab-vault replication picks this up)
 3. The watchdog script extracts headline + high-priority count, then sends desktop notification via raw `notify-send`.
 4. n8n `briefing-push.json` workflow triggers at 07:15 (15 min later), reads `profiles/briefing.md`, formats for mobile, sends via Telegram.
 
@@ -460,7 +460,7 @@ Traced through 3 codebases:
 
 #### Full Lifecycle Trace
 
-**Operator writes a note in Obsidian (any device) -> note syncs via Obsidian Sync -> arrives in `31-system-inbox/` -> RAG ingest watchdog picks it up -> Docling parses, chunks, embeds -> Qdrant `documents` collection updated -> profiler's next `--auto` run (12h timer) discovers vault-inbox files, reads them, extracts profile facts -> profile updated, version bumped -> ProfileStore indexes to `profile-facts` collection -> context tools serve updated facts to all agents -> next briefing (daily 07:00) reads updated profile via context tools -> briefing output reflects new information -> briefing saved to vault `30-system/briefings/` -> syncs back to operator's devices.**
+**Operator writes a note in Obsidian (lab device) -> note replicates via encrypted lab-vault sync -> arrives in `31-system-inbox/` -> RAG ingest watchdog picks it up -> Docling parses, chunks, embeds -> Qdrant `documents` collection updated -> profiler's next `--auto` run (12h timer) discovers vault-inbox files, reads them, extracts profile facts -> profile updated, version bumped -> ProfileStore indexes to `profile-facts` collection -> context tools serve updated facts to all agents -> next briefing (daily 07:00) reads updated profile via context tools -> briefing output reflects new information -> briefing saved to vault `30-system/briefings/` -> syncs back to operator's devices.**
 
 This lifecycle demonstrates the full bidirectional loop: operator input (Obsidian note) -> system processing (RAG + profiler) -> system output (briefing) -> operator consumption (vault sync). The loop closes, but the latency is up to ~12 hours for the profile update step (profiler timer). RAG ingestion is near-immediate (watchdog runs continuously), so the note's content is searchable via Qdrant within seconds. Profile integration is the slow link.
 
@@ -504,7 +504,7 @@ This is functional dead code with an active entry point. An operator running `--
 
 **File**: `cockpit/micro_probes.py`
 
-All 8 hardcoded probes target `neurocognitive_profile`:
+All 8 hardcoded probes target `ergonomics_profile`:
 
 ```
 "What helps you start tasks when motivation is low?"
@@ -513,13 +513,13 @@ All 8 hardcoded probes target `neurocognitive_profile`:
 ...
 ```
 
-The profiler tracks 13 dimensions: technical_proficiency, communication_style, work_patterns, tool_preferences, project_priorities, domain_knowledge, learning_patterns, creative_preferences, neurocognitive_profile, decision_style, collaboration_approach, management_practice, team_leadership.
+The profiler tracks 13 dimensions: technical_proficiency, communication_style, work_patterns, tool_preferences, project_priorities, domain_knowledge, learning_patterns, creative_preferences, ergonomics_profile, decision_style, collaboration_approach, management_practice, team_leadership.
 
-The 12 non-neurocognitive dimensions get zero probe coverage. For a single-operator system where the profile directly shapes agent behavior, this leaves large gaps in experiential data collection.
+The 12 non-ergonomics dimensions get zero probe coverage. For a single-operator system where the profile directly shapes agent behavior, this leaves large gaps in experiential data collection.
 
 **Mitigating factor**: The profiler extracts facts from many sources (shell history, git repos, vault, LLM exports, Takeout, Proton mail). Micro-probes are supplemental. But they're the *only* source that asks the operator directly, which produces the highest-confidence facts.
 
-**So what**: The probe system exists and works, but its coverage is narrow. Expanding to other dimensions would improve profile quality across the board, not just neurocognitive.
+**So what**: The probe system exists and works, but its coverage is narrow. Expanding to other dimensions would improve profile quality across the board, not just cognitive-ergonomics.
 
 ---
 
@@ -531,7 +531,7 @@ The 12 non-neurocognitive dimensions get zero probe coverage. For a single-opera
 - `agents/` and `cockpit/data/` — Python dataclasses as API response types
 - `cockpit-web/src/api/types.ts:88-99` — TypeScript interfaces
 
-The web layer (Domain 7) found that 4 of 15 endpoints have no TypeScript interfaces at all (drift, management, accommodations, health/history). Additionally, `ReadinessSnapshot` is missing 3 fields (`interview_fact_count`, `priorities_known`, `neurocognitive_mapped`) present in the Python dataclass.
+The web layer (Domain 7) found that 4 of 15 endpoints have no TypeScript interfaces at all (drift, management, accommodations, health/history). Additionally, `ReadinessSnapshot` is missing 3 fields (`interview_fact_count`, `priorities_known`, `ergonomics_mapped`) present in the Python dataclass.
 
 There is no automated mechanism to detect when Python dataclasses and TypeScript interfaces diverge. Changes to Python response shapes silently break the TypeScript consumer. This is not just a web layer issue — it's a system-wide interface integrity problem:
 
@@ -659,9 +659,9 @@ For cognitive overhead:
 
 ### The Coherence Problem Is Structural
 
-The neurocognitive awareness gap (H-1.1, H-1.2, H-1.3) is not an oversight — it's a consequence of the context management refactoring (documented in MEMORY.md). The refactoring moved from large static prompts to lean prompts + context tools. The intent was to reduce token waste. The side effect was that agents without the static neurocognitive context became dependent on the LLM choosing to call `lookup_constraints()` — which it won't do if its system prompt doesn't suggest the need.
+The cognitive-ergonomics awareness gap (H-1.1, H-1.2, H-1.3) is not an oversight — it's a consequence of the context management refactoring (documented in MEMORY.md). The refactoring moved from large static prompts to lean prompts + context tools. The intent was to reduce token waste. The side effect was that agents without the static cognitive-ergonomics context became dependent on the LLM choosing to call `lookup_constraints()` — which it won't do if its system prompt doesn't suggest the need.
 
-The fix isn't to revert to large static prompts. It's to ensure that every agent's system prompt contains a minimum viable neurocognitive framing — one sentence — that causes the LLM to use context tools appropriately:
+The fix isn't to revert to large static prompts. It's to ensure that every agent's system prompt contains a minimum viable cognitive-ergonomics framing — one sentence — that causes the LLM to use context tools appropriately:
 
 ```
 This system is executive function support infrastructure. Call lookup_constraints() before generating output.
@@ -689,7 +689,7 @@ Every parallel definition (H-2.2, H-2.5), every bypassed shared module (H-2.3), 
 
 ## Recommended Priority
 
-1. **Add neurocognitive micro-prompt to all agent system prompts** (H-1.1, H-1.2, H-1.3) — ~15 tokens per agent, restores coherence. Register context tools on digest agent.
+1. **Add cognitive-ergonomics micro-prompt to all agent system prompts** (H-1.1, H-1.2, H-1.3) — ~15 tokens per agent, restores coherence. Register context tools on digest agent.
 2. **Add `profile-facts` to knowledge-maint, health-monitor, digest COLLECTIONS** (H-2.1) — one-line fix per file, prevents unbounded growth.
 3. **Implement nudge cap** (H-5.2) — surface top N nudges, batch the rest as "and N more." Most impactful executive-function accommodation fix in the whole audit.
 4. **Record dismissed/expired decisions** (H-3.1) — complete the decision capture flow that's already wired end-to-end.

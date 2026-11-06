@@ -12,7 +12,7 @@ Hapax is a single-operator research/runtime apparatus. This repository is not a 
 
 - Issues are redirect-only; `.github/ISSUE_TEMPLATE/config.yml` disables blank issues.
 - Pull requests are not an intake path for this repository.
-- Repositories disable Discussions and Wiki except for the `hapax-constitution` Wiki, which mirrors the axiom registry.
+- Repositories disable Discussions, Projects, and Wiki across the constellation.
 - Funding links, if present, are no-perk research support only.
 - This file is rendered from `hapax-constitution/sdlc/render/`; edits are overwritten on next render.
 

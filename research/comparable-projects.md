@@ -153,9 +153,9 @@ Docker Compose bundling Ollama, Supabase, n8n, Open WebUI, Flowise, Neo4j, Langf
 ## Tier 4: Adjacent Concepts (Different Approach, Same Problem)
 
 ### alfred_ (get-alfred.ai)
-Commercial ($25/mo). AI executive assistant specifically for ADHD professionals. Auto-triages email, extracts tasks, tracks follow-ups, generates daily priorities. No manual input required.
+Commercial (25 USD/mo). AI executive assistant focused on cognitive-load reduction and task-initiation offloading. Auto-triages email, extracts tasks, tracks follow-ups, generates daily priorities. No manual input required.
 
-**Relevant to hapaxromana:** Most explicit ADHD/executive-function product found. Their design principles ("if I had the executive function to manually prioritize every task, I wouldn't need the app") mirror our executive_function axiom.
+**Relevant to hapaxromana:** Explicit externalized-executive-function product. Their design principle ("if an operator had spare supervisory bandwidth to manually prioritize every task, they wouldn't need the tool") mirrors our `executive_function` axiom.
 
 **Learning:** Their "zero-initiation" design principle (the system works without you doing anything) is more radical than ours. Our agents require `uv run python -m agents.X` invocation for Tier 2. Only Tier 3 timers are truly zero-initiation. Push more toward zero-initiation.
 
@@ -165,7 +165,7 @@ Free, web-based. AI tools for executive function: Magic To-Do (breaks tasks into
 **Learning:** Task decomposition as a first-class tool. Our system doesn't have an explicit "break this down for me" capability. Could be a useful Claude Code skill.
 
 ### Saner.AI
-Commercial. AI PKM for ADHD. Voice capture → auto-transcription → auto-organization → smart search. All-in-one, no context switching.
+Commercial. Low-friction voice-capture PKM designed for minimal context switching. Voice capture → auto-transcription → auto-organization → smart search.
 
 **Learning:** The all-in-one, zero-configuration approach. Their insight: "the constant need to jump between tabs" is the enemy. Resonates with our executive_function axiom.
 
@@ -179,7 +179,7 @@ Commercial. AI PKM for ADHD. Voice capture → auto-transcription → auto-organ
 
 3. **Three-tier architecture with systemd autonomy.** Most projects are either fully interactive (Claude Code skills) or fully autonomous (AutoGPT). The interactive → on-demand → autonomous tier separation is unique.
 
-4. **Cross-boundary operation (corporate_boundary axiom).** The Obsidian plugin operating across employer/personal network boundaries with graceful degradation is a constraint nobody else faces.
+4. **Cross-compartment air-gap operation (corporate_boundary axiom).** Strict isolation between independent research-lab infrastructure and external institutional compartments with graceful degradation is a structural boundary absent from consumer agent frameworks.
 
 5. **Observability mandate.** Langfuse tracing of all LLM calls is standard in production systems but rare in personal tools.
 

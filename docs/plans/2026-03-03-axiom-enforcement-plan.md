@@ -150,7 +150,7 @@ precedents:
     reasoning: >
       Proactively surfacing stalled work as observation (not judgment) helps
       with task initiation difficulty. Framing as system design signal rather
-      than operator failing respects neurocognitive profile.
+      than operator failing respects bounded operator attention and ergonomics profile.
     tier: T1
     distinguishing_facts:
       - "Observational framing, not judgmental"

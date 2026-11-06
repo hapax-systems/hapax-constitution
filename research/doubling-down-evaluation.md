@@ -1,5 +1,7 @@
 # Should We Double Down on What Nobody Else Does?
 
+> **[2026-11 Architectural Supersession Note]:** This early-2026 note documents a pre-hardening baseline (such as prompt-level "trusted agent" assumptions, dormant Layer 5-7 audit hooks, or single-family deliberation prototypes). Those baselines were superseded in the Hapax Research Lab architecture by unprivileged structural confinement (`reins` + container/microVM execution boundaries and `hapax-spine` append-only receipt ledgers) and live heterogeneous multi-family cross-examination published at [https://hapaxresearch.com](https://hapaxresearch.com). Retained for historical design lineage.
+
 Evaluation of hapaxromana's 5 unique differentiators. For each: what it actually is today, whether it's genuinely valuable, whether to double down, and what that would look like.
 
 ---
@@ -61,7 +63,7 @@ The value isn't in preventing you from accidentally writing prohibited class nam
 
 ### What it actually is
 
-Genuinely industrial-grade. 16 source types (config files, shell history, git commits, Langfuse traces, Google Takeout, Proton Mail, Obsidian vault, interview transcripts). Dual-path extraction (LLM + deterministic bridges). 24 profile dimensions. 2.2MB profile in `ryan.json`. Authority-aware fact merging (interview > config > observation). Intention-practice gap detection. On-demand context tools for agents (`search_profile()`, `lookup_constraints()`). Updates every 6 hours via systemd timer.
+Genuinely industrial-grade. 16 source types (config files, shell history, git commits, Langfuse traces, Google Takeout, Proton Mail, Obsidian vault, interview transcripts). Dual-path extraction (LLM + deterministic bridges). 24 profile dimensions. 2.2MB profile in `operator.json`. Authority-aware fact merging (interview > config > observation). Intention-practice gap detection. On-demand context tools for agents (`search_profile()`, `lookup_constraints()`). Updates every 6 hours via systemd timer.
 
 The fact merge logic is particularly sophisticated: if you SAY you prefer X (config/interview) but DO Y (langfuse/shell history), the system flags it as a gap rather than overwriting — classifying it as executive_function (wants to but can't initiate), knowledge, context_dependent, or preference_shift.
 
@@ -69,7 +71,7 @@ The fact merge logic is particularly sophisticated: if you SAY you prefer X (con
 
 **Yes, and it's the most underappreciated differentiator.**
 
-Every agent in the system knows who you are — not generically, but specifically. Your neurocognitive patterns, your energy cycles, your communication style, your decision patterns. This means:
+Every agent in the system knows who you are — not generically, but specifically. Your cognitive-ergonomics patterns, your energy cycles, your communication style, your decision patterns. This means:
 
 - The briefing agent knows what time of day you're most receptive
 - The management_prep agent knows your leadership style and what context you need before 1:1s
@@ -91,7 +93,7 @@ What needs work is making agents USE the profile more effectively.
 ### What doubling down looks like
 
 - **Audit agent profile consumption.** Which agents actually call `search_profile()` or `lookup_constraints()` during execution? Check Langfuse traces for tool-call patterns. If most agents just use the static 400-word system prompt fragment, the on-demand tools are underutilized.
-- **Profile-informed agent behavior, not just prompts.** Could the briefing agent adjust its output format based on `neurocognitive_profile.energy_cycles`? Could the health_monitor adjust notification priority based on time-of-day energy patterns?
+- **Profile-informed agent behavior, not just prompts.** Could the briefing agent adjust its output format based on `ergonomics_profile.energy_cycles`? Could the health_monitor adjust notification priority based on time-of-day energy patterns?
 - **Intention-practice gap as a first-class feature.** The gap detection is brilliant but currently just flags contradictions during curation. These gaps are exactly the executive_function signals that should surface as nudges. "You keep saying you want to do X but your behavior shows you don't — here's a low-friction way to start."
 - **Profile digest in the daily briefing.** The digest exists (28KB) but does the briefing agent reference it? A "profile health" section (dimensions with low confidence, stale facts, intention-practice gaps) could be part of the morning briefing.
 
@@ -155,21 +157,21 @@ The maintenance cost (~10,000+ lines of Python) is real, but it's the cost of su
 
 ---
 
-## 4. Cross-Boundary Operation (corporate_boundary axiom)
+## 4. Cross-Compartment Air-Gap Operation (corporate_boundary axiom)
 
 ### What it actually is
 
-The Obsidian plugin runs on an employer-managed device. It must use only employer-sanctioned LLM providers (Anthropic, OpenAI), sync data only via Obsidian Sync (E2E encrypted), degrade gracefully when home services are unreachable, and store API credentials in plugin data.json.
+Components operating inside an external institutional compartment must use only compartment-sanctioned LLM providers (Anthropic, OpenAI), prohibit cross-compartment credential, telemetry, sync-vault, or capture ingress, degrade gracefully when lab-local services are unreachable, and resolve credentials strictly locally within that compartment.
 
 ### Is it genuinely valuable?
 
-**Valuable for you, but not a differentiator worth investing in.**
+**Valuable as a structural boundary, not a feature surface.**
 
-This is a constraint, not a capability. It exists because of your specific employment situation. It's well-handled by the corporate_boundary axiom and its T0 implications. The Obsidian plugin already respects it.
+This is an operational air-gap invariant, not a capability surface. It maintains strict separation between independent research-lab infrastructure and external third-party or institutional compartments via the `corporate_boundary` axiom and its T0 implications.
 
 ### Should you double down?
 
-**No.** Maintain the axiom. Enforce via existing drift-detector. Don't invest engineering effort unless something breaks. If your employment situation changes, this axiom can be softcoded out.
+**No.** Maintain the axiom. Enforce via deterministic boundary checks. Do not expand cross-compartment coupling; if compartment topology changes, this domain axiom is softcoded for governed revision.
 
 ---
 
@@ -189,7 +191,7 @@ The unique part is that traces feed back into the operator profile and activity 
 
 **Maintain, don't invest.** The current setup works. LiteLLM + Langfuse is mature and well-supported.
 
-One low-effort addition worth considering: **cost tracking in the daily briefing** ("you spent $X on LLM calls this week, 60% was briefing agent"). Langfuse already has this data.
+One low-effort addition worth considering: **cost tracking in the daily briefing** ("weekly LLM usage summary: 60% of token volume was briefing agent"). Langfuse already has this data.
 
 ---
 

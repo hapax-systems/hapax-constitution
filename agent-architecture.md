@@ -305,10 +305,10 @@ Results flow back through stdout, files, or Qdrant queries.
 
 ## Obsidian as Operational Surface
 
-Obsidian serves as the primary operational surface during work hours. Two vaults: Work vault (`<work-vault>/`) syncs via VS Code GitDoc (git auto-commit + push) to corporate work laptop; Personal vault (`<personal-vault>/`) is local only.
+Obsidian serves as a primary operational note surface with strict compartment separation. Institutional compartment vaults sync only through approved compartment git remotes; the lab-local vault (`<personal-vault>/`) remains strictly local to lab infrastructure.
 
 **Bidirectional data flows:**
-- **System → Vault:** `vault_writer.py` writes briefings, nudges, goals to `30-system/` → GitDoc auto-commits → git push propagates to work laptop
+- **System → Vault:** `vault_writer.py` writes briefings, nudges, goals to `30-system/` → GitDoc auto-commits → git push propagates to approved compartment remote
 - **Vault → System:** Operator writes notes in `31-system-inbox/` from any device → git sync delivers to home PC → RAG ingest watchdog picks up changes → Qdrant → profiler can query as `vault-inbox` source
 - **VS Code + GitDoc** always running — handles vault sync via git
 

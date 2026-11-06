@@ -246,7 +246,7 @@ Only scans `10-work/meetings/` (not rglob). Missing directory handled.
 ### C-3.3: No tests for regenerate_operator() or _regenerate_operator_md()
 **File:** `profiler.py:1127-1284`
 **Severity:** medium
-**Finding:** The operator manifest update pipeline (LLM-powered goal progress updates, pattern additions, neurocognitive updates) has no test coverage. `_regenerate_operator_md()` is a pure formatting function that could easily be tested deterministically.
+**Finding:** The operator manifest update pipeline (LLM-powered goal progress updates, pattern additions, cognitive-ergonomics updates) has no test coverage. `_regenerate_operator_md()` is a pure formatting function that could easily be tested deterministically.
 **Impact:** Bugs in operator manifest regeneration (e.g., incorrect JSON path traversal, missed goal updates) would be undetected.
 
 ### C-3.4: No tests for store_to_qdrant() or store_to_mcp_memory()

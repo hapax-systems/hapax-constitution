@@ -30,8 +30,8 @@ extracted via a deliberate conversion that:
 - Removed 22 agents outside management scope
 - Renamed 5 agents for management clarity
 - Added 1 management-specific agent (management_activity)
-- Regrounded axioms from personal/neurodivergent context to management decision theory
-- Removed all personal context (executive function, neurodivergent-friendly designs)
+- Regrounded axioms from single-operator cognitive-ergonomics context to management decision theory
+- Removed all single-operator personal context (executive-function offloading, single-operator ergonomics patterns)
 - Rewrote the demo pipeline for management-only content
 
 The extraction is documented in:
@@ -46,7 +46,7 @@ Same constitutional principles, different grounding language.
 | Wider System (hapaxromana) | hapax-officium | Weight | Notes |
 |---------------------------|------------------|--------|-------|
 | single_operator | single_operator | 100 | Same semantics, role-generic language |
-| decision_support | decision_support | 95 | Regrounded: neurodivergent-friendly design → decision-support theory |
+| decision_support | decision_support | 95 | Regrounded: single-operator cognitive ergonomics → decision-support theory |
 | management_safety | management_safety | 95 | Elevated: domain axiom → constitutional scope |
 | corporate_boundary | corporate_boundary | 90 | Unchanged, dormant in both |
 

@@ -1,6 +1,6 @@
 """Repository registry — single source of truth for per-repo metadata.
 
-The registry covers first-party Hapax Systems repositories plus upstream
+The registry covers first-party Hapax Research Lab repositories plus upstream
 forks where this render mechanism is intentionally inert (NOTICE.md is
 gitignored via ``.git/info/exclude`` per the operational checklist).
 
@@ -235,7 +235,7 @@ def _derive_dependency_orders(raw_repos: dict[str, Any]) -> dict[str, int]:
 
 
 def github_repo_url(repo_name: str, owner: str = DEFAULT_GITHUB_OWNER) -> str:
-    """Return the canonical GitHub URL for a Hapax Systems repository."""
+    """Return the canonical GitHub URL for a Hapax Research Lab repository."""
     return f"https://github.com/{owner}/{repo_name}"
 
 

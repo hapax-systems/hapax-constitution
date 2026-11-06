@@ -75,7 +75,7 @@ repos:
       - harness builders
       - privacy reviewers
     surface_class: research_apparatus
-    visibility: public
+    visibility: private
     source_of_truth: constitution_registry
     public_files:
       - README.md
@@ -105,7 +105,7 @@ repos:
       - identifier: https://github.com/hapax-systems/hapax-constitution
         relation: isPartOf
         scheme: url
-      - identifier: https://github.com/hapax-systems/hapax-council/blob/main/START_HERE.md
+      - identifier: https://hapaxresearch.com
         relation: isSupplementTo
         scheme: url
 
@@ -128,7 +128,7 @@ repos:
       describe the whole repository as Apache or open source.
     reader_promise: >-
       Governance specification and repo-presentation authority for
-      Hapax Systems, with a clear hapax-sdlc tooling boundary.
+      Hapax Research Lab, with a clear hapax-sdlc tooling boundary.
     reader_value: >-
       Gives reviewers one auditable source for names, licenses, support
       boundaries, and claim ceilings, reducing public-surface drift.
@@ -166,7 +166,7 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-council
+      - identifier: https://hapaxresearch.com
         relation: isReferencedBy
         scheme: url
 
@@ -200,7 +200,7 @@ repos:
       - boundary reviewers
       - internal operators
     surface_class: internal_apparatus
-    visibility: public
+    visibility: private
     source_of_truth: constitution_registry
     public_files:
       - README.md
@@ -257,7 +257,7 @@ repos:
       - privacy reviewers
       - internal operators
     surface_class: internal_apparatus
-    visibility: public
+    visibility: private
     source_of_truth: constitution_registry
     public_files:
       - README.md
@@ -279,8 +279,8 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-council
-        relation: isRequiredBy
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isPartOf
         scheme: url
 
   hapax-phone:
@@ -313,7 +313,7 @@ repos:
       - privacy reviewers
       - internal operators
     surface_class: internal_apparatus
-    visibility: public
+    visibility: private
     source_of_truth: constitution_registry
     public_files:
       - README.md
@@ -335,8 +335,8 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-council
-        relation: isRequiredBy
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isPartOf
         scheme: url
 
   hapax-mcp:
@@ -390,11 +390,11 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-council
-        relation: isRequiredBy
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isPartOf
         scheme: url
-      - identifier: https://github.com/hapax-systems/hapax-officium
-        relation: isRequiredBy
+      - identifier: https://hapaxresearch.com
+        relation: isSupplementTo
         scheme: url
 
   hapax-assets:
@@ -446,8 +446,8 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-council
-        relation: isRequiredBy
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isPartOf
         scheme: url
 
   agentgov:
@@ -497,8 +497,8 @@ repos:
     archived: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-council
-        relation: isDerivedFrom
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isPartOf
         scheme: url
 
   hapax-spine:
@@ -551,8 +551,8 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-council
-        relation: isDerivedFrom
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isPartOf
         scheme: url
 
   reins:
@@ -654,8 +654,8 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-council
-        relation: isRequiredBy
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isPartOf
         scheme: url
 
   hapax-research-ledger:
@@ -707,7 +707,7 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-council
+      - identifier: https://hapaxresearch.com
         relation: isSupplementTo
         scheme: url
 
@@ -726,10 +726,10 @@ repos:
     license_posture: Upstream license preserved; local render mechanism inert.
     reader_promise: >-
       Local upstream clone used by the Hapax environment; not a Hapax
-      Systems publication surface.
+      Research Lab publication surface.
     reader_value: >-
       Clarifies that the local clone preserves upstream identity and is
-      not part of Hapax Systems public frontmatter.
+      not part of Hapax Research Lab public frontmatter.
     claim_ceiling: Upstream project; preserve upstream identity and license.
     primary_audience:
       - internal operators
@@ -758,10 +758,10 @@ repos:
     license_posture: Upstream license preserved; local render mechanism inert.
     reader_promise: >-
       Local upstream clone used by the Hapax voice pipeline; not a Hapax
-      Systems publication surface.
+      Research Lab publication surface.
     reader_value: >-
       Clarifies that the local clone preserves upstream identity and is
-      not part of Hapax Systems public frontmatter.
+      not part of Hapax Research Lab public frontmatter.
     claim_ceiling: Upstream project; preserve upstream identity and license.
     primary_audience:
       - internal operators

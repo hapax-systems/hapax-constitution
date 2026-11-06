@@ -27,7 +27,7 @@ These are single-task coding agents, not orchestration platforms. They share hap
 The agent framework landscape has consolidated significantly by 2026:
 
 - **LangGraph** reached v1.0 in late 2025 and is the default runtime for LangChain agents. Graph-based state machines with durable execution and human-in-the-loop. Used by Klarna, Replit, Uber, LinkedIn.
-- **CrewAI** has $18M funding, 100K+ certified developers, 60% Fortune 500 adoption. Role-based team collaboration with shared contexts. 5.76x faster execution than LangGraph in benchmarks. Completely independent of LangChain.
+- **CrewAI** has 18M USD funding, 100K+ certified developers, 60% Fortune 500 adoption. Role-based team collaboration with shared contexts. 5.76x faster execution than LangGraph in benchmarks. Completely independent of LangChain.
 - **AutoGen** (Microsoft) was completely redesigned in v0.4 (January 2025) with async, event-driven architecture. 35K+ GitHub stars. Research-backed.
 - **AutoGPT / BabyAGI** are largely obsolete for production use. They popularized autonomous agents in 2023 but lack observability, error handling, and scaling.
 
@@ -39,9 +39,9 @@ The agent framework landscape has consolidated significantly by 2026:
 
 This category has experienced dramatic failure and consolidation:
 
-- **Rewind.ai** pivoted to **Limitless** in April 2024, shifting from local screen recording to a wearable pendant that records conversations, transcribes in real time, and generates summaries. Meta acquired Limitless in December 2025 for ~$116M. The technology is being folded into Meta's wearable hardware strategy.
-- **Humane AI Pin** was a $699 "post-smartphone" with a laser projector. Catastrophic failure: overheating, poor battery life, "crap" 720p resolution. HP acquired the remains for $116M in February 2025. Servers shut down February 28, 2025, bricking all devices.
-- **Rabbit R1** launched at CES 2024 for $199 with a "Large Action Model." 100K pre-orders, but 95% abandonment rate within 5 months (only 5K active users). Founder admitted it launched too early.
+- **Rewind.ai** pivoted to **Limitless** in April 2024, shifting from local screen recording to a wearable pendant that records conversations, transcribes in real time, and generates summaries. Meta acquired Limitless in December 2025 for ~116M USD. The technology is being folded into Meta's wearable hardware strategy.
+- **Humane AI Pin** was a 699 USD "post-smartphone" with a laser projector. Catastrophic failure: overheating, poor battery life, "crap" 720p resolution. HP acquired the remains for 116M USD in February 2025. Servers shut down February 28, 2025, bricking all devices.
+- **Rabbit R1** launched at CES 2024 for 199 USD with a "Large Action Model." 100K pre-orders, but 95% abandonment rate within 5 months (only 5K active users). Founder admitted it launched too early.
 
 **The core lesson:** Standalone AI hardware failed because consumers won't buy dedicated devices when smartphones deliver the same capabilities. The "AI OS" vision pursued by Humane and Rabbit was concept hype over engineering substance — they relied on cloud LLMs (GPT-4) without solving latency, reliability, or form factor.
 
@@ -55,7 +55,7 @@ The major platforms are converging on AI as an OS-level service:
 
 - **Apple** is adopting Google's Gemini (1.2T parameter model) to power a rebuilt Siri, running on Apple's Private Cloud Compute for privacy. Targeted for March 2026 (iOS 26.4). Apple's strategy: AI as invisible ambient utility woven into high-frequency workflows. Not sold as "AI" but as a smarter iPhone/Mac.
 - **Google** has extended native Gemini across Android, particularly on Pixel. New application extensions, hands-free device control, deep integration with Google Workspace. Gemini is effectively becoming the Android OS intelligence layer.
-- **Microsoft** focuses on enterprise: Copilot integrated into Windows, Microsoft 365, and Azure. Pulls from Microsoft Graph. $20/user/month Business tier. Overwhelmingly enterprise-focused, not personal.
+- **Microsoft** focuses on enterprise: Copilot integrated into Windows, Microsoft 365, and Azure. Pulls from Microsoft Graph. 20 USD/user/month Business tier. Overwhelmingly enterprise-focused, not personal.
 
 **Relevance to hapax:** These are the "establishment" approach — AI as a feature of a closed platform, optimized for broad user populations, funded by advertising or subscriptions. Hapax differs in every dimension:
 
@@ -75,7 +75,7 @@ The platform approach will always have better polish and broader integration. Ha
 **Mem.ai, Notion AI, Obsidian + plugins, Khoj, Google NotebookLM**
 
 - **Mem.ai** was revamped in 2025 as an "AI thought partner." Uses AI for automatic note organization without manual folders. Positioned for individuals who "just write."
-- **Notion AI** restructured in May 2025: full AI access requires Business plan ($20/user/month). AI Agents and Ask Notion features. Team-focused.
+- **Notion AI** restructured in May 2025: full AI access requires Business plan (20 USD/user/month). AI Agents and Ask Notion features. Team-focused.
 - **Obsidian** is Reddit's 2026 consensus pick for personal knowledge management. Local-first, not locked to any AI provider. Steep learning curve but maximum control. Best foundation for an AI-powered "second brain."
 - **Khoj** (32.8K GitHub stars) is the most polished self-hosted "second brain" — indexes PDFs, markdown, Notion, images. Semantic search + chat. Supports Ollama. Multi-user architecture.
 - **Google NotebookLM** is the newcomer — upload documents, chat with them. Simple and effective but cloud-only.
@@ -248,7 +248,7 @@ The concept of constraining agents via formal principles is now well-established
 What's distinctive about hapax's approach:
 1. **Structured multi-dimensional profile** (cognitive style, professional context, creative preferences, health patterns, communication style) vs. implicit preference vectors.
 2. **Profile injected into every agent's system prompt** — the operator model isn't just used for personalization, it constrains agent behavior.
-3. **Executive function modeling** — the profile explicitly captures executive-function patterns (decision fatigue thresholds, context-switching costs, hyperfocus windows) and agents adapt their behavior accordingly.
+3. **Cognitive-ergonomics modeling** — the profile explicitly captures operator attention and ergonomics patterns (decision-fatigue thresholds, context-switching costs, interrupt-free execution windows) and agents adapt their behavior accordingly.
 
 ### C4. Is the full combination novel?
 

@@ -16,7 +16,7 @@ import json
 
 from sdlc.render.repo_registry import OperatorIdentity, RepoSpec
 
-PUBLIC_CREATOR_NAME = "Hapax Systems"
+PUBLIC_CREATOR_NAME = "Hapax Research Lab"
 
 
 def render(repo: RepoSpec, identity: OperatorIdentity) -> str:

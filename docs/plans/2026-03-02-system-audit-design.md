@@ -204,7 +204,7 @@ Does data move through the system — including to and from the operator — wit
 
 **Operator → System:** Does operator input (vault inbox, chat, decisions, corrections, probe responses) actually reach the profile, and does the profile actually change agent behavior? Or does information enter and go nowhere?
 
-**System → Operator:** Does system output (nudges, briefings, copilot, accommodations) actually reach the operator at the right time, in the right form, through the right channel? Given the documented neurocognitive profile, are the attention demands the system places on the operator reasonable? Does the system respect its own accommodations?
+**System → Operator:** Does system output (nudges, briefings, copilot, accommodations) actually reach the operator at the right time, in the right form, through the right channel? Given the documented cognitive-ergonomics profile, are the attention demands the system places on the operator reasonable? Does the system respect its own accommodations?
 
 **Full lifecycle:** Raw data in → ingestion → Qdrant → retrieval → agent reasoning → output → operator attention → operator action → back into the system. Are there breaks?
 
@@ -214,7 +214,7 @@ Does every part justify its existence relative to the whole — including relati
 
 ### Interface Integrity
 
-Where domains meet — and where the system meets the operator — do they meet cleanly? Are the operator's interfaces well-designed for someone with the documented neurocognitive profile? Is the attention cost of each interface proportional to its value? Are the contracts between components explicit or implicit? Every seam is a potential failure point — including the seams between the system and the human it augments.
+Where domains meet — and where the system meets the operator — do they meet cleanly? Are the operator's interfaces well-designed for someone with the documented cognitive-ergonomics profile? Is the attention cost of each interface proportional to its value? Are the contracts between components explicit or implicit? Every seam is a potential failure point — including the seams between the system and the human it augments.
 
 ### Holistic Output
 

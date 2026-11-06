@@ -45,7 +45,7 @@
 **v1 finding:** R-1.1 (medium)
 **Status:** ✅ Complete and correct.
 `OperatorSchema(BaseModel, extra="allow")` at `operator.py:30-33`. Validates `version` (int|str) and `operator` (dict). `_load_operator()` now calls `OperatorSchema.model_validate(raw)` and catches `(json.JSONDecodeError, ValidationError)`, falling back to empty dict with a warning log. Tests: `test_operator_schema_valid`, `test_operator_schema_extra_fields_allowed`, `test_operator_schema_wrong_type_rejects`, `test_load_operator_corrupt_json`, `test_load_operator_invalid_schema`.
-**Residual gap:** Schema uses `extra="allow"` — secondary fields (`axioms`, `constraints`, `patterns`, `neurocognitive`) are not validated. A `constraints: "string"` instead of `constraints: {}` would pass validation but silently break `get_constraints()`. Acceptable tradeoff for a single-operator system but noted.
+**Residual gap:** Schema uses `extra="allow"` — secondary fields (`axioms`, `constraints`, `patterns`, `cognitive-ergonomics`) are not validated. A `constraints: "string"` instead of `constraints: {}` would pass validation but silently break `get_constraints()`. Acceptable tradeoff for a single-operator system but noted.
 
 ### Fix 21: Add timeout to embed() and embed_batch() — VERIFIED
 **v1 finding:** B-1.1 (medium)
@@ -120,7 +120,7 @@ Both `embed()` (line 90) and `embed_batch()` (line 126) pass `request_timeout=30
 ### R2-1.1: `OperatorSchema` validates structure minimally — secondary fields unprotected
 **File:** `shared/operator.py:30-33`
 **Severity:** low
-**Finding:** `OperatorSchema(BaseModel, extra="allow")` validates that `version` is int|str and `operator` is a dict. But `axioms`, `constraints`, `patterns`, `neurocognitive`, `goals`, and `agent_context_map` are all accessed via `.get()` with no structural validation. If `axioms` were a string instead of a dict, `get_axioms()` would return the string, and callers iterating over it would get individual characters. Similarly, if `goals.primary` were a dict instead of a list, `get_goals()` would crash with `TypeError` in the `+` operation.
+**Finding:** `OperatorSchema(BaseModel, extra="allow")` validates that `version` is int|str and `operator` is a dict. But `axioms`, `constraints`, `patterns`, `cognitive-ergonomics`, `goals`, and `agent_context_map` are all accessed via `.get()` with no structural validation. If `axioms` were a string instead of a dict, `get_axioms()` would return the string, and callers iterating over it would get individual characters. Similarly, if `goals.primary` were a dict instead of a list, `get_goals()` would crash with `TypeError` in the `+` operation.
 **Impact:** Low. `operator.json` is authored by the profiler agent, not edited by hand. The risk is a profiler bug producing malformed output. The `.get()` fallbacks prevent most crashes but could produce subtly wrong data.
 **Operator impact:** None direct — this is a defense-in-depth gap.
 
@@ -134,7 +134,7 @@ Both `embed()` (line 90) and `embed_batch()` (line 126) pass `request_timeout=30
 **File:** `shared/vault_writer.py:72`
 **Severity:** low (unchanged from v1 B-1.5)
 **Finding:** `target.write_text("\n".join(parts))` is not atomic. Fix 41 added atomic writes to `accommodations.py` and `chat_agent.py` but not to `vault_writer.py`. If two agents write the same file simultaneously (e.g., nudges.md during a cockpit refresh while briefing agent triggers nudge update), the file could be partially written.
-**Impact:** Low. In practice, writes are sequential. The briefing/digest timer ordering (Fix 51) reduces overlap risk. Obsidian Sync would re-sync on the next full write anyway.
+**Impact:** Low. In practice, writes are sequential. The briefing/digest timer ordering (Fix 51) reduces overlap risk. Vault replication would re-sync on the next full write anyway.
 
 ### R2-1.4: `VAULT_PATH` in `config.py` uses `Path.home()` at module load — not patchable cleanly
 **File:** `shared/config.py:27`

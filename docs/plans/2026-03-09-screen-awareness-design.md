@@ -92,7 +92,7 @@ The drift-detector agent (runs weekly) gets a new dimension: `screen_analyzer_co
 ## Screen Analyzer (Vision LLM)
 
 **Model:** Gemini Flash via LiteLLM (`gemini-flash` alias).
-**Performance:** ~3s round-trip, ~800 tokens per analysis, ~$0.0001 per capture.
+**Performance:** ~3s round-trip, ~800 tokens per analysis, ~0.0001 USD per capture.
 
 ### Structured Output
 

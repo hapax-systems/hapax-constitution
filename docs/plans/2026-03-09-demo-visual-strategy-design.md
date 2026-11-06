@@ -89,7 +89,7 @@ New `visual_type: "illustration"` for scenes where the point is atmospheric, met
 | Tier | Model | Use Case | Cost |
 |------|-------|----------|------|
 | Default | Nano Banana (Gemini 2.5 Flash Image) | Conceptual illustrations | Free (500/day) |
-| Quality | Nano Banana Pro (Gemini 3 Pro Image) | When text rendering matters | ~$0.15/image |
+| Quality | Nano Banana Pro (Gemini 3 Pro Image) | When text rendering matters | ~0.15 USD/image |
 
 Route through LiteLLM for Langfuse tracing. No VRAM impact (API-based). Google API key already available via `pass show api/google`.
 

@@ -78,7 +78,7 @@ If the LLM returns an empty or corrupted update, or if the process is killed mid
 **Status:** ⚠️ Partial. The architectural intent is correct and mostly implemented:
 
 **What's done:**
-- `SYSTEM_CONTEXT` in `shared/operator.py:37` slimmed to ~150 tokens (identity + neurocognitive note + pointer to tools)
+- `SYSTEM_CONTEXT` in `shared/operator.py:37` slimmed to ~150 tokens (identity + cognitive-ergonomics note + pointer to tools)
 - `get_system_prompt_fragment()` returns only identity + axioms + accommodations
 - All major agents register context tools via `get_context_tools()` pattern
 - `briefing.py` is the cleanest implementation: pure domain prompt, no `SYSTEM_CONTEXT`, tools registered
@@ -103,7 +103,7 @@ If the LLM returns an empty or corrupted update, or if the process is killed mid
 ### C2-3.2: No tests for regenerate_operator() or _regenerate_operator_md()
 **File:** `agents/profiler.py:1035-1284`
 **Severity:** medium
-**Finding:** The operator manifest update pipeline (LLM-powered goal progress, pattern additions, neurocognitive updates) and `_regenerate_operator_md()` (pure formatting) have no test coverage.
+**Finding:** The operator manifest update pipeline (LLM-powered goal progress, pattern additions, cognitive-ergonomics updates) and `_regenerate_operator_md()` (pure formatting) have no test coverage.
 **Impact:** Bugs in operator manifest regeneration would be undetected until observed in production. `_regenerate_operator_md()` is a pure function that could easily be tested deterministically.
 
 ### C2-3.3: Six individual reader functions have no unit tests

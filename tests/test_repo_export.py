@@ -20,7 +20,7 @@ def test_repo_export_includes_generated_artifacts_and_settings_policy() -> None:
     assert ".github/ISSUE_TEMPLATE/config.yml" in export["generated_artifacts"]
     assert export["settings_policy"] == {
         "issues": "redirect",
-        "wiki": "disabled_except_hapax_constitution",
+        "wiki": "disabled",
         "projects": "disabled",
         "discussions": "disabled",
         "funding": "no_perk_research_support_only",
@@ -58,7 +58,7 @@ def test_repo_export_carries_frontmatter_policy_fields() -> None:
     }
 
     constitution = by_id["hapax-constitution"]
-    assert constitution["github_settings"]["has_wiki"] is True
+    assert constitution["github_settings"]["has_wiki"] is False
     assert "SUPPORT.md" in constitution["public_files"]
     assert by_id["hapax-council"]["zenodo_doi"] == "10.5281/zenodo.20113515"
     assert by_id["hapax-council"]["zenodo_concept_doi"] == "10.5281/zenodo.20113514"
