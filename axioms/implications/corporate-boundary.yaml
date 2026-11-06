@@ -93,3 +93,22 @@ implications:
     research broadcasts. LRR Phase 6 codifies the boundary: deliberate public
     research publication is outside corporate_boundary; incidental
     cross-compartment data capture remains strictly prohibited.
+
+- id: cb-discourse-002
+  tier: T1
+  text: >
+    Outward public discourse and inbound research correspondence under
+    F-CONST-13 v2 are executed exclusively by hrl-han proper using dedicated,
+    institutionally disclosed HACA machine accounts and governed FastDiscourseGate
+    DI-01 v2 receipts — never through personal principal accounts, manual human
+    mediation, or external institutional compartment credentials.
+  enforcement: review
+  canon: purposivist
+  mode: compatibility
+  level: subsystem
+  scope_clarification_date: '2026-11-06'
+  scope_clarification_reason: >
+    Supersedes passive broadcast-only syndication (F-CONST-13 v1) with governed
+    two-way autonomous discourse while preserving strict principal and
+    compartment isolation, C-384 commercial separation, D-H3 privacy hygiene,
+    and venue Terms-of-Service honesty.

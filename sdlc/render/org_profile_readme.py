@@ -76,8 +76,8 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "prototype (`MIT`, `v0.3.2` inactive) superseded by [reins](https://github.com/hapax-systems/reins).",
             "- **Capability Frontier & publication channels:** Capability routing scores are "
             "registry-asserted today; measured calibration is planned. Weblog, RSS, archive/DOI, "
-            "and social syndication surfaces operate as governed publication-bus channels and must "
-            "not imply unreviewed direct public egress.",
+            "and outward autonomous discourse surfaces operate as governed publication-bus channels "
+            "under F-CONST-13 v2 (`DI-01 v2` receipt-gated) and must not imply unreviewed egress.",
             "",
             "## Claim Ceiling",
             "",
