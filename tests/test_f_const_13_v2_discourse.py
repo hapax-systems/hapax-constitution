@@ -83,7 +83,7 @@ def test_kategoria_direct_address_validator_enforces_mandatory_fields() -> None:
     empty_res = validate_kategoria_direct_address({})
     assert not empty_res.valid
     assert "kategoria_missing_addressed_to" in empty_res.errors
-    assert "kategoria_missing_third_way_frame_hook" in empty_res.errors
+    assert "kategoria_missing_discursive_fault_line" in empty_res.errors
     assert "kategoria_missing_question_on_the_record" in empty_res.errors
     assert "kategoria_missing_revision_trigger" in empty_res.errors
 
@@ -94,7 +94,7 @@ def test_kategoria_direct_address_validator_enforces_mandatory_fields() -> None:
                 "discursive_role": DiscursiveRole.ORIGINAL_CLAIMANT.value,
             }
         ],
-        "third_way_frame_hook": "Separates bare weight edits (M) from S = L0..L7 verification.",
+        "discursive_fault_line": "Separates bare weight edits (M) from S = L0..L7 verification.",
         "question_on_the_record": "Does static weight inspection detect sycophancy above 270M without forward passes?",
         "revision_trigger": "Publish blinded >=270M static weight-inspection TPR/FPR witness.",
     }

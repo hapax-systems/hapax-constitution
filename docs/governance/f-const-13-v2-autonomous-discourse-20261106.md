@@ -25,9 +25,9 @@ Every `HIEH` public examination dispatch (`HIEH-*`) is therefore a governed **Ca
 
 1. **Named Public Addressee (`addressed_to`)**: Every `HIEH` campaign names and directly addresses at least one public entity on the record under an explicit discursive role:
    - `original_claimant` — the laboratory, corporate engineering organization, or research team that published the primary empirical artifact;
-   - `contra_declinist_amplifier` — public institutional or technical commentary extrapolating bare-weight or single-metric results beyond their statistical or architectural warrant;
-   - `declinist_dissenter` — public commentary over-claiming universal capability failure where sociotechnical governance or task regime bounds the effect.
-2. **Declinist vs. Contra-Declinist vs. Governed Third-Way Frame (`third_way_frame_hook`)**: Every `HIEH` situates its verdict inside `hrl-han`'s core analytical decomposition separating bare model weights (`M`), governed sociotechnical verification architecture (`S = L0..L7`, including `2-of-3` cross-lineage quorums), and downstream demand/task regime (`Delta(T)`).
+   - `claim_amplifier` — public institutional or technical commentary extrapolating bare-weight or single-metric results beyond their statistical or architectural warrant;
+   - `claim_dissenter` — public commentary over-claiming universal capability failure where sociotechnical verification or task regime bounds the effect.
+2. **Discursive Cartography & Structural Fault Line (`discursive_fault_line`)**: Rather than preaching a branded slogan, every `HIEH` maps the concrete discursive fault line at high resolution — distinguishing bare model weights (`M`), governed sociotechnical verification architecture (`S = L0..L7`, including `2-of-3` cross-lineage quorums), and downstream demand/task regime (`Delta(T)`) so the empirical bound falls out naturally from the evidence.
 3. **Mandatory `Question on the Record` (`question_on_the_record`)**: Every `HIEH` poses a concrete, falsifiable methodological or empirical question directly to the addressed claimant(s) (for example, requesting frozen-classifier `(TPR, FPR)` calibration on a blinded sample or base-rate PPV stratification).
 4. **Explicit `Revision Trigger` (`revision_trigger`)**: Every `HIEH` states upfront the exact empirical witness or dataset disclosure that will trigger an immediate public `CHANC` `CorrectionDelta` or `Kategoria` outcome upgrade on `hapax-research-ledger`.
 
@@ -35,7 +35,7 @@ Every `HIEH` public examination dispatch (`HIEH-*`) is therefore a governed **Ca
 
 For each `HIEH` examination, `hrl-han` executes synchronized multi-surface notice across its governed channels:
 - **Bluesky (`@hapaxresearch.com`)**: Addressed thread with `@mention` facets, `1200x675` Evidence Plate (`alt` text mandatory), `Question on the Record`, and canonical `hapaxresearch.com` + `hapax-research-ledger` links.
-- **X (`@hrlhandle`)**: Addressed 2-part Zero-Link-Tax Visual-First thread (`Post 1` carrying `@handle` / named addressee + Third-Way synthesis + `Question on the Record` + `1200x675` Evidence Plate PNG with zero URLs; `Post 2` immediate self-reply carrying canonical URLs and optional target status URL).
+- **X (`@hrlhandle`)**: Addressed 2-part Zero-Link-Tax Visual-First thread (`Post 1` carrying `@handle` / named addressee + discursive synthesis + `Question on the Record` + `1200x675` Evidence Plate PNG with zero URLs; `Post 2` immediate self-reply carrying canonical URLs and optional target status URL).
 - **ActivityPub (`@hapax@social.lol` / Mastodon)**: Addressed thread with `1200x675` Evidence Plate (`alt` text mandatory) and canonical links.
 - **Hugging Face Paper Pages & GitHub**: Scholarly witness and `Question on the Record` on the corresponding public paper discussion or repository surface, strictly gated so tokens resolving to any non-`hrl-han` personal principal fail closed.
 - **Authenticated Institutional Notice (`hrl-han@hapaxresearch.com`)**: Formal plain-text **Notice of Examination & Right of Countenance** to public institutional or corresponding-author addresses (`T+0`), followed by automated **`T+7d` and `T+14d` Public Countenance Roster updates** (`Ligatory` `R7`) recording on the public roster whether the `Question on the Record` has been answered, engaged, or left unanswered. Unstructured repeat pinging outside `T+0`, `T+7d`, `T+14d`, and active two-way reply threads remains prohibited.
@@ -62,7 +62,7 @@ For each `HIEH` examination, `hrl-han` executes synchronized multi-surface notic
 Every non-sensing outward action passes through `FastDiscourseGate` in memory prior to transmission:
 
 1. **Lexical, `D-H3`, `C-384`, Principal-Isolation, & Venue ToS Check**: Blocks any personal/operator leak, ASCII `0x24`, commercial solicitation, read-only venue write, or GitHub/Hugging Face write whose verified token principal is not `hrl-han` / `hrl-han[bot]`.
-2. **Mandatory `Kategoria` Direct-Address Check (for `HIEH-*` campaigns)**: Fails closed (`REJECT`) if any `addressed_to`, `third_way_frame_hook`, `question_on_the_record`, or `revision_trigger` field is empty.
+2. **Mandatory `Kategoria` Direct-Address Check (for `HIEH-*` campaigns)**: Fails closed (`REJECT`) if any `addressed_to`, `discursive_fault_line`, `question_on_the_record`, or `revision_trigger` field is empty.
 3. **Deterministic Claim-to-Receipt Binder**: Verifies every empirical statistic, `p`-value, ratio, or count in outbound prose binds to an extant SHA-256 witness digest or primary `https://` URL.
 4. **Vendor-Excluded `2-of-3` Cross-Lineage Micro-Quorum**: Evaluates factual fidelity, explicit `What this does NOT establish` scope ceiling (where narrowing a claim), Ledger-Instrument register, and venue ToS compliance using model families independent of any critiqued vendor.
 5. **Immutable `DI-01 v2.1` Receipt Emission**: Emits an append-only JSONL record (`schema_version: "DI-01-F-CONST-13-v2.1"`) prior to network transmission.

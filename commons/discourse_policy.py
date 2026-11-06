@@ -29,8 +29,8 @@ class DiscursiveRole(StrEnum):
     """Canonical discursive role for named public addressees in an HIEH Kategoria."""
 
     ORIGINAL_CLAIMANT = "original_claimant"
-    CONTRA_DECLINIST_AMPLIFIER = "contra_declinist_amplifier"
-    DECLINIST_DISSENTER = "declinist_dissenter"
+    CLAIM_AMPLIFIER = "claim_amplifier"
+    CLAIM_DISSENTER = "claim_dissenter"
 
 
 VENUE_POSTURE_MATRIX: Final[dict[str, VenuePosture]] = {
@@ -113,7 +113,7 @@ def validate_kategoria_direct_address(payload: Mapping[str, object]) -> Kategori
             if role not in valid_roles:
                 errors.append(f"kategoria_invalid_discursive_role:{role}")
 
-    for field_name in ("third_way_frame_hook", "question_on_the_record", "revision_trigger"):
+    for field_name in ("discursive_fault_line", "question_on_the_record", "revision_trigger"):
         val = str(payload.get(field_name) or "").strip()
         if len(val) < 12:
             errors.append(f"kategoria_missing_{field_name}")
