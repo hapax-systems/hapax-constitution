@@ -146,48 +146,46 @@ def _opening(repo: RepoSpec) -> str:
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
             f"`{repo.name}` is the bounded adoption-commons repository in the "
-            "Hapax Systems portfolio. It is published so adopters can inspect "
+            "Hapax Research Lab portfolio. It is published so adopters can inspect "
             "and pilot the governance-hook surface without inheriting the "
             "Hapax runtime estate."
         )
     if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
         return (
-            f"`{repo.name}` is the product front door for the Hapax Systems "
+            f"`{repo.name}` is the product front door for the Hapax Research Lab "
             "portfolio. Its current public ceiling is observation and "
             "governed command preview, not autonomous write authority."
         )
     if repo.surface_class is SurfaceClass.RUNTIME_MECHANISM:
         return (
             f"`{repo.name}` is a source-available runtime mechanism in the "
-            "Hapax Systems portfolio. It exposes dispatch, receipt, quota, "
+            "Hapax Research Lab portfolio. It exposes dispatch, receipt, quota, "
             "and projection machinery without claiming to be the whole "
             "Hapax estate."
         )
     if repo.surface_class is SurfaceClass.GOVERNANCE_SPEC:
-        return (
-            f"`{repo.name}` anchors governance and public metadata for Hapax Systems repositories."
-        )
+        return f"`{repo.name}` anchors governance and public metadata for Hapax Research Lab repositories."
     if repo.surface_class is SurfaceClass.ECOSYSTEM_BRIDGE:
         return (
-            f"`{repo.name}` is an integration bridge for the Hapax Systems "
+            f"`{repo.name}` is an integration bridge for the Hapax Research Lab "
             "portfolio. It is maintained for MCP integration and inspection, "
             "not as a general-purpose framework."
         )
     if repo.surface_class is SurfaceClass.ASSET_MIRROR:
         return (
-            f"`{repo.name}` is a public asset mirror for the Hapax Systems "
+            f"`{repo.name}` is a public asset mirror for the Hapax Research Lab "
             "portfolio. Source of truth and approval remain outside this "
             "mirror."
         )
     if repo.surface_class is SurfaceClass.EVIDENCE_ARTIFACT:
         return (
-            f"`{repo.name}` is an evidence-artifact repository in the Hapax "
-            "Systems portfolio. It publishes bounded observations or "
+            f"`{repo.name}` is an evidence-artifact repository in the Hapax Research Lab "
+            "portfolio. It publishes bounded observations or "
             "metadata, not runtime authority."
         )
     if repo.surface_class is SurfaceClass.INTERNAL_APPARATUS:
         return (
-            f"`{repo.name}` is internal apparatus in the Hapax Systems "
+            f"`{repo.name}` is internal apparatus in the Hapax Research Lab "
             "portfolio. It is visible only where a separate visibility "
             "decision permits inspection."
         )

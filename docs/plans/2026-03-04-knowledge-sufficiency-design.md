@@ -177,7 +177,7 @@ interface InterviewState {
 }
 ```
 
-State persists in `data.json` (syncs via Obsidian Sync).
+State persists in `data.json` (syncs across an institutional compartment boundary).
 
 Interview flow:
 1. Load knowledge model (bundled as JSON in plugin build)
@@ -229,7 +229,7 @@ Uses Obsidian API (`app.vault.create`, `app.vault.modify`):
 - Works on both home (LiteLLM) and work (OpenAI/Anthropic) devices
 - Vault writing via Obsidian API — no server dependency
 - Knowledge model bundled in plugin build — no external fetch
-- Interview state in data.json — syncs via Obsidian Sync
+- Interview state in data.json — syncs across an institutional compartment boundary
 
 ## Ongoing Maintenance
 

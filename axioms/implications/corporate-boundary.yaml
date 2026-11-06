@@ -5,9 +5,11 @@ derivation_version: 1
 implications:
 - id: cb-llm-001
   tier: T0
-  text: Extension must support direct API calls to sanctioned providers (OpenAI,
-    Anthropic) without requiring a localhost proxy. LiteLLM restriction is
-    auto-detected by probing the proxy health endpoint.
+  text: >-
+    Components operating in an external institutional compartment must support
+    direct API calls to compartment-sanctioned providers (OpenAI, Anthropic)
+    without requiring a lab-local proxy. Proxy reachability is auto-detected
+    by probing the local proxy health endpoint.
   enforcement: block
   canon: textualist
   mode: compatibility
@@ -15,9 +17,11 @@ implications:
 
 - id: cb-data-001
   tier: T0
-  text: Vault data flow must use only git via corporate-approved remote.
-    Extension must never require direct network access to home services for
-    core functionality.
+  text: >-
+    Cross-compartment artifact exchange must use only explicitly approved
+    compartment remotes with zero cross-compartment credential, telemetry,
+    sync-vault, or capture ingress. Components must never require direct
+    network access to lab-local services for core functionality.
   enforcement: block
   canon: textualist
   mode: compatibility
@@ -25,7 +29,8 @@ implications:
 
 - id: cb-degrade-001
   tier: T0
-  text: Features depending on localhost services (RAG search, health status,
+  text: >-
+    Features depending on lab-local services (RAG search, health status,
     embedding) must fail silently with informative UI, not throw errors.
   enforcement: block
   canon: purposivist
@@ -34,9 +39,11 @@ implications:
 
 - id: cb-key-001
   tier: T0
-  text: API credentials resolved from VS Code settings, environment variables,
-    or pass store (in that order). Per-machine settings are not synced via git.
-    No secrets may be committed to the vault repository.
+  text: >-
+    API credentials are resolved strictly within the active compartment from
+    local editor settings, environment variables, or local secret store (in
+    that order). Per-machine settings are never synced across compartments,
+    and no secrets may be committed to any repository.
   enforcement: block
   canon: textualist
   mode: compatibility
@@ -44,8 +51,9 @@ implications:
 
 - id: cb-extensible-001
   tier: T1
-  text: Adding a new LLM provider must require only implementing a provider
-    interface and adding a settings entry, not structural changes.
+  text: >-
+    Adding a new sanctioned LLM provider must require only implementing a
+    provider interface and adding a settings entry, not structural changes.
   enforcement: review
   canon: purposivist
   mode: sufficiency
@@ -53,7 +61,8 @@ implications:
 
 - id: cb-parity-001
   tier: T2
-  text: Core chat functionality (conversation, note context, slash commands)
+  text: >-
+    Core chat functionality (conversation, note context, slash commands)
     must work identically regardless of provider selection.
   enforcement: warn
   canon: purposivist
@@ -63,22 +72,24 @@ implications:
 - id: cb-scope-001
   tier: T1
   text: >
-    corporate_boundary governs SYSTEM DATA FLOW — the vault, employer context,
-    credentials, and work artifacts. It does NOT govern operator-chosen content
-    publication. Livestream research output to public CDNs (YouTube, Twitch) is
-    operator-chosen content, not a corporate data leak, and is out of scope for
-    corporate_boundary. Operator-chosen content that INCIDENTALLY contains
-    employer data (audio bleed of a work call, screen capture of an employer
-    tool) IS governed by corporate_boundary; the distinction is the operator's
-    deliberate selection, not incidental exposure.
+    corporate_boundary governs SYSTEM DATA FLOW across institutional
+    compartments — compartment vaults, external institutional context,
+    credentials, telemetry, and compartment-scoped artifacts. It does NOT
+    govern deliberate operator-chosen research publication. Public research
+    output published to public CDNs is deliberate publication, not a
+    cross-compartment data leak, and is out of scope for corporate_boundary.
+    Content that INCIDENTALLY captures external-compartment data (ambient
+    audio capture from an external institutional session, screen capture of
+    an external compartment surface) IS governed by corporate_boundary; the
+    distinction is deliberate operator selection, not incidental exposure.
   enforcement: review
   canon: purposivist
   mode: sufficiency
   level: subsystem
   scope_clarification_date: '2026-04-16'
   scope_clarification_reason: >
-    Pre-clarification, a reading of corporate_boundary as blanket "vault data
-    flow to unsanctioned remote" could be interpreted to block livestream
-    publication. LRR Phase 6 opens the distinction: deliberate content
-    publication is not governed by corporate_boundary; incidental employer
-    data exposure still is.
+    Pre-clarification, reading corporate_boundary as a blanket ban on all
+    outbound artifact publication could be misinterpreted to block public
+    research broadcasts. LRR Phase 6 codifies the boundary: deliberate public
+    research publication is outside corporate_boundary; incidental
+    cross-compartment data capture remains strictly prohibited.

@@ -19,7 +19,7 @@ def render(repo: RepoSpec) -> str:
         "\n"
         f"{_opening(repo)}\n"
         "\n"
-        "This repository is part of the Hapax Systems portfolio. Public "
+        "This repository is part of the Hapax Research Lab portfolio. Public "
         "metadata, issue affordances, and support boundaries follow the "
         "registry in `hapax-constitution`.\n"
         "\n"
@@ -93,47 +93,47 @@ def _opening(repo: RepoSpec) -> str:
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
             f"`{repo.name}` is the bounded adoption-commons repository in the "
-            "Hapax Systems portfolio. It is published for inspection and "
+            "Hapax Research Lab portfolio. It is published for inspection and "
             "pilot use without granting rights to the broader Hapax runtime "
             "estate."
         )
     if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
         return (
-            f"`{repo.name}` is the product front door for the Hapax Systems "
+            f"`{repo.name}` is the product front door for the Hapax Research Lab "
             "portfolio. Public materials must stay within the shipped "
             "read and command-preview claim ceiling."
         )
     if repo.surface_class is SurfaceClass.RUNTIME_MECHANISM:
         return (
             f"`{repo.name}` is a source-available runtime mechanism in the "
-            "Hapax Systems portfolio. It is not the full Hapax estate."
+            "Hapax Research Lab portfolio. It is not the full Hapax estate."
         )
     if repo.surface_class is SurfaceClass.GOVERNANCE_SPEC:
         return (
             f"`{repo.name}` is the governance-specification and publication "
-            "metadata anchor for the Hapax Systems repository constellation."
+            "metadata anchor for the Hapax Research Lab repository constellation."
         )
     if repo.surface_class is SurfaceClass.ECOSYSTEM_BRIDGE:
         return (
-            f"`{repo.name}` is an integration bridge for Hapax Systems APIs and "
+            f"`{repo.name}` is an integration bridge for Hapax Research Lab APIs and "
             "MCP clients. It is maintained for integration and inspection, "
             "not as a general-purpose MCP framework."
         )
     if repo.surface_class is SurfaceClass.ASSET_MIRROR:
         return (
-            f"`{repo.name}` is a public asset mirror for the Hapax Systems "
+            f"`{repo.name}` is a public asset mirror for the Hapax Research Lab "
             "portfolio. Per-asset notices and upstream licenses remain "
             "controlling."
         )
     if repo.surface_class is SurfaceClass.EVIDENCE_ARTIFACT:
         return (
-            f"`{repo.name}` is an evidence-artifact repository in the Hapax "
-            "Systems portfolio. It publishes bounded observations or "
+            f"`{repo.name}` is an evidence-artifact repository in the Hapax Research Lab "
+            "portfolio. It publishes bounded observations or "
             "metadata, not runtime code authority."
         )
     if repo.surface_class is SurfaceClass.INTERNAL_APPARATUS:
         return (
-            f"`{repo.name}` is internal apparatus in the Hapax Systems "
+            f"`{repo.name}` is internal apparatus in the Hapax Research Lab "
             "portfolio. It is not a public product, hosted service, or "
             "community project unless a separate product boundary is ratified."
         )

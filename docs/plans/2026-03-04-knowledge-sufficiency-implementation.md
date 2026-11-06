@@ -2458,7 +2458,7 @@ Create `src/interview/engine.ts`:
  * Manages the interview lifecycle: detecting gaps, presenting questions,
  * extracting answers, writing to vault, and tracking progress.
  *
- * State persists in plugin data.json via Obsidian Sync.
+ * State persists in plugin data.json across an institutional compartment boundary.
  */
 import { App, TFile, Notice } from "obsidian";
 import type { HapaxSettings } from "../types";
@@ -2862,7 +2862,7 @@ git commit -m "feat(interview): engine state machine — gap detection, answer p
 
 InterviewEngine manages full lifecycle: vault scanning for satisfaction,
 dependency-ordered question selection, LLM extraction, vault write dispatch,
-progress tracking. State persists in data.json via Obsidian Sync."
+progress tracking. State persists in data.json across an institutional compartment boundary."
 ```
 
 ---

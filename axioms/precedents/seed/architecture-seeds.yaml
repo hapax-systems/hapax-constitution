@@ -50,12 +50,12 @@ precedents:
 
   - id: sp-arch-004
     axiom_id: single_user
-    situation: "Obsidian Sync for knowledge base synchronization"
+    situation: "Encrypted single-compartment vault synchronization across personal devices"
     decision: compliant
     reasoning: >
-      E2E encrypted sync between operator's personal devices only. No shared
-      vaults, no collaborative editing, no multi-user access. vault_writer.py
-      writes system output to operator's vault.
+      End-to-end encrypted synchronization scoped strictly to the operator's
+      lab-compartment devices. No shared vaults, no collaborative editing, no
+      multi-user access. vault_writer.py writes system output to the lab vault.
     tier: T2
     distinguishing_facts:
       - "Single-user vault sync"
@@ -134,7 +134,7 @@ precedents:
     decision: compliant
     reasoning: >
       Nudges surface stalled work as system design signals, not operator
-      failures. Framing respects neurocognitive profile. ActionItemsList
+      failures. Framing respects bounded operator attention and ergonomics profile. ActionItemsList
       is the single attention surface. Copilot line is observational only.
     tier: T1
     distinguishing_facts:

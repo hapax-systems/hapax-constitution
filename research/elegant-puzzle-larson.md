@@ -409,7 +409,7 @@ Good goals are a composition of four numbers:
 - **Baselines** describe aspects of the present you want to preserve.
 - **Always pair investment goals with baseline (countervailing) metrics.**
 
-Example: Goal is to speed up data pipeline. Investment: "Core batch jobs finish within 3 hours (p95) by end of Q3." Without baselines, you could just double cluster size. Baselines: "Efficiency should not exceed $0.05/GB" and "Alert load should not increase beyond twice/week."
+Example: Goal is to speed up data pipeline. Investment: "Core batch jobs finish within 3 hours (p95) by end of Q3." Without baselines, you could just double cluster size. Baselines: "Efficiency should not exceed 0.05 USD/GB" and "Alert load should not increase beyond twice/week."
 
 ### Developer Velocity (from Accelerate/DORA)
 

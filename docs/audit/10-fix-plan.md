@@ -52,7 +52,7 @@ Total findings: 162 actionable (excluding 9 bonuses from Domain 8, 1 retracted f
 **Action:** Wrap `agent.run()` / `agent.run_stream()` calls in try/except blocks in all 6 agents (scout already has per-component handling). For timer-driven agents (briefing, digest), produce a degraded-mode output on LLM failure: stats-only briefing, raw data digest. For interactive agents (research, code_review, management_prep), catch the exception and display a clear error message to the operator rather than crashing.
 **Verification:** Mock the LLM client to raise `Exception("all models exhausted")`. Run each agent. Verify non-zero output or graceful error message instead of stack trace.
 
-### Fix 6: Add neurocognitive micro-prompt to all agent system prompts
+### Fix 6: Add cognitive-ergonomics micro-prompt to all agent system prompts
 **Findings:** H-1.1, H-1.3
 **Files:** `agents/briefing.py`, `agents/scout.py`, `agents/management_prep.py`, `agents/drift_detector.py`, `agents/digest.py`
 **Action:** Add a minimal executive-function framing line (~15 tokens) to each agent's system prompt: `"This system is executive function support infrastructure. Call lookup_constraints() before generating output to understand the operator's cognitive needs."` This preserves the lean prompt design from the context management refactoring while ensuring agents know to query context tools for operator accommodations.
@@ -635,7 +635,7 @@ The most operationally impactful work stream. Addresses cascading failures in th
 **Estimated scope:** 8 files, ~100 LOC changes
 **Priority range:** P1-P2
 
-Restores the coherent operator model across all LLM agents. Every agent gets neurocognitive awareness (P1). Digest gets context tools (P1). Code review model override gets fixed (P2). Obsidian plugin aligns with system identity (P2). Scout staleness check is enforced (P2).
+Restores the coherent operator model across all LLM agents. Every agent gets cognitive-ergonomics awareness (P1). Digest gets context tools (P1). Code review model override gets fixed (P2). Obsidian plugin aligns with system identity (P2). Scout staleness check is enforced (P2).
 
 ### WS-4: Data Flow Completeness
 **Fixes:** 17, 23, 24, 40, 41, 42, 54, 67, 92 (partial: R-2.6, H-3.2)

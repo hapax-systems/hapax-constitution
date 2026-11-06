@@ -197,7 +197,7 @@ Python `ReadinessSnapshot` has 13 fields. The TS interface has 10. Missing:
 |-------------|------|-----|
 | `interview_fact_count` | `int` | missing |
 | `priorities_known` | `bool` | missing |
-| `neurocognitive_mapped` | `bool` | missing |
+| `ergonomics_mapped` | `bool` | missing |
 
 The frontend currently only uses `level`, `populated_dimensions`, `total_dimensions`, `total_facts`, and `top_gap`, so no runtime errors. But the TS type is misleading — it claims to be the complete shape when it is not. The extra fields are silently present in the JSON response.
 

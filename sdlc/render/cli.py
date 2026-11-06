@@ -72,7 +72,7 @@ def build_parser() -> argparse.ArgumentParser:
     target.add_argument(
         "--org-profile",
         action="store_true",
-        help="Render the public Hapax Systems organization profile README",
+        help="Render the public Hapax Research Lab organization profile README",
     )
     parser.add_argument(
         "--check",

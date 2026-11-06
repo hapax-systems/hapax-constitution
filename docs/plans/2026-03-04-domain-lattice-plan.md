@@ -1309,7 +1309,7 @@ last-interaction:
 
 **Step 3: Commit (vault is not git-tracked — just save)**
 
-No git commit for vault changes. Obsidian Sync handles distribution.
+No git commit for vault changes. compartment-local replication handles distribution.
 
 ---
 

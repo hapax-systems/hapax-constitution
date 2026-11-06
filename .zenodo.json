@@ -1,9 +1,9 @@
 {
   "title": "hapax-constitution",
-  "description": "Governance specification for the Hapax operating environment. Publishes specification/publication material plus the hapax-sdlc enforcement/render tooling consumed by hapax-council and hapax-officium. Not seeking contributors.",
+  "description": "Governance specification and public-metadata authority for Hapax Research Lab repositories, with the hapax-sdlc render/enforcement tooling. Not seeking contributors.",
   "creators": [
     {
-      "name": "Hapax Systems"
+      "name": "Hapax Research Lab"
     }
   ],
   "license": "CC-BY-NC-ND-4.0",
@@ -18,7 +18,7 @@
   ],
   "related_identifiers": [
     {
-      "identifier": "https://github.com/hapax-systems/hapax-council",
+      "identifier": "https://hapaxresearch.com",
       "relation": "isReferencedBy",
       "scheme": "url"
     }

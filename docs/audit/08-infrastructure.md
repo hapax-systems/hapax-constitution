@@ -363,7 +363,7 @@ if [[ -d "$HOME/.n8n" ]]; then
     cp -r "$HOME/.n8n/"*.json "$BACKUP_DIR/n8n/" 2>/dev/null || true
 ```
 
-n8n data is stored in the Docker volume `n8n_data` mounted at `/home/node/.n8n` inside the container. The host path `<n8n-data>` does not exist. This backup section silently succeeds (due to `|| true`) while backing up nothing.
+n8n data is stored in the Docker volume `n8n_data` mounted at `<container-home>/.n8n` inside the container. The host path `<n8n-data>` does not exist. This backup section silently succeeds (due to `|| true`) while backing up nothing.
 
 n8n workflow definitions are imported via the UI and stored in the container's SQLite database inside the volume, not as individual JSON files. The JSON files in `<ai-agents>/n8n-workflows/` are templates for import, not the live state.
 

@@ -153,13 +153,9 @@ def test_registry_visibility_matches_current_public_boundary() -> None:
         "agentgov",
         "hapax-assets",
         "hapax-constitution",
-        "hapax-council",
         "hapax-mcp",
-        "hapax-officium",
-        "hapax-phone",
         "hapax-research-ledger",
         "hapax-spine",
-        "hapax-watch",
         "reins",
     }
 
@@ -205,8 +201,8 @@ def test_registry_first_party_repos_default_to_hapax_systems_owner() -> None:
     registry = load_registry()
     first_party = [s for s in registry.values() if s.is_first_party]
     assert all(s.github_owner == "hapax-systems" for s in first_party)
-    assert registry["hapax-council"].github_url == (
-        "https://github.com/hapax-systems/hapax-council"
+    assert registry["hapax-constitution"].github_url == (
+        "https://github.com/hapax-systems/hapax-constitution"
     )
 
 
@@ -272,11 +268,7 @@ def test_operator_referent_differs_across_seeds() -> None:
 
 
 REVIEWED_LIVE_DESCRIPTIONS: dict[str, str] = {
-    "hapax-council": "Source-visible research/runtime from Hapax Research Lab: governed dispatch, route receipts, claim review, refusal records and publication-egress controls for AI-agent delivery. Published for inspection and citation; not a supported framework.",
     "hapax-constitution": "Governance specification and public-metadata authority for Hapax Research Lab repositories, with the hapax-sdlc render/enforcement tooling. Not seeking contributors.",
-    "hapax-officium": "Source-visible internal management decision-support runtime from Hapax Research Lab, published for boundary and governance review. Not HR software, not a SaaS product, not an adoption surface.",
-    "hapax-watch": "Source-visible Wear OS bridge from Hapax Research Lab: approved sensor/context data to the lab's receiver, plus a local awareness tile. Not a consumer health product.",
-    "hapax-phone": "Source-visible Android bridge from Hapax Research Lab: approved daily context summaries to the lab's receiver, plus a local awareness surface. Not a public mobile product.",
     "hapax-mcp": "MCP bridge exposing Hapax Research Lab's Logos API state and actions to MCP clients. An integration bridge, not a general-purpose MCP framework. MIT.",
     "hapax-assets": "Public asset mirror for Hapax Research Lab's web and publication surfaces: reviewed artifacts at stable URLs with per-asset license notices. Not the source of truth for asset selection.",
     "hapax-spine": "Source-available runtime mechanism from Hapax Research Lab (BSL 1.1): append-only event ledgers, policy-backed routing, receipts, quotas, EDT, projections. The mechanism layer behind Reins; not a general-purpose lifecycle kernel.",
@@ -396,7 +388,7 @@ def test_citation_cff_yaml_parses_and_carries_required_fields(
     assert parsed["cff-version"] == "1.2.0"
     assert parsed["title"] == "hapax-council"
     assert parsed["type"] == "software"
-    assert parsed["authors"][0]["name"] == "Hapax Systems"
+    assert parsed["authors"][0]["name"] == "Hapax Research Lab"
     assert "family-names" not in parsed["authors"][0]
     assert "orcid" not in parsed["authors"][0]
     assert parsed["doi"] == "10.5281/zenodo.20113515"
@@ -412,12 +404,12 @@ def test_codemeta_json_parses_and_aligns_to_v3_jsonld(
     assert parsed["@context"] == "https://w3id.org/codemeta/3.0"
     assert parsed["@type"] == "SoftwareSourceCode"
     assert parsed["author"][0]["@type"] == "Organization"
-    assert parsed["author"][0]["name"] == "Hapax Systems"
+    assert parsed["author"][0]["name"] == "Hapax Research Lab"
     assert parsed["author"][0]["url"] == "https://github.com/hapax-systems"
     assert "@id" not in parsed["author"][0]
     assert parsed["identifier"] == "https://doi.org/10.5281/zenodo.20113515"
     assert parsed["license"] == ("https://polyformproject.org/licenses/strict/1.0.0/")
-    assert parsed["codeRepository"] == "https://github.com/hapax-systems/hapax-council"
+    assert parsed["codeRepository"] == council_repo.github_url
 
 
 def test_zenodo_json_carries_related_identifier_graph(
@@ -427,7 +419,7 @@ def test_zenodo_json_carries_related_identifier_graph(
     parsed = json.loads(body)
     assert parsed["upload_type"] == "software"
     assert parsed["access_right"] == "open"
-    assert parsed["creators"][0]["name"] == "Hapax Systems"
+    assert parsed["creators"][0]["name"] == "Hapax Research Lab"
     assert "orcid" not in parsed["creators"][0]
     assert parsed["doi"] == "10.5281/zenodo.20113515"
     assert parsed["conceptdoi"] == "10.5281/zenodo.20113514"
@@ -728,7 +720,7 @@ def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
 def test_org_profile_readme_orients_public_portfolio_without_private_repo_table() -> None:
     registry = load_registry()
     body = org_profile_readme.render(registry)
-    assert body.startswith("# Hapax Systems")
+    assert body.startswith("# Hapax Research Lab")
     assert "authority before action" in body
     assert "receipts before claims" in body
     assert "unsupported automation claims" in body
@@ -737,18 +729,22 @@ def test_org_profile_readme_orients_public_portfolio_without_private_repo_table(
 
     assert "[reins](https://github.com/hapax-systems/reins)" in body
     assert "[agentgov](https://github.com/hapax-systems/agentgov)" in body
-    assert "[hapax-council](https://github.com/hapax-systems/hapax-council)" in body
     assert "[hapax-constitution](https://github.com/hapax-systems/hapax-constitution)" in body
+    assert "[hapax-research-ledger](https://github.com/hapax-systems/hapax-research-ledger)" in body
+    assert "[hapax-assets](https://github.com/hapax-systems/hapax-assets)" in body
     assert "[hapax-mcp](https://github.com/hapax-systems/hapax-mcp)" in body
-    assert "[hapax-phone](https://github.com/hapax-systems/hapax-phone)" in body
-    assert "[hapax-watch](https://github.com/hapax-systems/hapax-watch)" in body
     assert "Supporting Public Surfaces" in body
     assert "Hapax Logos MCP Bridge" in body
-    assert "Mobile Context Source" in body
-    assert "Wrist Biometric Source" in body
 
+    for private_id in (
+        "hapax-council",
+        "hapax-officium",
+        "hapax-phone",
+        "hapax-watch",
+        "hapax-coord",
+    ):
+        assert f"[{private_id}](" not in body
     assert "hapax-spine](https://github.com/hapax-systems/hapax-spine)" not in body
-    assert "hapax-coord](https://github.com/hapax-systems/hapax-coord)" not in body
 
 
 def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
@@ -778,8 +774,8 @@ def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
     assert "guaranteed safe" not in body
 
 
-def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec) -> None:
-    body = issue_template_config_yml.render(council_repo)
+def test_issue_template_config_yml_disables_blank_issues(constitution_repo: RepoSpec) -> None:
+    body = issue_template_config_yml.render(constitution_repo)
     parsed = yaml.safe_load(body)
     assert parsed["blank_issues_enabled"] is False
     contact_links = parsed["contact_links"]
@@ -792,7 +788,7 @@ def test_issue_template_config_yml_disables_blank_issues(council_repo: RepoSpec)
     assert all({"name", "url", "about"} == set(link) for link in contact_links)
     assert (
         parsed["contact_links"][1]["url"]
-        == "https://github.com/hapax-systems/hapax-council/blob/main/SUPPORT.md"
+        == "https://github.com/hapax-systems/hapax-constitution/blob/main/SUPPORT.md"
     )
 
 
@@ -934,7 +930,7 @@ def test_cli_dry_run_prints_org_profile() -> None:
     output = buf.getvalue()
     assert rc == 0
     assert "# profile/README.md" in output
-    assert "# Hapax Systems" in output
+    assert "# Hapax Research Lab" in output
     assert "https://github.com/hapax-systems/reins" in output
 
 
@@ -943,7 +939,7 @@ def test_cli_org_profile_write_creates_nested_profile_readme(tmp_path: Path) -> 
     assert rc == 0
     written = tmp_path / "profile" / "README.md"
     assert written.exists()
-    assert written.read_text(encoding="utf-8").startswith("# Hapax Systems")
+    assert written.read_text(encoding="utf-8").startswith("# Hapax Research Lab")
 
 
 def test_cli_unknown_repo_errors() -> None:
@@ -1111,7 +1107,7 @@ def test_no_first_person_we_in_constitutional_disclosures(
 def test_formal_metadata_uses_org_creator_not_legal_name(
     council_repo: RepoSpec, identity: OperatorIdentity
 ) -> None:
-    """Public metadata uses Hapax Systems as creator; operator legal name
+    """Public metadata uses Hapax Research Lab as creator; operator legal name
     must not be rendered by default in public repo metadata or body text.
     """
     legal_full = identity.full_name
@@ -1133,7 +1129,7 @@ def test_formal_metadata_uses_org_creator_not_legal_name(
         readme_section.render(council_repo),
     ]
     for body in (citation_body, codemeta_body, zenodo_body):
-        assert "Hapax Systems" in body
+        assert "Hapax Research Lab" in body
     for body in all_public_bodies:
         assert legal_full not in body
         for part in legal_parts:

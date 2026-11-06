@@ -11,19 +11,18 @@ from collections.abc import Iterable
 
 from sdlc.render.repo_registry import RepoSpec, RepoVisibility, SurfaceClass
 
-
 ORG_PROFILE_PATH = "profile/README.md"
 
 
 def render(registry: dict[str, RepoSpec]) -> str:
-    """Render the public Hapax Systems organization profile README."""
+    """Render the public Hapax Research Lab organization profile README."""
     repos = list(_public_first_party_repos(registry.values()))
     by_id = {repo.id: repo for repo in repos}
     return "\n".join(
         (
-            "# Hapax Systems",
+            "# Hapax Research Lab",
             "",
-            "Hapax Systems publishes evidence-bound software for governing AI-agent work: "
+            "Hapax Research Lab publishes evidence-bound software for governing AI-agent work: "
             "authority before action, receipts before claims, and visible limits instead "
             "of unsupported automation claims. The practical value is legibility: "
             "operators, reviewers, researchers, and adopters can see what is shipped, "
@@ -32,8 +31,9 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "",
             "The public portfolio is intentionally split by value surface. Some parts are "
             "open adoption commons, some are source-available commercial core, and some "
-            "are source-visible research apparatus. The license on each repository is the "
-            "authority for that repository; do not infer broader rights from the portfolio.",
+            "are source-visible research apparatus and evidence artifacts. The license on each "
+            "repository is the authority for that repository; do not infer broader rights from "
+            "the portfolio.",
             "",
             "## Public Entry Points",
             "",
@@ -52,12 +52,13 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "agents under MIT.",
             "- hapax-spine is the source-available BSL 1.1 runtime mechanism "
             "behind Reins; it is not a general-purpose lifecycle kernel.",
-            "- hapax-council is the research/runtime apparatus. It is published for "
-            "inspection and citation, not as a supported framework.",
-            "- Hapax Logos MCP Bridge, Mobile Context Source, and Wrist Biometric "
-            "Source are public source-visible boundary artifacts. They support audit "
-            "and integration review; they are not general products, health products, "
-            "or broad MCP framework claims.",
+            "- hapax-council is the private research/runtime apparatus; it is operated "
+            "internally and not as a supported framework. Public research "
+            "artifacts and cross-examination records are surfaced via https://hapaxresearch.com.",
+            "- Hapax Logos MCP Bridge (hapax-mcp) is a public integration boundary artifact "
+            "supporting audit and MCP integration review; companion device and domain "
+            "runtimes remain private internal apparatus and are not general products, "
+            "health products, or broad MCP framework claims.",
             "- The Claim Verification Council is a public-facing capability name for "
             "claim-checking governance. Internal labels are not part of the public API.",
             "- The Capability Frontier is a way to describe capability registries, "
@@ -72,8 +73,9 @@ def render(registry: dict[str, RepoSpec]) -> str:
             "## Support And Intake",
             "",
             "Issues are enabled as redirect surfaces. GitHub Discussions, Projects, and "
-            "most wikis are not the operating venue for the work. Security, support, and "
-            "commercial conversations follow the boundary files in each repository.",
+            "Wikis are disabled and are not the operating venue for the work. Security, "
+            "support, and commercial conversations follow the boundary files in each "
+            "repository.",
             "",
             "## Claim Ceiling",
             "",
@@ -103,14 +105,10 @@ def _portfolio_order(repo: RepoSpec) -> tuple[int, int, str]:
     preferred = {
         "reins": 0,
         "agentgov": 1,
-        "hapax-council": 2,
-        "hapax-constitution": 3,
-        "hapax-officium": 4,
-        "hapax-research-ledger": 5,
-        "hapax-assets": 6,
-        "hapax-mcp": 7,
-        "hapax-phone": 8,
-        "hapax-watch": 9,
+        "hapax-constitution": 2,
+        "hapax-research-ledger": 3,
+        "hapax-assets": 4,
+        "hapax-mcp": 5,
     }
     class_order = {
         SurfaceClass.PRODUCT_FRONT_DOOR: 0,
@@ -142,6 +140,8 @@ def _entry_table(by_id: dict[str, RepoSpec]) -> str:
         "hapax-research-ledger",
         "hapax-assets",
     ):
+        if repo_id not in by_id:
+            continue
         repo = by_id[repo_id]
         rows.append(
             "| "
@@ -163,6 +163,8 @@ def _supporting_table(by_id: dict[str, RepoSpec]) -> str:
         "hapax-phone",
         "hapax-watch",
     ):
+        if repo_id not in by_id:
+            continue
         repo = by_id[repo_id]
         rows.append(
             "| "

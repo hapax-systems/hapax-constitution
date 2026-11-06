@@ -1,7 +1,7 @@
 """hapax-sdlc render subpackage.
 
 Single chokepoint for repo-presentation file generation across the
-Hapax Systems constellation repositories. Per drop 4 §6 (consolidated GitHub
+Hapax Research Lab constellation repositories. Per drop 4 §6 (consolidated GitHub
 repo-presentation research, 2026-04-25), a render command rather than
 nine hand-edited file-sets is the constitutional shape: full-automation,
 single-source-of-truth, drift-detectable.

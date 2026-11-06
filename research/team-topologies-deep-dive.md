@@ -676,7 +676,7 @@ Team Topologies are not designed once and left static. They must evolve as the o
 
 ### 8.7 Interaction Mode Evolution Patterns
 
-Different phases of work call for different topologies:
+Different phases of work require different topologies:
 
 | Phase | Topology Approach |
 |-------|------------------|

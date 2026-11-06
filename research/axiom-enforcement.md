@@ -1,5 +1,7 @@
 # Axiom Enforcement Research
 
+> **[2026-11 Architectural Supersession Note]:** This early-2026 note documents a pre-hardening baseline (such as prompt-level "trusted agent" assumptions, dormant Layer 5-7 audit hooks, or single-family deliberation prototypes). Those baselines were superseded in the Hapax Research Lab architecture by unprivileged structural confinement (`reins` + container/microVM execution boundaries and `hapax-spine` append-only receipt ledgers) and live heterogeneous multi-family cross-examination published at [https://hapaxresearch.com](https://hapaxresearch.com). Retained for historical design lineage.
+
 Status: **In Progress** — OQ1-OQ7 researched, synthesis and recommendations in progress
 Started: 2026-03-03
 

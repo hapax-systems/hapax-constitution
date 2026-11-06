@@ -24,7 +24,7 @@ Tier 2/3 agents route all LLM calls through LiteLLM for observability (Claude Co
 Open a terminal. Check infrastructure health:
 
 ```bash
-cd <ai-agents> && eval "$(<.envrc)" && uv run python -m agents.health_monitor
+cd <ai-agents> && direnv exec . && uv run python -m agents.health_monitor
 ```
 
 This runs 85+ deterministic checks across 17 groups: auth, axioms, budget, capacity, connectivity, credentials, disk, docker, endpoints, gpu, latency, models, profiles, qdrant, queues, secrets, systemd. No LLM calls — pure infrastructure verification.
@@ -33,7 +33,7 @@ Expected output: `85/85 HEALTHY` (check count grows as new checks are added). If
 
 | Symptom | Fix |
 |---------|-----|
-| Docker containers down | `cd ~/llm-stack && eval "$(<.envrc)" && docker compose --profile full up -d` |
+| Docker containers down | `cd <llm-stack> && direnv exec . && docker compose --profile full up -d` |
 | Ollama models not loaded | They load on first request; initial pull: `docker compose exec ollama ollama pull nomic-embed-text` |
 | Qdrant collections missing | Agents create them on first use |
 | Systemd timers not running | `systemctl --user enable --now health-monitor.timer` (repeat for each timer) |
@@ -43,7 +43,7 @@ Expected output: `85/85 HEALTHY` (check count grows as new checks are added). If
 The briefing agent runs daily at 07:00 via systemd timer. To generate one manually:
 
 ```bash
-cd <ai-agents> && eval "$(<.envrc)" && uv run python -m agents.briefing --hours 24 --save
+cd <ai-agents> && direnv exec . && uv run python -m agents.briefing --hours 24 --save
 ```
 
 The briefing synthesizes: LLM call volume and cost, error rates by model, health check history, axiom compliance status, drift items, and action items ranked by priority. Output saves to `<ai-agents>/profiles/briefing.md` and writes to the Obsidian vault at `30-system/`.
@@ -57,7 +57,7 @@ Logos is a web application: a FastAPI backend serves data on port 8051 and a Rea
 **Start the API server** (if not running as Docker container):
 
 ```bash
-cd <ai-agents> && eval "$(<.envrc)" && uv run logos-api
+cd <ai-agents> && direnv exec . && uv run logos-api
 ```
 
 This launches the FastAPI API server. The Docker container maps it to http://localhost:8051.
@@ -83,7 +83,7 @@ These print a point-in-time system overview to the terminal and exit — useful 
 
 Obsidian is the knowledge interface. Two vaults with different sync mechanisms:
 
-- **Work vault** (`<work-vault>/`) — git repo, syncs via VS Code GitDoc (auto-commit + push) to corporate work laptop
+- **External-compartment vault** (`<work-vault>/`) — git repo, syncs only via approved compartment git remote across air-gapped client devices
 - **Personal vault** (`<personal-vault>/`) — local only (no sync needed)
 
 Work vault folders:
@@ -168,7 +168,7 @@ Your morning routine: read the briefing (arrives as ntfy push notification, also
 
 **Research** — when you need to know something, with RAG context:
 ```bash
-cd <ai-agents> && eval "$(<.envrc)"
+cd <ai-agents> && direnv exec .
 uv run python -m agents.research "How does the LiteLLM fallback chain work?"
 ```
 This queries Qdrant for relevant document chunks and synthesizes an answer.
@@ -285,7 +285,7 @@ Nudges from the domain lattice appear in the cockpit: "management-sufficiency ga
 
 ### Profiler System
 
-The operator profile has 13 dimensions (identity, workflow, philosophy, neurocognitive patterns, goals, contradictions, etc.) stored as vectors in Qdrant's `profile-facts` collection.
+The operator profile has 13 dimensions (identity, workflow, philosophy, cognitive-ergonomics patterns, goals, contradictions, etc.) stored as vectors in Qdrant's `profile-facts` collection.
 
 Sources that feed the profiler:
 - Chat history (Claude.ai, Gemini, Open WebUI conversations)
@@ -296,7 +296,7 @@ Sources that feed the profiler:
 
 The profiler runs every 12h automatically. You can trigger it manually:
 ```bash
-cd <ai-agents> && eval "$(<.envrc)"
+cd <ai-agents> && direnv exec .
 uv run python -m agents.profiler --auto          # Incremental from all sources
 uv run python -m agents.profiler --digest         # From digest content
 uv run python -m agents.profiler --source vault-inbox  # From specific source
@@ -308,7 +308,7 @@ Profile facts surface in agent context — research, code review, management pre
 
 All LLM calls route through LiteLLM and trace to Langfuse. The briefing reports daily cost. The cockpit dashboard shows running cost totals.
 
-Typical daily cost: $5–25 depending on usage intensity. Heavy subagent sessions (like Domain Lattice Engine implementation) can spike to $50+ in a day.
+Typical daily token budget: 5–25 USD equivalent depending on usage intensity. Heavy subagent sessions (such as Domain Lattice Engine implementation) can reach 50+ USD equivalent in a day.
 
 Cost management levers:
 - Use `fast` (claude-haiku) alias for cheap quick tasks
@@ -436,7 +436,7 @@ Reviews with operator context (coding preferences from profile), checks axiom co
 ### "I want to import data from Google Takeout"
 
 ```bash
-cd <ai-agents> && eval "$(<.envrc)"
+cd <ai-agents> && direnv exec .
 uv run python -m shared.takeout --list-services ~/Downloads/takeout.zip
 uv run python -m shared.takeout ~/Downloads/takeout.zip --services chrome,keep,calendar --since 2025-01-01
 ```
@@ -457,7 +457,7 @@ Compares documentation claims against actual system state. Run with `--fix` to a
 
 ```bash
 # Health
-cd <ai-agents> && eval "$(<.envrc)"
+cd <ai-agents> && direnv exec .
 uv run python -m agents.health_monitor           # Check health
 uv run python -m agents.health_monitor --fix      # Auto-fix
 uv run python -m agents.health_monitor --history  # Trend
@@ -472,7 +472,7 @@ uv run logos-api --color                             # Rich CLI snapshot
 cd <logos-web> && pnpm dev              # Web frontend (port 5173)
 
 # Docker
-cd ~/llm-stack
+cd <llm-stack>
 docker compose --profile full up -d               # Start everything
 docker compose ps                                  # Status
 docker compose logs litellm --tail 20             # Debug
@@ -530,7 +530,7 @@ All in `pass` (GPG-encrypted). Access: `pass show <path>`. Per-directory `.envrc
 
 ## Agent Reference
 
-All agents invoked as: `cd <ai-agents> && eval "$(<.envrc)" && uv run python -m agents.<name> [flags]`
+All agents invoked as: `cd <ai-agents> && direnv exec . && uv run python -m agents.<name> [flags]`
 
 | Agent | Purpose | LLM? | Key Flags |
 |-------|---------|------|-----------|
@@ -661,7 +661,7 @@ State files stored at `<cache>/<agent>-sync/state.json`. Google agents authentic
 
 | Symptom | Likely Cause | Quick Fix |
 |---------|-------------|-----------|
-| Docker container not running | Container crashed or OOM | `cd ~/llm-stack && eval "$(<.envrc)" && docker compose up -d <service>` |
+| Docker container not running | Container crashed or OOM | `cd <llm-stack> && direnv exec . && docker compose up -d <service>` |
 | `nvidia-smi` fails | Driver crash, kernel module unloaded | `sudo modprobe nvidia`; reboot if persistent |
 | VRAM >90%, model loading fails | Multiple Ollama models loaded | `docker exec ollama ollama stop <model>`; Ollama auto-unloads after 5 min idle |
 | GPU temperature >80°C | Sustained inference, poor airflow | Unload models, check fans |
@@ -692,5 +692,5 @@ For any issue: start with `/status` (or `uv run python -m agents.health_monitor`
 2. **LLMs prepare, humans deliver.** The system aggregates signals and surfaces patterns. It never makes people decisions for you.
 3. **Single user, single machine.** No auth, no multi-user, no collaboration features. This constraint simplifies everything.
 4. **Route everything through LiteLLM.** Universal observability. If a model call doesn't go through the proxy, it's invisible.
-5. **Git bridges the boundary.** Two vaults: Work vault syncs via GitDoc (git auto-commit + push) to corporate work laptop, Personal stays local-only.
+5. **Compartment air-gap.** Separate vaults enforce strict compartment isolation: external-compartment vaults use only approved git remotes while the lab vault stays strictly local.
 6. **Evidence before assertions.** The system states epistemic confidence. "I don't know" is better than speculation.

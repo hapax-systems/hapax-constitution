@@ -36,16 +36,16 @@ def _stub_repo(name: str, *, is_first_party: bool = True) -> RepoSpec:
     )
 
 
-def test_wiki_repurposed_set_is_constitution_only() -> None:
-    """Only hapax-constitution keeps its wiki — for the axiom registry."""
-    assert WIKI_REPURPOSED == frozenset({"hapax-constitution"})
+def test_wiki_repurposed_set_is_empty() -> None:
+    """has_wiki = false is uniform across all first-party repositories."""
+    assert WIKI_REPURPOSED == frozenset()
 
 
-def test_desired_settings_for_constitution_keeps_wiki() -> None:
+def test_desired_settings_for_constitution_disables_wiki() -> None:
     settings = desired_settings(_stub_repo("hapax-constitution"))
     assert settings == RepoSettings(
         has_issues=True,
-        has_wiki=True,
+        has_wiki=False,
         has_projects=False,
         has_discussions=False,
     )

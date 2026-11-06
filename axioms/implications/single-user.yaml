@@ -32,7 +32,7 @@ implications:
   text: >
     Privacy controls, data anonymization, and consent mechanisms are unnecessary
     for OPERATOR-OWNED data since the user is also the developer. This does not
-    apply to non-operator data that enters the system incidentally (audio bleed,
+    apply to non-operator data that enters the system incidentally (ambient audio capture,
     camera frames, chat reactions, bystander presence); such data is governed
     by interpersonal_transparency (weight 88) regardless of the single-user
     framing, and interpersonal_transparency takes precedence by weight.

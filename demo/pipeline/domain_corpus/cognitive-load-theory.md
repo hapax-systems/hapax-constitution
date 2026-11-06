@@ -9,7 +9,7 @@ last_reviewed: 2026-03-05
 
 ## Overview
 
-Cognitive Load Theory (CLT), developed by John Sweller and colleagues beginning in the late 1980s, provides a rigorous framework for understanding how the design of information systems affects human cognitive processing. Originally developed for instructional design, CLT's principles generalize powerfully to software interface design, notification systems, and the architecture of autonomous agent systems. For a system designed to serve a neurodivergent operator with executive function challenges, CLT provides the theoretical basis for fundamental design decisions: zero-configuration defaults, proactive alerting, tiered information complexity, and automated routine maintenance.
+Cognitive Load Theory (CLT), developed by John Sweller and colleagues beginning in the late 1980s, provides a rigorous framework for understanding how the design of information systems affects human cognitive processing. Originally developed for instructional design, CLT's principles generalize powerfully to software interface design, notification systems, and the architecture of autonomous agent systems. For a single-operator system engineered around bounded operator attention and cognitive-load discipline, CLT provides the theoretical basis for fundamental design decisions: zero-configuration defaults, proactive alerting, tiered information complexity, and automated routine maintenance.
 
 ## The Three Types of Cognitive Load
 
@@ -107,7 +107,7 @@ Zero-config defaults with optional customization eliminates this load entirely f
 
 The transient information effect (Leahy & Sweller, 2011) describes the cognitive cost of information that must be processed before it disappears. Streaming logs, real-time dashboards, and event feeds all impose transient information costs — the operator must monitor continuously or risk missing important signals.
 
-Proactive alerting inverts this pattern. Instead of requiring continuous monitoring (sustained attention, a known EF deficit in ADHD), the system processes the transient stream and delivers synthesized, persistent notifications at the point of relevance. The operator's cognitive task changes from "monitor continuously" to "respond to notification" — a fundamentally different and cognitively cheaper operation.
+Proactive alerting inverts this pattern. Instead of requiring continuous manual monitoring (which exhausts bounded operator attention under vigilance load), the system processes the transient stream and delivers synthesized, persistent notifications at the point of relevance. The operator's cognitive task changes from "monitor continuously" to "respond to notification" — a fundamentally different and cognitively cheaper operation.
 
 The design of alerts themselves should follow CLT principles:
 

@@ -25,8 +25,8 @@ Append to `axioms/registry.yaml` after the management_governance entry:
   - id: corporate_boundary
     text: >
       The Obsidian plugin operates across a corporate network boundary via
-      Obsidian Sync. When running on employer-managed devices, all external
-      API calls must use employer-sanctioned providers (currently: OpenAI,
+      compartment-local replication. When running on external institutional compartment devices, all external
+      API calls must use compartment-sanctioned providers (currently: OpenAI,
       Anthropic). No localhost service dependencies may be assumed. The
       system must degrade gracefully when home-only services are unreachable.
     weight: 90
@@ -59,7 +59,7 @@ implications:
 
 - id: cb-data-001
   tier: T0
-  text: Obsidian to hapax data flow must use only Obsidian Sync. Plugin must
+  text: Obsidian to hapax data flow must use only approved compartment git transport. Plugin must
     never require direct network access to home services for core functionality.
   enforcement: block
   canon: textualist
@@ -77,8 +77,8 @@ implications:
 
 - id: cb-key-001
   tier: T0
-  text: API credentials in plugin settings are acceptable (Obsidian Sync is E2E
-    encrypted). No secrets may be stored outside the plugin data.json.
+  text: API credentials in plugin settings are acceptable (compartment settings remain
+    strictly local). No secrets may be stored outside the plugin data.json.
   enforcement: block
   canon: textualist
   mode: compatibility
@@ -110,14 +110,14 @@ Append to `<hapax-system>/rules/axioms.md` before the `## Compliance` section:
 ```markdown
 ## Domain Axiom: corporate_boundary (weight: 90)
 
-The Obsidian plugin operates across a corporate network boundary via Obsidian Sync. When running on employer-managed devices, all external API calls must use employer-sanctioned providers (currently: OpenAI, Anthropic). No localhost service dependencies may be assumed. The system must degrade gracefully when home-only services are unreachable.
+The Obsidian plugin operates across a corporate network boundary across an institutional compartment boundary. When running on external institutional compartment devices, all external API calls must use compartment-sanctioned providers (currently: OpenAI, Anthropic). No localhost service dependencies may be assumed. The system must degrade gracefully when home-only services are unreachable.
 
 ### T0 Blocking Implications (corporate_boundary)
 
 - **cb-llm-001**: Plugin must support direct API calls to sanctioned providers (OpenAI, Anthropic) without requiring a localhost proxy.
-- **cb-data-001**: Obsidian to hapax data flow must use only Obsidian Sync. Plugin must never require direct network access to home services for core functionality.
+- **cb-data-001**: Obsidian to hapax data flow must use only approved compartment git transport. Plugin must never require direct network access to home services for core functionality.
 - **cb-degrade-001**: Features depending on localhost services (RAG search, health status, embedding) must fail silently with informative UI, not throw errors.
-- **cb-key-001**: API credentials in plugin settings are acceptable (Obsidian Sync is E2E encrypted). No secrets may be stored outside the plugin data.json.
+- **cb-key-001**: API credentials in plugin settings are acceptable (compartment settings remain strictly local). No secrets may be stored outside the plugin data.json.
 ```
 
 Also update the Compliance section to mention the new axiom.

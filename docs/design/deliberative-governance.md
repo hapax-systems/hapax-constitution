@@ -1,5 +1,7 @@
 # Deliberative Governance: Federalist/Anti-Federalist Discourse for Axiom Systems
 
+> **[2026-11 Architectural Supersession Note]:** This early-2026 note documents a pre-hardening baseline (such as prompt-level "trusted agent" assumptions, dormant Layer 5-7 audit hooks, or single-family deliberation prototypes). Those baselines were superseded in the Hapax Research Lab architecture by unprivileged structural confinement (`reins` + container/microVM execution boundaries and `hapax-spine` append-only receipt ledgers) and live heterogeneous multi-family cross-examination published at [https://hapaxresearch.com](https://hapaxresearch.com). Retained for historical design lineage.
+
 ## Problem
 
 The axiom governance system enforces constraints but does not reason about them. When a supremacy tension surfaces, the operator resolves it manually. When an implication blocks a legitimate action, the reasoning behind the block is not examined. When axiom weights are assigned, no structured process evaluates whether the weight is correct. The system constrains; it does not deliberate.

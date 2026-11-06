@@ -45,7 +45,7 @@ def build_export(registry: dict[str, RepoSpec] | None = None) -> dict[str, Any]:
         "generated_artifacts": list(GENERATED_ARTIFACTS),
         "settings_policy": {
             "issues": "redirect",
-            "wiki": "disabled_except_hapax_constitution",
+            "wiki": "disabled",
             "projects": "disabled",
             "discussions": "disabled",
             "funding": "no_perk_research_support_only",

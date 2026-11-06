@@ -6,22 +6,22 @@
 
 ## Problem
 
-The Obsidian plugin (`obsidian-hapax`) currently requires localhost services (LiteLLM :4000, Qdrant :6333, Ollama :11434) for all functionality. On the employer-managed work device (behind Zscaler), these services are unreachable. The plugin must support direct calls to employer-sanctioned LLM providers (OpenAI, Anthropic) to be usable at work.
+The Obsidian plugin (`obsidian-hapax`) currently requires localhost services (LiteLLM :4000, Qdrant :6333, Ollama :11434) for all functionality. On the isolated institutional compartment device (behind strict egress proxy), these services are unreachable. The plugin must support direct calls to compartment-sanctioned LLM providers (OpenAI, Anthropic) to be usable at work.
 
-The Obsidian vault syncs across all devices via Obsidian Sync (E2E encrypted). This is the only acceptable data transport across the corporate boundary.
+The Obsidian vault syncs across all devices via approved compartment git transport. This is the only acceptable data transport across the corporate boundary.
 
 ## Axiom: corporate_boundary (weight: 90)
 
-The Obsidian plugin operates across a corporate network boundary via Obsidian Sync. When running on employer-managed devices, all external API calls must use employer-sanctioned providers (currently: OpenAI, Anthropic). No localhost service dependencies may be assumed. The system must degrade gracefully when home-only services (Qdrant, Ollama, LiteLLM, health monitor) are unreachable.
+The Obsidian plugin operates across a corporate network boundary across an institutional compartment boundary. When running on external institutional compartment devices, all external API calls must use compartment-sanctioned providers (currently: OpenAI, Anthropic). No localhost service dependencies may be assumed. The system must degrade gracefully when home-only services (Qdrant, Ollama, LiteLLM, health monitor) are unreachable.
 
 ### T0 Blocking Implications
 
 | ID | Description |
 |---|---|
 | `cb-llm-001` | Plugin must support direct API calls to sanctioned providers (OpenAI, Anthropic) without requiring a localhost proxy |
-| `cb-data-001` | Obsidian <-> hapax data flow must use only Obsidian Sync. Plugin must never require direct network access to home services for core functionality |
+| `cb-data-001` | Obsidian <-> hapax data flow must use only approved compartment git transport. Plugin must never require direct network access to home services for core functionality |
 | `cb-degrade-001` | Features depending on localhost services (RAG search, health status, embedding) must fail silently with informative UI, not throw errors |
-| `cb-key-001` | API credentials in plugin settings are acceptable (Obsidian Sync is E2E encrypted). No secrets may be stored outside the plugin's data.json |
+| `cb-key-001` | API credentials in plugin settings are acceptable (compartment settings remain strictly local). No secrets may be stored outside the plugin's data.json |
 
 ## Architecture: Provider Abstraction Layer
 
@@ -97,8 +97,8 @@ Planned future providers:
 
 ## Context
 
-- Work device: employer-managed laptop with Zscaler, MDM
-- Direct HTTPS to api.anthropic.com and api.openai.com works through Zscaler
-- API keys in plugin settings acceptable (Obsidian Sync is E2E encrypted)
+- Work device: isolated institutional compartment client behind egress proxy
+- Direct HTTPS to api.anthropic.com and api.openai.com works through institutional egress proxy
+- API keys in plugin settings acceptable (compartment settings remain strictly local)
 - Only the work device has the "sanctioned providers only" constraint
 - Home devices + rest of hapax system: unrestricted

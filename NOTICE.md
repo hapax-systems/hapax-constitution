@@ -1,12 +1,12 @@
 # NOTICE - hapax-constitution
 
-`hapax-constitution` is the governance-specification and publication metadata anchor for the Hapax Systems repository constellation.
+`hapax-constitution` is the governance-specification and publication metadata anchor for the Hapax Research Lab repository constellation.
 
-This repository is part of the Hapax Systems portfolio. Public metadata, issue affordances, and support boundaries follow the registry in `hapax-constitution`.
+This repository is part of the Hapax Research Lab portfolio. Public metadata, issue affordances, and support boundaries follow the registry in `hapax-constitution`.
 
 ## Reader promise
 
-Governance specification and repo-presentation authority for Hapax Systems, with a clear hapax-sdlc tooling boundary.
+Governance specification and repo-presentation authority for Hapax Research Lab, with a clear hapax-sdlc tooling boundary.
 
 ## Reader value
 

@@ -1,6 +1,6 @@
 # Support
 
-`hapax-constitution` is the governance-specification anchor for the Hapax Systems repository constellation. Support is limited to the published specification, rendered metadata, and security disclosure path.
+`hapax-constitution` is the governance-specification anchor for the Hapax Research Lab repository constellation. Support is limited to the published specification, rendered metadata, and security disclosure path.
 
 ## GitHub issues
 

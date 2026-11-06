@@ -1,30 +1,22 @@
-# Custom gitleaks rules for PII detection
-title = "hapax PII rules"
+# Custom gitleaks rules for OpSec and infrastructure path hygiene
+title = "Hapax Research Lab hygiene rules"
 
 [[rules]]
-id = "operator-full-name"
-description = "Operator full name"
-regex = '''(?i)Ryan\s+Kleeberger'''
-tags = ["pii", "name"]
+id = "posix-home-directory-path"
+description = "POSIX user home directory path literal"
+regex = '''(?:/[h]ome/|~)[a-z_][a-z0-9_-]{0,31}/'''
+tags = ["hygiene", "path"]
 [rules.allowlist]
-paths = ['''hooks/''', '''tests/''', '''\.gitleaks\.toml''']
+paths = ['''\.gitleaks\.toml''', '''tests/''']
 
 [[rules]]
-id = "operator-location"
-description = "Operator location"
-regex = '''Minneapolis[- ]St\.?\s*Paul'''
-tags = ["pii", "location"]
+id = "tailscale-cgnat-ipv4"
+description = "Private mesh RFC 6598 CGNAT IPv4 address"
+regex = '''\b100\.(?:6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\.[0-9]{1,3}\.[0-9]{1,3}\b'''
+tags = ["hygiene", "network"]
 [rules.allowlist]
-paths = ['''hooks/''', '''tests/''', '''\.gitleaks\.toml''']
+paths = ['''\.gitleaks\.toml''', '''tests/''']
 
-[[rules]]
-id = "home-directory-path"
-description = "Home directory absolute path"
-regex = '''/home/hapax/'''
-tags = ["pii", "path"]
-[rules.allowlist]
-paths = ['''.gitignore''', '''CLAUDE\.md''', '''hooks/''', '''\.claude/''', '''\.gitleaks\.toml''', '''systemd/''', '''process-compose\.yaml''', '''scripts/''']
-
-# Allow known false positives
+# Allow known generated/vendor paths
 [allowlist]
-paths = ['''LICENSE''', '''CITATION\.cff''', '''\.gitleaksignore''', '''node_modules/''', '''\.venv/''']
+paths = ['''\.gitleaksignore''', '''node_modules/''', '''\.venv/''']

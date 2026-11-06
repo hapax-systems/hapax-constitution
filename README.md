@@ -3,11 +3,11 @@
 
 # hapax-constitution
 
-`hapax-constitution` anchors governance and public metadata for Hapax Systems repositories.
+`hapax-constitution` anchors governance and public metadata for Hapax Research Lab repositories.
 
 ## Reader promise
 
-Governance specification and repo-presentation authority for Hapax Systems, with a clear hapax-sdlc tooling boundary.
+Governance specification and repo-presentation authority for Hapax Research Lab, with a clear hapax-sdlc tooling boundary.
 
 ## Reader value
 
@@ -41,11 +41,11 @@ Anchor for repo metadata and governance. Defines axioms, implications, canons, a
 # hapax-constitution
 
 `hapax-constitution` is the governance specification and public metadata
-authority for Hapax Systems repositories.
+authority for Hapax Research Lab repositories.
 
 It defines axioms, implications, precedents, and renderers. These surfaces keep
 repo presentation, license posture, support boundaries, reader value, and
-public claims aligned across Hapax Systems projects. It is not the Hapax
+public claims aligned across Hapax Research Lab projects. It is not the Hapax
 runtime. It is not a blanket open-source license for the broader portfolio.
 
 ## What Lives Here
@@ -78,7 +78,7 @@ artifacts from the registry:
 | `hapax-systems/.github/profile/README.md` | organization profile | Presents portfolio value and license boundaries from the same registry. |
 
 ```bash
-python -m sdlc.render --repo hapax-council
+python -m sdlc.render --repo hapax-constitution
 python -m sdlc.render --all --check
 python -m sdlc.render --org-profile --check
 ```
@@ -96,8 +96,9 @@ and the policy boundaries they encode. It must not imply that the constitution
 alone ships the Hapax runtime, Reins write authority, a general lifecycle
 framework, public support, or commercial service terms.
 
-## Related Repositories
+## Related Surfaces
 
-- [hapax-council](https://github.com/hapax-systems/hapax-council): source-visible research/runtime artifact.
-- [agentgov](https://github.com/hapax-systems/agentgov): MIT adoption commons for portable governance hooks.
+- [Hapax Research Lab](https://hapaxresearch.com): public research portal and multi-family governance evaluation surface (`hapax-council` operates in the private execution plane).
 - [reins](https://github.com/hapax-systems/reins): source-available product front door for read and command-preview.
+- [hapax-spine](https://github.com/hapax-systems/hapax-spine): source-available runtime mechanism layer behind Reins.
+- [hapax-research-ledger](https://github.com/hapax-systems/hapax-research-ledger): public-domain numeric evidence ledger.

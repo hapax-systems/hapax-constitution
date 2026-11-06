@@ -264,7 +264,7 @@ Complete scoring map from `nudges.py`:
 | Stale briefing (clean) | 55 | medium | >26h old, no items |
 | Priorities not validated | 55 | medium | readiness.priorities_known=False |
 | Overdue coaching | 55 | medium | coaching.overdue |
-| Neurocognitive unmapped | 50 | medium | readiness.neurocognitive_mapped=False |
+| Ergonomics unmapped | 50 | medium | readiness.ergonomics_mapped=False |
 | Profile incomplete (<3 missing) | 50 | medium | 1-2 missing dimensions |
 | Drift items | 50 | medium | drift_count > 0 |
 | Sparse profile | 40 | medium | Sparse dimensions, no missing |

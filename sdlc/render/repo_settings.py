@@ -4,7 +4,7 @@ The single-operator + full-automation-or-no-engagement axiom set makes
 GitHub's default UI affordances structurally inappropriate. Every
 first-party repo must carry the same Settings policy:
 
-  has_wiki        = false   (except hapax-constitution: true for axiom registry)
+  has_wiki        = false   (uniform across all first-party repositories)
   has_projects    = false   (kanban surface assumes multi-contributor sync)
   has_discussions = false   (single-operator: no community to discuss)
   has_issues      = true    (kept open as REDIRECT surface; see ISSUE_TEMPLATE/config.yml)
@@ -27,9 +27,9 @@ from dataclasses import dataclass
 
 from sdlc.render.repo_registry import DEFAULT_GITHUB_OWNER, RepoSpec, load_registry
 
-# Repos that keep ``has_wiki = true`` (the wiki is repurposed, not retired).
-# Only hapax-constitution, where the wiki carries the axiom registry.
-WIKI_REPURPOSED: frozenset[str] = frozenset({"hapax-constitution"})
+# Repos that keep ``has_wiki = true`` (empty: ``has_wiki = false`` is uniform
+# across every first-party repository).
+WIKI_REPURPOSED: frozenset[str] = frozenset()
 
 
 @dataclass(frozen=True)

@@ -1,17 +1,18 @@
 # CLAUDE.md
 
-Governance architecture for LLM agent systems — constitutional axioms, derived implications, interpretive canon, sufficiency probes, and precedent store. **Specification repo**: YAML definitions and markdown documentation, not application code.
+Governance architecture for LLM agent systems — constitutional axioms, derived implications, interpretive canon, sufficiency probes, and precedent store. **Specification repo**: YAML definitions, deterministic `hapax-sdlc` render/check tooling, and markdown documentation, not runtime application code.
 
 Shared conventions (uv, ruff, testing, git workflow) are in the workspace `CLAUDE.md` — this file covers constitution-specific details only.
 
-**Consumers of this spec:** [`hapax-council`](https://github.com/hapax-systems/hapax-council) (extends the constitutional axiom set with single_user, executive_function, etc.) and [`hapax-officium`](https://github.com/hapax-systems/hapax-officium) (extends with management_safety, management_governance) both depend on this repo via the published `hapax-sdlc` package. Changes to `axioms/registry.yaml` here propagate to both consumers on next dependency bump.
+**Consumers of this spec:** Private runtime estates (`hapax-council` and `hapax-officium`) consume this specification via the `hapax-sdlc` package alongside public surfaces documented at [hapaxresearch.com](https://hapaxresearch.com). Changes to `axioms/registry.yaml` propagate to downstream consumers on dependency bump.
 
 ## Key Files
 
 - **`axioms/registry.yaml`** — Canonical axiom definitions (IDs, weights, scope, text)
-- **`axioms/implications/`** — Per-axiom derived implications with tier (T0/T1/T2), enforcement mode, sufficiency levels
+- **`axioms/implications/`** — Per-axiom derived implications with tier (T0/T1/T2/T3), enforcement mode, sufficiency levels
 - **`domains/`** — Domain-scoped axiom extensions (infrastructure, management)
 - **`knowledge/`** — Sufficiency probes per domain (management, music, personal, technical)
+- **`sdlc/render/`** — Deterministic constellation registry (`repos.yaml`), presentation renderers, and GitHub settings policy (`repo_settings.py`)
 - **`pattern-guide.md`** — Guide for implementing the governance pattern
 
 ## Conventions
@@ -29,13 +30,12 @@ Workspace-wide conventions (worktree discipline, PR completion rules, ownership)
 uv sync
 uv run ruff check .              # Lint Python (SDLC scripts)
 uv run ruff format --check .     # Format check
-yamllint axioms/ domains/ knowledge/  # YAML lint (if yamllint installed)
+yamllint -d relaxed axioms/ domains/ knowledge/  # YAML lint
+python sdlc/consistency_check.py --json --check-resolutions
 ```
 
-CI runs YAML linting automatically via `yaml-lint.yml` workflow.
+CI runs deterministic YAML linting, deontic consistency checks, sufficiency scope validation, and capability coverage automatically via `yaml-lint.yml` alongside `ci.yml` and `semgrep.yml`.
 
-## SDLC Pipeline
+## Public Workflow Surface
 
-Spec-focused: no implement workflow. Triage → Review → Axiom Gate (structural only) → Auto-merge. Changes touching `axioms/registry.yaml` always classified as L complexity. Scripts in `scripts/`, workflows in `.github/workflows/`.
-
-> Subject to the workspace CLAUDE.md rotation policy: `hapax-council/docs/superpowers/specs/2026-04-13-claude-md-excellence-design.md`.
+Public GitHub Actions on this repository are restricted to deterministic validation and settings-drift gates (`yaml-lint.yml`, `ci.yml`, `semgrep.yml`, `repo-settings-drift-check.yml`, `dependabot-auto-merge.yml`, and `sdlc-axiom-gate.yml`). LLM-invoking or untrusted-issue-triggered workflows do not run on this public repository.
