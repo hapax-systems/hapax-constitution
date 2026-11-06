@@ -10,7 +10,8 @@
     {
       "@type": "Organization",
       "name": "Hapax Research Lab",
-      "url": "https://github.com/hapax-systems"
+      "email": "hrl-han@hapaxresearch.com",
+      "url": "https://hapaxresearch.com"
     }
   ],
   "applicationCategory": "Specification",
@@ -18,7 +19,6 @@
   "isAccessibleForFree": true,
   "keywords": [
     "research-software",
-    "single-operator",
     "philosophy-of-science",
     "governance",
     "infrastructure-as-argument"

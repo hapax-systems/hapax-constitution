@@ -2,28 +2,32 @@
 
 The README is rendered as a *section-replacement* operation rather than
 a full overwrite, so per-repo README body content (technical docs,
-architecture notes, etc.) is preserved between renders.
-
-The preamble lives between two HTML comment markers; the renderer
-replaces only that delimited region. If the markers are absent, the
-preamble is prepended.
+architecture notes, etc.) is preserved between renders while any
+duplicate leading ``# <repo.name>`` H1 immediately following the
+preamble is stripped so every README carries exactly one H1.
 """
 
 from __future__ import annotations
+
+import re
 
 from sdlc.render.repo_registry import RepoSpec, SurfaceClass, github_repo_url
 
 PREAMBLE_BEGIN = "<!-- hapax-sdlc:preamble:begin -->"
 PREAMBLE_END = "<!-- hapax-sdlc:preamble:end -->"
 
+LEGAL_ENTITY_FILING = (
+    "Legal entity (as filed): Hapax Research LLC, organized in Wyoming on "
+    "2026-05-10, filing ID 2026-001973400"
+)
+
 
 def public_surface_marker_pair(repo_name: str) -> tuple[str, str]:
-    """Claim-bearing generated-section markers (the plan's marker family).
+    """Claim-bearing generated-section markers.
 
-    Co-emitted INSIDE the ``hapax-sdlc`` anchors: the old family remains the
-    section-replacement anchor (behavior unchanged), while this family marks
-    the generated, claim-bearing region that public-surface claim checks
-    recognise (matrix-plan control-shape item 3 / D4 marker convergence).
+    Co-emitted INSIDE the ``hapax-sdlc`` anchors: the outer family remains the
+    section-replacement anchor, while this inner family marks the generated,
+    claim-bearing region that public-surface claim checks recognize.
     """
     surface_id = f"github.repo.{repo_name}.readme.preamble"
     return (
@@ -69,14 +73,16 @@ def render(repo: RepoSpec) -> str:
         f"## Public boundary\n"
         f"\n"
         f"- {issue_line}\n"
-        f"- Public copy must use `hapax-systems` organization links for "
-        f"first-party Hapax repositories.\n"
-        f"- README text is orientation, not a freshness witness; current "
-        f"public claims require surface-specific release, reconcile, or "
-        f"publication receipts.\n"
-        f"- Publication, weblog, RSS, social, DOI/archive, and other public "
-        f"fanout paths must route through the governed publication bus or a "
-        f"documented guarded legacy surface.\n"
+        f"- Published by **Hapax Research Lab** (`hrl-han`, "
+        f"[hapaxresearch.com](https://hapaxresearch.com)). {LEGAL_ENTITY_FILING}.\n"
+        f"- Security disclosures and factual correction proposals: "
+        f"`hrl-han@hapaxresearch.com` (see `SECURITY.md` and "
+        f"[hapaxresearch.com/about/#contact](https://hapaxresearch.com/about/#contact)). "
+        f"The network commits to receipt, retention and published correction. "
+        f"It promises no response time.\n"
+        f"- Public copy uses `hapax-systems` organization links for "
+        f"first-party repositories; README text is orientation rather than a "
+        f"live runtime receipt.\n"
         f"- Governance reference: {github_repo_url('hapax-constitution')}\n"
         f"\n"
         f"## Portfolio position\n"
@@ -88,23 +94,45 @@ def render(repo: RepoSpec) -> str:
     )
 
 
+def _strip_duplicate_leading_h1(body: str, preamble: str) -> str:
+    """Strip a duplicate leading ``# <repo.name>...`` H1 from ``body``."""
+    stripped = body.lstrip()
+    if not stripped:
+        return ""
+    match = re.search(r"^# (\S+)\s*$", preamble, re.MULTILINE)
+    if match:
+        repo_name = match.group(1)
+        h1_re = re.compile(rf"^#\s+{re.escape(repo_name)}(?:\b[^\n]*)?\n*", re.IGNORECASE)
+        stripped = h1_re.sub("", stripped, count=1).lstrip()
+    return stripped
+
+
 def replace_section(existing_readme: str, preamble: str) -> str:
     """Replace the BEGIN..END preamble block in ``existing_readme``.
 
-    If markers are absent, the preamble is prepended (with a blank line
-    between preamble and existing body).
+    If markers are absent, the preamble is prepended. Any duplicate leading
+    ``# <repo.name>`` heading at the top of the remaining body is removed so
+    rendered README files never emit two H1 headings.
     """
     begin_idx = existing_readme.find(PREAMBLE_BEGIN)
     end_idx = existing_readme.find(PREAMBLE_END)
     if begin_idx == -1 or end_idx == -1 or end_idx < begin_idx:
-        return preamble + "\n\n" + existing_readme.lstrip()
-    end_idx += len(PREAMBLE_END)
-    return existing_readme[:begin_idx] + preamble + existing_readme[end_idx:]
+        cleaned_body = _strip_duplicate_leading_h1(existing_readme, preamble)
+        if not cleaned_body:
+            return preamble + "\n"
+        return preamble + "\n\n" + cleaned_body
+    prefix = existing_readme[:begin_idx]
+    rest = existing_readme[end_idx + len(PREAMBLE_END) :]
+    cleaned_body = _strip_duplicate_leading_h1(rest, preamble)
+    if not cleaned_body:
+        return prefix + preamble + "\n"
+    return prefix + preamble + "\n\n" + cleaned_body
 
 
 def _authority_surfaces(repo: RepoSpec) -> str:
     preferred = [
         "LICENSE",
+        "LICENSE-SCOPE.md",
         "NOTICE.md",
         "_NOTICES.md",
         "_manifest.yaml",
@@ -128,9 +156,16 @@ def _license_one_liner(license_class: str) -> str:
         ),
         "BUSL-1.1": (
             "Business Source License 1.1 (source-available; not Open Source until the "
-            "change license/date applies)"
+            "Change Date converts the work to Apache-2.0)"
         ),
-        "CC-BY-NC-ND-4.0": "CC BY-NC-ND 4.0 (specification text, no derivatives)",
+        "CC-BY-NC-ND-4.0": (
+            "CC BY-NC-ND 4.0 (specification text, no derivatives; runnable hapax-sdlc "
+            "tooling under Apache-2.0)"
+        ),
+        "CC-BY-4.0": (
+            "CC BY 4.0 for original documentation and metadata (trademarks reserved; "
+            "mirrored third-party assets retain declared upstream licenses)"
+        ),
         "CC0-1.0": "CC0 1.0 (public-domain dedication for the declared data/artifact surface)",
         "MIT": "MIT",
         "Apache-2.0": "Apache 2.0",
@@ -143,60 +178,80 @@ def _license_one_liner(license_class: str) -> str:
 
 
 def _opening(repo: RepoSpec) -> str:
+    if repo.archived or repo.surface_class is SurfaceClass.HISTORICAL_ARCHIVE:
+        return (
+            f"**[Archived Prototype — Superseded by [hapax-systems/reins]"
+            f"({github_repo_url('reins')})]** `{repo.name}` is an archived early "
+            "standalone governance-hook prototype in the **Hapax Research Lab** "
+            "portfolio ([hapaxresearch.com](https://hapaxresearch.com)). It is "
+            "retained for historical inspection and citation; evaluate "
+            f"[reins]({github_repo_url('reins')}) for active governed "
+            "agent-delivery observation and command preview."
+        )
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
-            f"`{repo.name}` is the bounded adoption-commons repository in the "
-            "Hapax Research Lab portfolio. It is published so adopters can inspect "
-            "and pilot the governance-hook surface without inheriting the "
-            "Hapax runtime estate."
+            f"`{repo.name}` is a bounded adoption-commons repository in the "
+            "**Hapax Research Lab** portfolio. It is published so adopters can "
+            "inspect and pilot the governance-hook surface without inheriting "
+            "the broader Hapax runtime estate."
         )
     if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
         return (
-            f"`{repo.name}` is the product front door for the Hapax Research Lab "
-            "portfolio. Its current public ceiling is observation and "
-            "governed command preview, not autonomous write authority."
+            f"`{repo.name}` is the product front door for the **Hapax Research Lab** "
+            "portfolio ([hapaxresearch.com](https://hapaxresearch.com)). Its "
+            "current public ceiling is observation and governed command preview, "
+            "not autonomous write authority."
         )
     if repo.surface_class is SurfaceClass.RUNTIME_MECHANISM:
         return (
             f"`{repo.name}` is a source-available runtime mechanism in the "
-            "Hapax Research Lab portfolio. It exposes dispatch, receipt, quota, "
-            "and projection machinery without claiming to be the whole "
-            "Hapax estate."
+            "**Hapax Research Lab** portfolio ([hapaxresearch.com](https://hapaxresearch.com)). "
+            "It exposes dispatch, receipt, quota, and projection machinery "
+            "without claiming to be the whole Hapax estate."
         )
     if repo.surface_class is SurfaceClass.GOVERNANCE_SPEC:
-        return f"`{repo.name}` anchors governance and public metadata for Hapax Research Lab repositories."
+        return (
+            f"`{repo.name}` anchors governance and public metadata for "
+            "**Hapax Research Lab** repositories ([hapaxresearch.com](https://hapaxresearch.com))."
+        )
     if repo.surface_class is SurfaceClass.ECOSYSTEM_BRIDGE:
         return (
-            f"`{repo.name}` is an integration bridge for the Hapax Research Lab "
-            "portfolio. It is maintained for MCP integration and inspection, "
-            "not as a general-purpose framework."
+            f"`{repo.name}` is an integration bridge in the **Hapax Research Lab** "
+            "portfolio ([hapaxresearch.com](https://hapaxresearch.com)). It is "
+            "maintained for MCP integration and inspection, not as a "
+            "general-purpose framework."
         )
     if repo.surface_class is SurfaceClass.ASSET_MIRROR:
         return (
-            f"`{repo.name}` is a public asset mirror for the Hapax Research Lab "
-            "portfolio. Source of truth and approval remain outside this "
-            "mirror."
+            f"`{repo.name}` is a public asset mirror for the **Hapax Research Lab** "
+            "portfolio ([hapaxresearch.com](https://hapaxresearch.com)). Source "
+            "of truth and approval remain outside this mirror."
         )
     if repo.surface_class is SurfaceClass.EVIDENCE_ARTIFACT:
         return (
-            f"`{repo.name}` is an evidence-artifact repository in the Hapax Research Lab "
-            "portfolio. It publishes bounded observations or "
-            "metadata, not runtime authority."
+            f"`{repo.name}` is an evidence-artifact repository in the **Hapax Research Lab** "
+            "portfolio ([hapaxresearch.com](https://hapaxresearch.com)). It publishes "
+            "bounded observations and witness records, not runtime authority."
         )
     if repo.surface_class is SurfaceClass.INTERNAL_APPARATUS:
         return (
-            f"`{repo.name}` is internal apparatus in the Hapax Research Lab "
+            f"`{repo.name}` is internal apparatus in the **Hapax Research Lab** "
             "portfolio. It is visible only where a separate visibility "
             "decision permits inspection."
         )
     return (
-        f"`{repo.name}` is a constituent of the Hapax operating environment. "
+        f"`{repo.name}` is a constituent repository of **Hapax Research Lab**. "
         "It is research or boundary infrastructure published as an artifact, "
         "not a staffed product or community project."
     )
 
 
 def _issue_line(repo: RepoSpec) -> str:
+    if repo.archived or repo.surface_class is SurfaceClass.HISTORICAL_ARCHIVE:
+        return (
+            f"Repository is archived and read-only; evaluate {github_repo_url('reins')} "
+            "for active governed agent-delivery inspection"
+        )
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
             "Issues are redirect-only and support is bounded; pull requests "

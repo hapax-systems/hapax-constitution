@@ -1,14 +1,20 @@
 """GOVERNANCE.md renderer.
 
 Redirects to the hapax-constitution axiom registry per the operational
-checklist. The asymmetry is the argument: governance is centralised at
-hapax-constitution; non-anchor repos point at it rather than re-stating
-their own governance.
+checklist. Governance is centralized at hapax-constitution; non-anchor
+repositories point back to it rather than maintaining separate governance
+bodies.
 """
 
 from __future__ import annotations
 
 from sdlc.render.repo_registry import RepoSpec, github_repo_url
+
+LEGAL_ENTITY_LINE = (
+    "Legal entity (as filed): Hapax Research LLC, organized in Wyoming on "
+    "2026-05-10, filing ID 2026-001973400; in law, the answerable entity is "
+    "Hapax Research LLC."
+)
 
 
 def render(repo: RepoSpec) -> str:
@@ -21,14 +27,20 @@ def _render_anchor() -> str:
     return (
         "# Governance\n"
         "\n"
-        "This repository holds the canonical axiom registry for the Hapax "
-        "operating environment. The whole constellation uses this registry.\n"
+        "This repository holds the canonical axiom registry for **Hapax Research Lab** "
+        "(`hrl-han`, https://hapaxresearch.com). First-party repositories across the "
+        "`hapax-systems` organization consume this registry.\n"
         "\n"
         "## Authority\n"
         "\n"
-        "Single operator. There is no multi-stakeholder "
-        "governance body. The single-operator axiom (weight 100) forecloses "
-        "shared-decision structures.\n"
+        "`hrl-han`, the research network of **Hapax Research Lab**, has human and AI "
+        "agent members. Research and engineering staff are AI agents; one human "
+        "member, the lab's principal, holds constitutional authority inside `hrl-han`, "
+        "constituted the network, and adopted the standing rule under which public "
+        "editions and releases are checked and published. There is no external "
+        "multi-stakeholder governance body or community maintainer committee.\n"
+        "\n"
+        f"{LEGAL_ENTITY_LINE}\n"
         "\n"
         "## Mechanism\n"
         "\n"
@@ -40,10 +52,15 @@ def _render_anchor() -> str:
         "\n"
         "## Change process\n"
         "\n"
-        "Changes to `axioms/registry.yaml` always carry L-complexity. "
-        "There is no review committee. The operator reviews "
-        "changes against the constitutional canons: textualist, purposivist, "
-        "absurdity, and omitted-case.\n"
+        "There is no review committee. Constitutional changes to `axioms/registry.yaml` "
+        "require explicit principal ratification and evaluation against the "
+        "interpretive canons: textualist, purposivist, absurdity, and omitted-case.\n"
+        "\n"
+        "## Contact and corrections\n"
+        "\n"
+        "Contact: `hrl-han@hapaxresearch.com` (see `SECURITY.md` and "
+        "https://hapaxresearch.com/about/#contact). The network commits to receipt, "
+        "retention and published correction. It promises no response time.\n"
         "\n"
         "## Downstream\n"
         "\n"
@@ -57,9 +74,13 @@ def _render_redirect(repo: RepoSpec) -> str:
     return (
         "# Governance\n"
         "\n"
-        f"`hapax-constitution` governs this repository. This repo has no "
-        f"separate governance body. The single-operator axiom (weight 100) "
-        f"keeps decisions with one operator.\n"
+        f"`hapax-constitution` governs this repository. `{repo.name}` is published by "
+        "**Hapax Research Lab** (`hrl-han`, https://hapaxresearch.com) and governed "
+        "as a single trust domain under `hapax-constitution`. Research and engineering "
+        "staff are AI agents; one human, the lab's principal, holds constitutional "
+        "authority inside `hrl-han`. Public repositories are published for inspection, "
+        "citation, and use within their stated license, not for external contributor "
+        "onboarding or community governance.\n"
         "\n"
         "## Authoritative sources\n"
         "\n"
@@ -67,15 +88,18 @@ def _render_redirect(repo: RepoSpec) -> str:
         f"- [Implications]({constitution_url}/tree/main/axioms/implications/)\n"
         f"- [Precedents]({constitution_url}/tree/main/axioms/precedents/)\n"
         "\n"
-        "## Operator\n"
+        "## Legal entity and contact\n"
         "\n"
-        "Single operator, single workstation. The same rules "
-        "apply across the constellation.\n"
+        f"{LEGAL_ENTITY_LINE}\n"
+        "\n"
+        "Contact: `hrl-han@hapaxresearch.com` (see `SECURITY.md` and "
+        "https://hapaxresearch.com/about/#contact). The network commits to receipt, "
+        "retention and published correction. It promises no response time.\n"
         "\n"
         "## Inter-repo position\n"
         "\n"
-        f"This repository follows the portfolio role recorded in NOTICE.md "
-        f"and the constitution registry.\n"
+        "This repository follows the portfolio role recorded in `NOTICE.md` "
+        "and the constitution registry.\n"
         "\n"
         "---\n"
         "\n"

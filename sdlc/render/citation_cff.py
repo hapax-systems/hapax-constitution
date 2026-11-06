@@ -3,31 +3,43 @@
 Schema reference: citation-file-format/citation-file-format#schema-guide
 v1.2.0. Validates against the published JSON schema.
 
-Public repository metadata uses organization authorship. Operator identity is
-not emitted by default because first-party public surfaces are owned by
-``hapax-systems``.
+Public repository metadata uses institutional authorship (Hapax Research Lab).
 """
 
 from __future__ import annotations
 
 import yaml
 
-from sdlc.render.repo_registry import OperatorIdentity, RepoSpec
+from sdlc.render.repo_registry import OperatorIdentity, RepoSpec, SurfaceClass
 
 PUBLIC_CREATOR_NAME = "Hapax Research Lab"
+PUBLIC_CREATOR_EMAIL = "hrl-han@hapaxresearch.com"
+PUBLIC_CREATOR_URL = "https://hapaxresearch.com"
 
 
 def render(repo: RepoSpec, identity: OperatorIdentity) -> str:
     """Return a CITATION.cff body text for ``repo``."""
+    cff_type = "dataset" if repo.repo_type == "data" else "software"
+    public_url = (
+        "https://hapax-systems.github.io/hapax-assets/"
+        if repo.surface_class is SurfaceClass.ASSET_MIRROR
+        else repo.github_url
+    )
     cff: dict[str, object] = {
         "cff-version": "1.2.0",
-        "message": ("If you use this software in your research, please cite it as below."),
-        "type": "software",
+        "message": "If you cite this repository or its artifacts in research, please cite it as below.",
+        "type": cff_type,
         "title": repo.name,
         "abstract": repo.description.strip(),
-        "authors": [{"name": PUBLIC_CREATOR_NAME}],
+        "authors": [
+            {
+                "name": PUBLIC_CREATOR_NAME,
+                "email": PUBLIC_CREATOR_EMAIL,
+                "website": PUBLIC_CREATOR_URL,
+            }
+        ],
         "repository-code": repo.github_url,
-        "url": repo.github_url,
+        "url": public_url,
         "license": _spdx_for_license(repo.license_class.value),
         "keywords": list(repo.topics) if repo.topics else _default_keywords(),
     }
@@ -62,7 +74,6 @@ def _spdx_for_license(license_class: str) -> str:
 def _default_keywords() -> list[str]:
     return [
         "research-software",
-        "single-operator",
         "philosophy-of-science",
         "governance",
         "infrastructure-as-argument",

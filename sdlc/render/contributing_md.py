@@ -1,28 +1,27 @@
 """CONTRIBUTING.md renderer (refuse-and-redirect mode).
 
-Per the operational checklist, CONTRIBUTING.md is positively asserted
-with constitutional refusal text rather than left absent (which would
-let GitHub's default contribution prompts surface). Body text uses the
-sticky-per-document operator referent.
+CONTRIBUTING.md is positively asserted with explicit governance refusal and
+redirect text rather than left absent (which would allow GitHub's default
+contribution prompts to imply an open community patch queue).
 """
 
 from __future__ import annotations
 
-from sdlc.render.repo_registry import RepoSpec, SurfaceClass
+from sdlc.render.repo_registry import RepoSpec, SurfaceClass, github_repo_url
 
 
 def render(repo: RepoSpec) -> str:
     return (
         "# Contributing\n"
         "\n"
-        "This repository does not accept contributions through GitHub. Hapax "
-        "is operated as a single-operator research estate; "
-        "public repository affordances are for inspection, citation, and "
-        "boundary review, not contributor onboarding.\n"
-        "\n"
-        "The `single_user` axiom is a boundary: it prevents public maintainer "
-        "roles, community governance, and external patch queues from becoming "
-        "part of this repository's authority model.\n"
+        "This repository does not accept external contributions through GitHub. "
+        "It is published by **Hapax Research Lab** (`hrl-han`, "
+        "https://hapaxresearch.com) and governed as a single trust domain under "
+        "`hapax-constitution`. Research and engineering staff are AI agents; one "
+        "human, the lab's principal, holds constitutional authority inside "
+        "`hrl-han`. Public repositories are published for inspection, citation, "
+        "and use within their stated license, not for external contributor "
+        "onboarding or community patch queues.\n"
         "\n"
         "## Why\n"
         "\n"
@@ -32,32 +31,45 @@ def render(repo: RepoSpec) -> str:
         "\n"
         "- Issues are redirect-only; `.github/ISSUE_TEMPLATE/config.yml` "
         "disables blank issues.\n"
-        "- Pull requests are not an intake path for this repository.\n"
+        "- Pull requests from external forks are not an intake path for this "
+        "repository.\n"
         "- Repositories disable Discussions, Projects, and Wiki across the "
-        "constellation.\n"
+        "`hapax-systems` organization.\n"
         "- Funding links, if present, are no-perk research support only.\n"
         "- This file is rendered from `hapax-constitution/sdlc/render/`; "
         "edits are overwritten on next render.\n"
         "\n"
-        "## If you are reading this because you found a bug\n"
+        "## Security disclosures and factual corrections\n"
         "\n"
         f"{_bug_boundary(repo)}\n"
         "\n"
+        "Send concrete security disclosures or factual correction proposals to "
+        "`hrl-han@hapaxresearch.com` (see `SECURITY.md` and "
+        "https://hapaxresearch.com/about/#contact). The network commits to "
+        "receipt, retention and published correction. It promises no response "
+        "time.\n"
+        "\n"
         "## Citation\n"
         "\n"
-        "If your research engages with this codebase, cite via `CITATION.cff` "
-        "(Citation File Format v1.2.0). Archival DOI lives in "
-        "`.zenodo.json`.\n"
+        "If your research engages with this repository, cite via `CITATION.cff` "
+        "(Citation File Format v1.2.0) and `.zenodo.json`.\n"
     )
 
 
 def _why(repo: RepoSpec) -> str:
+    if repo.archived or repo.surface_class is SurfaceClass.HISTORICAL_ARCHIVE:
+        return (
+            f"`{repo.name}` is an archived historical prototype superseded by "
+            f"[reins]({github_repo_url('reins')}). It remains public for "
+            "inspection and citation under its MIT license and is not under "
+            "active development or community maintenance."
+        )
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
-            f"`{repo.name}` is the bounded adoption surface for the Hapax "
-            "Research Lab portfolio. It is usable and auditable, but this "
-            "repository is still operated through a single-operator release "
-            "process rather than community maintenance."
+            f"`{repo.name}` is a bounded adoption surface in the Hapax "
+            "Research Lab portfolio. It is inspectable and usable under its "
+            "stated license, while releases remain governed inside `hrl-han` "
+            "rather than through community maintenance."
         )
     if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
         return (
@@ -72,16 +84,21 @@ def _why(repo: RepoSpec) -> str:
             "mechanism into a community-maintained framework."
         )
     return (
-        "Hapax is a single-operator research/runtime apparatus. This "
-        "repository is not a staffed product, service, or community library. "
-        "The refusal keeps GitHub from becoming an implied support, roadmap, "
-        "or governance surface. See the "
-        "Refusal Brief at "
-        "https://hapax.weblog.lol/2026/04/refusal-brief-an-automation-tractability-disclosure."
+        "Hapax Research Lab operates its software and evidence repositories "
+        "inside a single constitutional trust domain (`hrl-han`). Keeping "
+        "GitHub read-and-verify prevents repository affordances from implying "
+        "an unstaffed support queue, community governance body, or external "
+        "patch-review obligation."
     )
 
 
 def _bug_boundary(repo: RepoSpec) -> str:
+    if repo.archived or repo.surface_class is SurfaceClass.HISTORICAL_ARCHIVE:
+        return (
+            f"This repository is archived and receives no feature or bug-fix "
+            f"maintenance; evaluate [reins]({github_repo_url('reins')}) for "
+            "active governed agent-delivery inspection."
+        )
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
             "Use the published documentation and examples to evaluate the "
@@ -90,9 +107,9 @@ def _bug_boundary(repo: RepoSpec) -> str:
         )
     if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
         return (
-            "Use the published demo/evaluation path to inspect current "
-            "behavior. Operational support and commercial discussions do not "
-            "happen through GitHub Issues."
+            "Use the published demo and evaluation path (`reins --demo`) to "
+            "inspect shipped behavior. Operational support and commercial "
+            "discussions do not happen through GitHub Issues."
         )
     if repo.surface_class is SurfaceClass.RUNTIME_MECHANISM:
         return (
@@ -101,7 +118,7 @@ def _bug_boundary(repo: RepoSpec) -> str:
             "scope for GitHub."
         )
     return (
-        "Security disclosures remain in scope through `SECURITY.md`. Other "
-        "bug reports, feature requests, integration help, and community "
-        "maintenance requests are out of scope for GitHub."
+        "Security disclosures and factual error reports remain in scope via "
+        "`SECURITY.md`. Feature requests, integration troubleshooting, and "
+        "community maintenance requests are out of scope for GitHub."
     )

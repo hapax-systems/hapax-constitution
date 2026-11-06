@@ -82,11 +82,13 @@ def test_registry_includes_two_upstream_forks() -> None:
 
 
 def test_registry_license_assignments_match_research_drop() -> None:
-    """Drop 4 §3 license matrix:
-    - Runtime: PolyForm Strict 1.0.0 (council, officium, watch, phone)
-    - MCP: MIT (per-operator divergence; MCP ecosystem norm)
-    - Spec/docs: CC BY-NC-ND 4.0 (constitution)
-    - Aesthetic library blend: CC BY-SA 4.0 (assets)
+    """Canonical portfolio license matrix:
+    - Internal runtime: PolyForm Strict 1.0.0 (council, officium, watch, phone, coord)
+    - MCP & archived prototype: MIT (hapax-mcp, agentgov)
+    - Spec/docs: CC BY-NC-ND 4.0 (constitution; runnable tooling Apache-2.0)
+    - Asset mirror docs/metadata: CC BY 4.0 (hapax-assets; per-asset upstream terms preserved)
+    - Commercial core: BUSL-1.1 (reins, hapax-spine)
+    - Public-domain ledger: CC0-1.0 (hapax-research-ledger)
     """
     registry = load_registry()
     assert registry["hapax-council"].license_class is LicenseClass.POLYFORM_STRICT_1_0_0
@@ -95,7 +97,7 @@ def test_registry_license_assignments_match_research_drop() -> None:
     assert registry["hapax-phone"].license_class is LicenseClass.POLYFORM_STRICT_1_0_0
     assert registry["hapax-constitution"].license_class is LicenseClass.CC_BY_NC_ND_4_0
     assert registry["hapax-mcp"].license_class is LicenseClass.MIT
-    assert registry["hapax-assets"].license_class is LicenseClass.CC_BY_SA_4_0
+    assert registry["hapax-assets"].license_class is LicenseClass.CC_BY_4_0
     assert registry["agentgov"].license_class is LicenseClass.MIT
     assert registry["reins"].license_class is LicenseClass.BUSL_1_1
     assert registry["hapax-spine"].license_class is LicenseClass.BUSL_1_1
@@ -106,7 +108,8 @@ def test_registry_license_assignments_match_research_drop() -> None:
 def test_registry_value_partitions_match_ratified_license_posture() -> None:
     registry = load_registry()
     assert registry["agentgov"].value_partition is ValuePartition.ADOPTION_COMMONS
-    assert registry["agentgov"].license_posture.startswith("Permissive adoption surface")
+    assert registry["agentgov"].archived is True
+    assert registry["agentgov"].license_posture.startswith("Archived MIT-licensed prototype")
 
     for repo_id in ("reins", "hapax-spine"):
         repo = registry[repo_id]
@@ -136,7 +139,7 @@ def test_registry_frontmatter_policy_fields_are_populated() -> None:
 
 def test_registry_surface_classes_match_portfolio_decisions() -> None:
     registry = load_registry()
-    assert registry["agentgov"].surface_class is SurfaceClass.ADOPTION_COMMONS
+    assert registry["agentgov"].surface_class is SurfaceClass.HISTORICAL_ARCHIVE
     assert registry["reins"].surface_class is SurfaceClass.PRODUCT_FRONT_DOOR
     assert registry["hapax-spine"].surface_class is SurfaceClass.RUNTIME_MECHANISM
     assert registry["hapax-council"].surface_class is SurfaceClass.RESEARCH_APPARATUS
@@ -360,9 +363,8 @@ def test_skip_line_names_archived_repositories_exactly() -> None:
 
 @pytest.fixture
 def identity() -> OperatorIdentity:
-    # Use a unique synthetic name that cannot collide with any of the
-    # four ratified non-formal referents ("The Operator", "Oudepode",
-    # "Oudepode The Operator", "OTO").
+    # Use a unique synthetic name that cannot collide with institutional
+    # A16 referents ("Hapax Research Lab", "hrl-han").
     return OperatorIdentity(
         full_name="Quentin Zarbacaster",
         orcid="https://orcid.org/0000-0000-0000-0001",
@@ -405,11 +407,16 @@ def test_codemeta_json_parses_and_aligns_to_v3_jsonld(
     assert parsed["@type"] == "SoftwareSourceCode"
     assert parsed["author"][0]["@type"] == "Organization"
     assert parsed["author"][0]["name"] == "Hapax Research Lab"
-    assert parsed["author"][0]["url"] == "https://github.com/hapax-systems"
+    assert parsed["author"][0]["email"] == "hrl-han@hapaxresearch.com"
+    assert parsed["author"][0]["url"] == "https://hapaxresearch.com"
     assert "@id" not in parsed["author"][0]
     assert parsed["identifier"] == "https://doi.org/10.5281/zenodo.20113515"
     assert parsed["license"] == ("https://polyformproject.org/licenses/strict/1.0.0/")
     assert parsed["codeRepository"] == council_repo.github_url
+    assert parsed["developmentStatus"] == "active"
+
+    archived_parsed = json.loads(codemeta_json.render(load_registry()["agentgov"], identity))
+    assert archived_parsed["developmentStatus"] == "inactive"
 
 
 def test_zenodo_json_carries_related_identifier_graph(
@@ -457,9 +464,10 @@ def test_notice_md_uses_referent_not_legal_name(
 
 def test_contributing_md_refuses_explicitly(council_repo: RepoSpec) -> None:
     body = contributing_md.render(council_repo)
-    assert "does not accept contributions" in body
-    assert "single_user" in body
-    assert "Refusal Brief" in body
+    assert "does not accept external contributions" in body
+    assert "Hapax Research Lab" in body
+    assert "hrl-han@hapaxresearch.com" in body
+    assert "It promises no response time." in body
 
 
 _EMAIL_TOKEN = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
@@ -649,22 +657,34 @@ def test_security_md_keeps_critical_disclosures_out_of_band(
     assert "None to date" not in body
 
 
+_RETIRED_PSEUDONYMS = tuple(
+    "".join(parts)
+    for parts in (
+        ("The ", "Operator"),
+        ("Oude", "pode"),
+        ("Oude", "pode The Operator"),
+        ("O", "T", "O"),
+    )
+)
+
+
 def test_security_and_contributing_do_not_publish_operator_referent(
     council_repo: RepoSpec, identity: OperatorIdentity
 ) -> None:
+    assert REFERENTS == ("Hapax Research Lab", "hrl-han")
     for body in (
         security_md.render(council_repo, identity),
         contributing_md.render(council_repo),
     ):
-        for referent in ("Oudepode", "OTO", "The Operator"):
+        for referent in _RETIRED_PSEUDONYMS:
             assert referent not in body
 
 
 def test_support_md_redirects_without_support_entitlement() -> None:
     registry = load_registry()
     body = support_md.render(registry["agentgov"])
-    assert "bounded adoption surface" in body
-    assert "staffed support channel" in body
+    assert "Archived Prototype" in body
+    assert "hapax-systems/reins" in body
     assert "Blank issues are disabled" in body
     assert "no-perk research support only" in body
     assert "does not create an SLA" in body
@@ -681,15 +701,16 @@ def test_product_and_adoption_preambles_do_not_use_generic_research_artifact_cop
     assert "Claim ceiling" in reins_body
     assert "License and rights" in reins_body
     assert "autonomous write authority" in reins_body
+    assert "Legal entity (as filed): Hapax Research LLC, organized in Wyoming on 2026-05-10, filing ID 2026-001973400" in reins_body
     assert "not a product" not in reins_body
     assert "research infrastructure published as artifact" not in reins_body
     assert "Authorship is indeterminate" not in reins_body
     assert "hapax-manifesto-v0" not in reins_body
 
     agentgov_body = readme_section.render(registry["agentgov"])
-    assert "adoption-commons" in agentgov_body
-    assert "governance-hook surface" in agentgov_body
-    assert "Permissive adoption surface" in agentgov_body
+    assert "Archived Prototype" in agentgov_body
+    assert "hapax-systems/reins" in agentgov_body
+    assert "Archived MIT-licensed prototype" in agentgov_body
     assert "not a product" not in agentgov_body
     assert "research infrastructure published as artifact" not in agentgov_body
 
@@ -698,8 +719,9 @@ def test_asset_mirror_preamble_uses_per_asset_authority_surfaces() -> None:
     registry = load_registry()
     body = readme_section.render(registry["hapax-assets"])
 
-    assert "See `LICENSE`" not in body
-    assert "`NOTICE.md`, `_NOTICES.md`, and `_manifest.yaml`" in body
+    assert "`LICENSE-SCOPE.md`" in body
+    assert "`_NOTICES.md`" in body
+    assert "`_manifest.yaml`" in body
     assert "licenses remain per-asset" in body
 
 
@@ -709,11 +731,13 @@ def test_notice_and_contributing_follow_surface_class_boundaries() -> None:
     reins_notice = notice_md.render(registry["reins"])
     assert "product front door" in reins_notice
     assert "read and command-preview claim ceiling" in reins_notice
+    assert "HACA-C v0.3.15" in reins_notice
+    assert "No request to a natural person to approve the final wording" in reins_notice
     assert "not a product" not in reins_notice
 
     agentgov_contributing = contributing_md.render(registry["agentgov"])
-    assert "bounded adoption surface" in agentgov_contributing
-    assert "community maintenance" in agentgov_contributing
+    assert "archived historical prototype" in agentgov_contributing
+    assert "hapax-systems/reins" in agentgov_contributing
     assert "not a product" not in agentgov_contributing
 
 
@@ -721,20 +745,22 @@ def test_org_profile_readme_orients_public_portfolio_without_private_repo_table(
     registry = load_registry()
     body = org_profile_readme.render(registry)
     assert body.startswith("# Hapax Research Lab")
+    assert "Human-Agentic Network" in body
     assert "authority before action" in body
     assert "receipts before claims" in body
-    assert "unsupported automation claims" in body
     assert "Reader value" in body
     assert "what evidence would have to exist" in body
+    assert chr(36) not in body
 
     assert "[reins](https://github.com/hapax-systems/reins)" in body
-    assert "[agentgov](https://github.com/hapax-systems/agentgov)" in body
+    assert "[hapax-spine](https://github.com/hapax-systems/hapax-spine)" in body
     assert "[hapax-constitution](https://github.com/hapax-systems/hapax-constitution)" in body
     assert "[hapax-research-ledger](https://github.com/hapax-systems/hapax-research-ledger)" in body
     assert "[hapax-assets](https://github.com/hapax-systems/hapax-assets)" in body
     assert "[hapax-mcp](https://github.com/hapax-systems/hapax-mcp)" in body
+    assert "[agentgov](https://github.com/hapax-systems/agentgov) *(archived)*" in body
     assert "Supporting Public Surfaces" in body
-    assert "Hapax Logos MCP Bridge" in body
+    assert "Logos MCP Bridge" in body
 
     for private_id in (
         "hapax-council",
@@ -744,31 +770,26 @@ def test_org_profile_readme_orients_public_portfolio_without_private_repo_table(
         "hapax-coord",
     ):
         assert f"[{private_id}](" not in body
-    assert "hapax-spine](https://github.com/hapax-systems/hapax-spine)" not in body
+        assert f"github.com/hapax-systems/{private_id}" not in body
 
 
 def test_org_profile_readme_pins_claim_ceiling_and_license_boundaries() -> None:
     body = org_profile_readme.render(load_registry())
-    assert "open adoption commons" in body
     assert "source-available commercial core" in body
-    assert "source-visible research apparatus" in body
     assert "remains a read/preview surface" in body
     assert "not a general-purpose lifecycle kernel" in body
-    # Spine went public 2026-07-09 (Part-4 decision): the profile states the
-    # source-available posture; visibility-vs-copy mismatch never returns in
-    # either direction.
-    assert "spine is the source-available BSL 1.1 runtime mechanism" in body
+    assert "hapax-spine`)** is the source-available `BSL 1.1` mechanism" in body
     assert "private during restructure" not in body
-    # Capability Frontier embargo: scores are registry-asserted today;
-    # "measured capability" is claimable only once the measurement loop runs.
     assert "registry-asserted today; measured calibration is planned" in body
     assert "describe measured capability" not in body
-    assert "not as a supported framework" in body
+    assert "not supported public frameworks" in body
     assert "not claim autonomous write authority" in body
     assert "full general lifecycle coverage" in body
     assert "staffed community support" in body
     assert "publication-bus channels" in body
-    assert "must not imply direct public" in body
+    assert "Legal entity (as filed): Hapax Research LLC, organized in Wyoming on 2026-05-10, filing ID 2026-001973400" in body
+    assert "The network commits to receipt, retention and published correction. It promises no response time." in body
+    assert "HACA-C v0.3.15" in body
     assert "Hapax is open source" not in body
     assert "generic agent OS" not in body
     assert "guaranteed safe" not in body
@@ -802,39 +823,30 @@ def test_governance_md_anchor_vs_redirect(
     assert "https://github.com/hapax-systems/hapax-constitution" in redirect_body
 
 
-_G1_GOV_RETIRED_REFERENTS = (
-    "The Operator",
-    "Oudepode",
-    "Oudepode The Operator",
-    "OTO",
-)
-
-
 def test_governance_md_renders_no_retired_referent(
     council_repo: RepoSpec, constitution_repo: RepoSpec
 ) -> None:
-    """G1-GOV interim: neither GOVERNANCE body carries a retired referent."""
+    """Neither GOVERNANCE body carries retired pseudonymous referents."""
     for body in (
         governance_md.render(constitution_repo),
         governance_md.render(council_repo),
     ):
-        for referent in _G1_GOV_RETIRED_REFERENTS:
+        for referent in _RETIRED_PSEUDONYMS:
             assert referent not in body, f"retired referent {referent!r} in GOVERNANCE body"
 
 
 def test_governance_md_anchor_drops_the_four_false_claims(
     constitution_repo: RepoSpec,
 ) -> None:
-    """G1-GOV interim (seat ruling 2026-10-12T00:09:10Z): exactly the four
-    false claims go — CODEOWNERS protection, the Wiki mirror, axiom-gate
-    enforcement, the hapax-sdlc package — with no other wording changed.
-    """
+    """Anchor GOVERNANCE drops retired false claims and states A16/R3 authority."""
     body = governance_md.render(constitution_repo)
     assert "CODEOWNERS" not in body
     assert "Wiki" not in body
     assert "axiom gate" not in body
     assert "hapax-sdlc" not in body
-    assert "always carry L-complexity" in body
+    assert "Hapax Research Lab" in body
+    assert "Legal entity (as filed): Hapax Research LLC, organized in Wyoming on 2026-05-10, filing ID 2026-001973400" in body
+    assert "in law, the answerable entity is Hapax Research LLC" in body
     assert "There is no review committee." in body
     assert "redirects back here" in body
 
@@ -842,14 +854,32 @@ def test_governance_md_anchor_drops_the_four_false_claims(
 def test_governance_md_redirect_drops_the_wiki_link(
     council_repo: RepoSpec,
 ) -> None:
-    """The redirect's "Axiom registry as Wiki" link served the same empty
-    Wiki as the anchor's false claim; it goes with it.
-    """
+    """Redirect GOVERNANCE drops empty Wiki links and states A16/R3 authority."""
     body = governance_md.render(council_repo)
     assert "Wiki" not in body
     assert "/wiki" not in body
-    assert "Single operator, single workstation." in body
+    assert "Hapax Research Lab" in body
+    assert "Legal entity (as filed): Hapax Research LLC, organized in Wyoming on 2026-05-10, filing ID 2026-001973400" in body
     assert "This file is rendered from `hapax-constitution/sdlc/render/`." in body
+
+
+def test_readme_section_strips_duplicate_h1_on_replace_and_prepend(
+    constitution_repo: RepoSpec,
+) -> None:
+    preamble = readme_section.render(constitution_repo)
+    existing_with_dup = (
+        f"{readme_section.PREAMBLE_BEGIN}\n# hapax-constitution\n{readme_section.PREAMBLE_END}\n\n"
+        "# hapax-constitution\n\nBody intro paragraph.\n\n## Details\n"
+    )
+    rendered = readme_section.replace_section(existing_with_dup, preamble)
+    h1s = [ln for ln in rendered.splitlines() if ln.startswith("# ")]
+    assert h1s == ["# hapax-constitution"]
+    assert "Body intro paragraph." in rendered
+
+    prepend_dup = "# hapax-constitution — Subtitle\n\nBody intro paragraph.\n"
+    prepended = readme_section.replace_section(prepend_dup, preamble)
+    assert [ln for ln in prepended.splitlines() if ln.startswith("# ")] == ["# hapax-constitution"]
+    assert readme_section.replace_section(prepended, preamble) == prepended
 
 
 def test_readme_section_replacement_preserves_existing_body(

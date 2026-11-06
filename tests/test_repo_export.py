@@ -48,8 +48,9 @@ def test_repo_export_carries_frontmatter_policy_fields() -> None:
     export = build_export()
     by_id = {repo["id"]: repo for repo in export["repos"]}
     agentgov = by_id["agentgov"]
-    assert agentgov["surface_class"] == "adoption_commons"
-    assert agentgov["support_posture"] == "bounded_adoption_redirect"
+    assert agentgov["surface_class"] == "historical_archive"
+    assert agentgov["archived"] is True
+    assert agentgov["support_posture"] == "archived_redirect"
     assert agentgov["github_settings"] == {
         "has_issues": True,
         "has_wiki": False,

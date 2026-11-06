@@ -33,6 +33,7 @@ class LicenseClass(str, Enum):
     POLYFORM_STRICT_1_0_0 = "PolyForm-Strict-1.0.0"
     BUSL_1_1 = "BUSL-1.1"
     CC_BY_NC_ND_4_0 = "CC-BY-NC-ND-4.0"
+    CC_BY_4_0 = "CC-BY-4.0"
     CC0_1_0 = "CC0-1.0"
     MIT = "MIT"
     APACHE_2_0 = "Apache-2.0"
@@ -58,6 +59,7 @@ class SurfaceClass(str, Enum):
     """Reader-facing class used by frontmatter and support posture."""
 
     ADOPTION_COMMONS = "adoption_commons"
+    HISTORICAL_ARCHIVE = "historical_archive"
     PRODUCT_FRONT_DOOR = "product_front_door"
     RUNTIME_MECHANISM = "runtime_mechanism"
     RESEARCH_APPARATUS = "research_apparatus"

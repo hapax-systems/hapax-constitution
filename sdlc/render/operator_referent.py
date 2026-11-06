@@ -1,14 +1,8 @@
-"""Non-formal operator referent picker (constitution-side mirror).
+"""Institutional referent picker (constitution-side mirror).
 
-Parallels ``hapax-council/shared/operator_referent.py``. Sticky-per-document:
-seeded from ``repo_id``, so the same repo's CITATION.cff body, NOTICE.md
-body, README preamble, etc. all use the *same* referent for that repo's
-render pass. Different repos get independent referents.
-
-Per directive 2026-04-24, body text in ALL non-formal contexts uses one
-of four referents. Legal name is restricted to formal-address fields:
-CITATION.cff ``authors:``, codemeta.json ``author:``, .zenodo.json
-``creators:``.
+Under A16 and HACA-SENDER-DETERMINATION-R3, all public-facing institutional
+attributions use ``Hapax Research Lab`` and ``hrl-han`` exclusively. Legacy
+Era I personal or pseudonymous referents are retired and never emitted.
 """
 
 from __future__ import annotations
@@ -16,19 +10,17 @@ from __future__ import annotations
 import hashlib
 
 REFERENTS: tuple[str, ...] = (
-    "The Operator",
-    "Oudepode",
-    "Oudepode The Operator",
-    "OTO",
+    "Hapax Research Lab",
+    "hrl-han",
 )
 
 
 class OperatorReferentPicker:
-    """Equal-weighted picker over the four ratified operator referents."""
+    """Deterministic sticky-per-repository institutional referent picker."""
 
     @staticmethod
     def pick_for_artifact(repo_id: str) -> str:
-        """Sticky-per-repo. Same repo id → same referent across all render
+        """Sticky-per-repo. Same repo id -> same referent across all render
         targets within that repo's pass.
         """
         digest = hashlib.sha256(f"repo-pres-{repo_id}".encode("utf-8")).hexdigest()

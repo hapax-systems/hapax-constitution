@@ -1,17 +1,16 @@
 # Single source of truth for the constellation graph.
 #
-# Edits here are governance-protected per CODEOWNERS. The renderer reads
-# this file via `sdlc.render.repo_registry.load_registry()`.
+# The renderer reads this file via `sdlc.render.repo_registry.load_registry()`.
 #
 # Schema:
 #   repos.<id>:
 #     name:                 GitHub repository name (string)
 #     github_owner:         GitHub owner/org; defaults to hapax-systems
-#     description:          schema.org-aligned, refusal-stance opener (≤350 chars)
-#     repo_type:            runtime | spec | library | android | wear-os | fork
+#     description:          schema.org-aligned, refusal-stance opener (<=350 chars)
+#     repo_type:            runtime | engine | app | spec | library | data | android | wear-os | fork
 #     role_in_constellation: 1-sentence locator in the dependency graph
 #     license_class:        PolyForm-Strict-1.0.0 | BUSL-1.1 |
-#                           CC-BY-NC-ND-4.0 | CC0-1.0 | MIT |
+#                           CC-BY-NC-ND-4.0 | CC-BY-4.0 | CC0-1.0 | MIT |
 #                           Apache-2.0 | CC-BY-SA-4.0 | upstream
 #     value_partition:      adoption_commons | commercial_moat |
 #                           internal_apparatus | evidence_artifact | upstream
@@ -20,7 +19,7 @@
 #     reader_value:         Why that expectation matters to the target reader.
 #     claim_ceiling:        Highest safe public claim until new evidence lands.
 #     primary_audience:     [reader segment, ...]
-#     surface_class:        adoption_commons | product_front_door |
+#     surface_class:        adoption_commons | historical_archive | product_front_door |
 #                           runtime_mechanism | research_apparatus |
 #                           governance_spec | internal_apparatus |
 #                           ecosystem_bridge | evidence_artifact |
@@ -48,10 +47,10 @@ repos:
       framework.
     repo_type: runtime
     role_in_constellation: >-
-      Primary research/runtime estate. Carries task authority, coordination,
-      route evidence, claim and publication gates, refusal records, and
-      public-egress controls. Consumes the constitution via the hapax-sdlc
-      package.
+      Primary internal research/runtime estate. Carries task authority,
+      coordination, route evidence, claim and publication gates, refusal
+      records, and public-egress controls. Consumes the constitution via
+      the hapax-sdlc package.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
@@ -59,15 +58,15 @@ repos:
       not a framework, not a supported distribution.
     reader_promise: >-
       Inspect how AI-agent work is authorized, routed, reviewed, refused,
-      and surfaced publicly inside the Hapax estate.
+      and surfaced publicly inside Hapax Research Lab.
     reader_value: >-
       Lets technical leaders, researchers, and auditors evaluate concrete
       controls: what may run, what may write, what evidence exists, and
       where stale or unsupported claims fail closed.
     claim_ceiling: >-
-      Source-visible research runtime and current case study only. Not a
-      portable platform, adoption package, product front door, support
-      surface, or open-source project.
+      Internal research runtime and case study only. Not a portable
+      platform, adoption package, product front door, support surface,
+      or open-source project.
     primary_audience:
       - researchers
       - technical auditors
@@ -93,7 +92,6 @@ repos:
     dependencies: [hapax-constitution]
     topics:
       - research-software
-      - single-operator
       - governed-sdlc
       - claim-authority
       - publication-egress
@@ -117,14 +115,14 @@ repos:
       contributors.
     repo_type: spec
     role_in_constellation: >-
-      Anchor for repo metadata and governance. Defines axioms,
-      implications, canons, and precedent records. Other first-party
-      repos consume it through `hapax-sdlc`.
+      Anchor for repository metadata and governance across Hapax Research Lab.
+      Defines axioms, implications, canons, and precedent records consumed
+      through `hapax-sdlc`.
     license_class: CC-BY-NC-ND-4.0
     value_partition: evidence_artifact
     license_posture: >-
       Split posture: specification and publication metadata use
-      CC BY-NC-ND; runnable hapax-sdlc tooling uses Apache-2.0. Do not
+      CC BY-NC-ND 4.0; runnable hapax-sdlc tooling uses Apache-2.0. Do not
       describe the whole repository as Apache or open source.
     reader_promise: >-
       Governance specification and repo-presentation authority for
@@ -159,7 +157,6 @@ repos:
     dependencies: []
     topics:
       - research-software
-      - single-operator
       - philosophy-of-science
       - governance
       - infrastructure-as-argument
@@ -178,23 +175,23 @@ repos:
       product, not an adoption surface.
     repo_type: runtime
     role_in_constellation: >-
-      Management-domain runtime. Consumes the constitution and management
-      domain axioms without creating a public product boundary.
+      Internal management-domain runtime. Consumes the constitution and
+      management domain axioms without creating a public product boundary.
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
       Source-visible strict runtime artifact pending product boundary;
       not open source and not an adoption or support surface.
     reader_promise: >-
-      Internal management decision-support runtime published for boundary
+      Internal management decision-support runtime maintained for boundary
       and governance review.
     reader_value: >-
       Shows how management-context software can preserve boundary
       discipline: preparation and context assembly without people-evaluation
       or HR-software claims.
     claim_ceiling: >-
-      Single-operator management apparatus. Not HR SaaS, not an advice
-      engine, and not a staffed support surface.
+      Internal management apparatus. Not HR SaaS, not an advice engine,
+      and not a staffed support surface.
     primary_audience:
       - governance auditors
       - boundary reviewers
@@ -217,7 +214,6 @@ repos:
     dependencies: [hapax-constitution]
     topics:
       - research-software
-      - single-operator
       - philosophy-of-science
       - governance
       - infrastructure-as-argument
@@ -241,8 +237,8 @@ repos:
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
-      Single-operator device bridge; source-visible strict unless a
-      separate productized device boundary is created.
+      Internal device bridge; source-visible strict unless a separate
+      productized device boundary is created.
     reader_promise: >-
       Wrist biometric source for the Hapax environment, useful for
       auditing device integration and privacy boundaries.
@@ -250,8 +246,8 @@ repos:
       Makes biometric and context ingestion inspectable as a bounded,
       privacy-scoped signal path rather than a consumer health claim.
     claim_ceiling: >-
-      Internal single-device companion; not a consumer health product and
-      not a health-efficacy claim.
+      Internal device companion; not a consumer health product and not a
+      health-efficacy claim.
     primary_audience:
       - technical auditors
       - privacy reviewers
@@ -274,7 +270,6 @@ repos:
     dependencies: [hapax-council]
     topics:
       - research-software
-      - single-operator
       - infrastructure-as-argument
     is_first_party: true
     zenodo_concept_doi: null
@@ -296,8 +291,8 @@ repos:
     license_class: PolyForm-Strict-1.0.0
     value_partition: internal_apparatus
     license_posture: >-
-      Single-operator device bridge; source-visible strict unless a
-      separate productized device boundary is created.
+      Internal device bridge; source-visible strict unless a separate
+      productized device boundary is created.
     reader_promise: >-
       Mobile context source for the Hapax environment, useful for
       auditing data sources, transport, and privacy boundaries.
@@ -330,7 +325,6 @@ repos:
     dependencies: [hapax-council]
     topics:
       - research-software
-      - single-operator
       - infrastructure-as-argument
     is_first_party: true
     zenodo_concept_doi: null
@@ -346,23 +340,26 @@ repos:
       clients. An integration bridge, not a general-purpose MCP framework. MIT.
     repo_type: library
     role_in_constellation: >-
-      Logos MCP Bridge. Consumes council and officium logos APIs over
-      HTTP and presents bounded tools to Claude Code and compatible MCP
-      clients. Authority remains with the underlying Hapax APIs.
+      Logos MCP Bridge. Translates MCP stdio tool calls into HTTP requests
+      against a separately running Logos API deployment while keeping
+      policy and authorization in the underlying backend.
     license_class: MIT
     value_partition: internal_apparatus
     license_posture: >-
-      Permissive integration bridge for MCP use; current copy must
-      frame it as a Hapax logos bridge, not a general-purpose MCP library.
+      MIT-licensed integration bridge for MCP clients; requires a
+      separately running Logos API backend and is not a general-purpose
+      MCP framework.
     reader_promise: >-
-      Hapax Logos MCP Bridge exposing Hapax API state and actions to
-      Claude Code and compatible MCP clients.
+      Experimental MCP stdio bridge exposing Logos HTTP API state and
+      bounded actions to Claude Code and compatible MCP clients.
     reader_value: >-
-      Gives MCP clients a bounded bridge to live Hapax state while keeping
-      authority with the underlying APIs rather than the connector.
+      Lets compatible MCP clients inspect state and invoke bounded
+      endpoints against a running Logos API while keeping policy and
+      authorization in the underlying backend.
     claim_ceiling: >-
-      Integration bridge only; not a general MCP framework and not an
-      authority source beyond the underlying Hapax APIs.
+      Experimental integration bridge only; requires an existing Logos API
+      deployment, supplies no independent authorization layer, and is not
+      a general-purpose MCP framework.
     primary_audience:
       - MCP users
       - technical auditors
@@ -385,7 +382,6 @@ repos:
     dependencies: [hapax-council, hapax-officium]
     topics:
       - research-software
-      - single-operator
       - infrastructure-as-argument
     is_first_party: true
     zenodo_concept_doi: null
@@ -405,25 +401,29 @@ repos:
       of truth for asset selection.
     repo_type: library
     role_in_constellation: >-
-      CDN-only public mirror of aesthetic-library asset bundle. Source
-      of truth lives in hapax-council `assets/aesthetic-library/`.
-      Existing license blend (CC-BY-SA-4.0 / BSD-3-Clause) preserved
-      for upstream attribution compatibility.
-    license_class: CC-BY-SA-4.0
+      Public GitHub Pages mirror (https://hapax-systems.github.io/hapax-assets/)
+      serving checksum-verified visual, font, and publication assets for
+      Hapax Research Lab web surfaces.
+    license_class: CC-BY-4.0
     value_partition: evidence_artifact
     license_posture: >-
-      Per-asset license posture; preserve upstream BSD-3-Clause,
-      CC-BY-SA-4.0, and other asset-specific notices rather than implying
-      a single repo-level license.
+      Original documentation, index.html, and repository metadata use
+      CC-BY-4.0 (see LICENSE and LICENSE-SCOPE.md); trademarks and brand
+      marks of Hapax Research Lab (Hapax Research LLC) are expressly
+      reserved; mirrored third-party assets retain their declared upstream
+      licenses (BSD-3-Clause, CC-BY-SA-4.0, CC0-1.0) in _manifest.yaml and
+      _NOTICES.md, so licenses remain per-asset.
     reader_promise: >-
-      Public CDN mirror of approved aesthetic assets with per-asset
-      provenance and notices.
+      Public GitHub Pages mirror serving reviewed publication and aesthetic
+      artifacts with SHA-256 manifest verification and per-asset license
+      notices.
     reader_value: >-
-      Lets public pages reuse reviewed assets through stable URLs and
-      license notices without turning the mirror into the source of truth.
+      Provides stable, checksum-verified asset URLs and auditable
+      attribution records (_manifest.yaml, _NOTICES.md) for Hapax Research
+      Lab web and publication surfaces.
     claim_ceiling: >-
-      Artifact delivery mirror only; source of truth and edits live in
-      council, and licenses remain per-asset.
+      Static delivery mirror only; asset selection and approval occur
+      upstream before publication here, and licenses remain per-asset.
     primary_audience:
       - downstream web surfaces
       - license auditors
@@ -432,60 +432,76 @@ repos:
     source_of_truth: council_source
     public_files:
       - README.md
+      - LICENSE-SCOPE.md
       - NOTICE.md
       - _NOTICES.md
       - _manifest.yaml
+      - CITATION.cff
+      - codemeta.json
+      - .zenodo.json
       - SECURITY.md
       - SUPPORT.md
+      - GOVERNANCE.md
+      - CONTRIBUTING.md
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: [hapax-council]
     topics:
       - research-software
-      - single-operator
       - infrastructure-as-argument
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-constitution
+      - identifier: https://hapaxresearch.com
         relation: isPartOf
+        scheme: url
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isSupplementedBy
         scheme: url
 
   agentgov:
     name: agentgov
     description: >-
-      Standalone governance hooks for AI coding agents. Permissive public
-      adoption wedge for safety, git hygiene, and project-rule checks.
+      [Archived] Early prototype superseded by hapax-systems/reins — Hapax Research Lab
     repo_type: library
     role_in_constellation: >-
-      Public adoption commons. Separate from council-local policyflow
-      primitives and from the Hapax council runtime.
+      Archived early standalone governance-hook prototype. Superseded for
+      active governed agent-delivery inspection and preview by
+      hapax-systems/reins.
     license_class: MIT
     value_partition: adoption_commons
     license_posture: >-
-      Permissive adoption surface; copy may say MIT for agentgov only and
-      must not imply broader Hapax runtime rights or support obligations.
+      Archived MIT-licensed prototype; existing MIT grants remain intact
+      for historical inspection and citation of agentgov only and do not
+      imply rights or support obligations across active Hapax Research Lab
+      repositories.
     reader_promise: >-
-      Portable governance hooks that an adopter can install, audit, and
-      pilot without inheriting the Hapax estate.
+      Archived early governance-hook prototype retained for historical
+      inspection and citation; active work lives in hapax-systems/reins.
     reader_value: >-
-      Turns common AI coding-agent risks into installable pre-action
-      checks that teams can pilot before buying or building heavier
-      governance.
+      Preserves historical pre-action hook scripts and MIT source for
+      reference while directing new evaluations to hapax-systems/reins
+      and https://hapaxresearch.com.
     claim_ceiling: >-
-      Adoption commons for hooks only; not the full Hapax governance
-      system, not policyflow, and not a staffed support service.
+      Archived prototype (v0.3.2, inactive); pattern checks at local tool
+      boundaries do not establish complete coverage of agent behavior or a
+      general security boundary.
     primary_audience:
-      - external engineering adopters
       - security reviewers
-      - AI coding tool users
-    surface_class: adoption_commons
+      - archival researchers
+    surface_class: historical_archive
     visibility: public
     source_of_truth: constitution_registry
     public_files:
       - README.md
       - LICENSE
+      - NOTICE.md
+      - CITATION.cff
+      - codemeta.json
+      - .zenodo.json
       - SECURITY.md
       - SUPPORT.md
+      - GOVERNANCE.md
+      - CONTRIBUTING.md
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: []
     topics:
@@ -497,8 +513,14 @@ repos:
     archived: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-constitution
+      - identifier: https://github.com/hapax-systems/reins
+        relation: isObsoletedBy
+        scheme: url
+      - identifier: https://hapaxresearch.com
         relation: isPartOf
+        scheme: url
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isSupplementedBy
         scheme: url
 
   hapax-spine:
@@ -509,25 +531,28 @@ repos:
       mechanism layer behind Reins; not a general-purpose lifecycle kernel.
     repo_type: engine
     role_in_constellation: >-
-      Source-visible commercial core consumed by Reins and extracted from
-      the council runtime. Not a general-purpose lifecycle kernel.
+      Source-available runtime mechanism consumed by Reins and Hapax
+      Research Lab's internal research runtime. Not a general-purpose
+      lifecycle kernel.
     license_class: BUSL-1.1
     value_partition: commercial_moat
     license_posture: >-
       Source-available under Business Source License 1.1; not open source
-      until the change license/date applies. Self-hosted and non-competing
-      production use is permitted by the Additional Use Grant; offering the
-      licensed work as a competing hosted or managed service remains reserved.
+      until the Change Date converts the work to Apache-2.0. Self-hosted
+      and non-competing production use is permitted by the Additional Use
+      Grant; offering the licensed work as a competing hosted or managed
+      service remains reserved.
     reader_promise: >-
       Runtime mechanism package for append-only events, policy-backed
-      routing, receipts, quotas, EDT, and projections.
+      routing, capability receipts, quota arithmetic, EDT measurement,
+      and projections.
     reader_value: >-
-      Separates the commercial runtime mechanics behind Reins so dispatch,
-      receipts, quotas, and projections can be inspected as mechanisms
-      without treating them as a full estate.
+      Separates the runtime mechanics behind Reins so dispatch, receipts,
+      quotas, and projections can be inspected and tested independently
+      without claiming to represent a complete multi-tenant platform.
     claim_ceiling: >-
-      Mechanism only; not the whole Hapax estate and not fully
-      instance-agnostic until configuration injection is complete.
+      Mechanism layer only; not the whole Hapax Research Lab estate and
+      not yet fully taxonomy-injected across arbitrary external instances.
     primary_audience:
       - system integrators
       - Reins implementers
@@ -538,21 +563,32 @@ repos:
     public_files:
       - README.md
       - LICENSE
+      - NOTICE.md
+      - CITATION.cff
+      - codemeta.json
+      - .zenodo.json
       - pyproject.toml
       - SECURITY.md
       - SUPPORT.md
+      - GOVERNANCE.md
+      - CONTRIBUTING.md
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: [hapax-council]
     topics:
       - governance
       - sdlc
       - research-software
-      - single-operator
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
-      - identifier: https://github.com/hapax-systems/hapax-constitution
+      - identifier: https://hapaxresearch.com
         relation: isPartOf
+        scheme: url
+      - identifier: https://github.com/hapax-systems/reins
+        relation: isRequiredBy
+        scheme: url
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isSupplementedBy
         scheme: url
 
   reins:
@@ -563,25 +599,27 @@ repos:
       nothing. BSL 1.1. Demo: reins --demo.
     repo_type: app
     role_in_constellation: >-
-      Public product/front-door cockpit consuming hapax-spine and read
-      APIs. Current public claim ceiling is read/preview/cockpit, not
-      full write-authority cockpit.
+      Public product front-door cockpit consuming hapax-spine and read
+      APIs. Current public claim ceiling is observation and governed
+      command preview, not autonomous write authority.
     license_class: BUSL-1.1
     value_partition: commercial_moat
     license_posture: >-
       Source-available under Business Source License 1.1; not open source
-      until the change license/date applies. Self-hosted evaluation is
-      invited within the BSL grant; competing hosted-service rights are
-      reserved.
+      until the Change Date converts the work to Apache-2.0. Self-hosted
+      and non-competing production use is permitted within the Additional
+      Use Grant; competing hosted-service rights remain reserved.
     reader_promise: >-
-      Product front-door cockpit for observing and previewing governed
-      AI-agent delivery state.
+      Product front-door terminal cockpit for observing and previewing
+      governed AI-agent delivery state (`reins --demo` runs offline on
+      bundled fixture data).
     reader_value: >-
-      Lets operators and technical buyers see what an agent estate is
-      doing and what a write would request before granting write authority.
+      Lets operators, auditors, and technical evaluators inspect live or
+      fixture agent-delivery state and see what a governed write command
+      would request before any write authority is granted.
     claim_ceiling: >-
-      Read and command-preview today; governed writes only when
-      receipt-backed writes are actually shipped.
+      Read and command-preview today; write commands render preview
+      envelopes that mint nothing until receipt-backed writes ship.
     primary_audience:
       - operators
       - evaluators
@@ -592,8 +630,14 @@ repos:
     public_files:
       - README.md
       - LICENSE
+      - NOTICE.md
+      - CITATION.cff
+      - codemeta.json
+      - .zenodo.json
       - SECURITY.md
       - SUPPORT.md
+      - GOVERNANCE.md
+      - CONTRIBUTING.md
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: [hapax-spine]
     topics:
@@ -604,15 +648,22 @@ repos:
     is_first_party: true
     zenodo_concept_doi: null
     related_identifiers:
+      - identifier: https://hapaxresearch.com
+        relation: isPartOf
+        scheme: url
       - identifier: https://github.com/hapax-systems/hapax-spine
-        relation: isRequiredBy
+        relation: requires
+        scheme: url
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isSupplementedBy
         scheme: url
 
   hapax-coord:
     name: hapax-coord
     description: >-
-      Operator coordination surface for Hapax task/session state. Private
-      internal apparatus unless a separate public product boundary is made.
+      Internal coordination surface for Hapax Research Lab task and session
+      state. Private internal apparatus unless a separate public product
+      boundary is ratified.
     repo_type: app
     role_in_constellation: >-
       Internal coordination dashboard and read surface. Supports proof and
@@ -624,7 +675,7 @@ repos:
       support, or adoption claim unless a separate product boundary is
       ratified.
     reader_promise: >-
-      Coordination dashboard/control preflight surface for governed
+      Coordination dashboard and control preflight surface for governed
       Hapax lanes and sessions.
     reader_value: >-
       Shows the local coordination layer that keeps dashboard state
@@ -649,7 +700,6 @@ repos:
     dependencies: [hapax-council]
     topics:
       - research-software
-      - single-operator
       - governance
     is_first_party: true
     zenodo_concept_doi: null
@@ -666,23 +716,26 @@ repos:
       code.
     repo_type: data
     role_in_constellation: >-
-      Evidence/artifact output for public research and citation. Carries
-      observations, not reusable runtime mechanisms.
+      Public-domain evidence and witness output for Hapax Research Lab
+      research and citation. Carries observations and witness records,
+      not reusable runtime mechanisms.
     license_class: CC0-1.0
     value_partition: evidence_artifact
     license_posture: >-
-      Public-domain data posture for the ledger only; does not license
-      Hapax runtime code, Reins, or council internals.
+      Public-domain dedication (CC0 1.0) for the declared ledger and
+      witness data surface only; does not license Hapax Research Lab
+      runtime code, Reins, or internal apparatus, and asserts no human
+      copyright over machine-generated records.
     reader_promise: >-
-      Public numeric-only SCED evidence ledger published from the first
-      data point with caveats preserved.
+      Public numeric SCED evidence ledger and reproducible witness
+      records published from the first data point with caveats preserved.
     reader_value: >-
       Lets skeptical readers audit early observations, caveats, nulls,
-      and scorer substitutions as data rather than reading them as polished
-      product or research claims.
+      scorer substitutions, and commitment witness checks directly as
+      schema-validated data.
     claim_ceiling: >-
-      Evidence/baseline data only; no adjudicated research result unless
-      validity gates explicitly clear.
+      Evidence, baseline observations, and witness records only; no
+      adjudicated research result unless validity gates explicitly clear.
     primary_audience:
       - researchers
       - statisticians
@@ -693,11 +746,17 @@ repos:
     public_files:
       - README.md
       - LICENSE
+      - NOTICE.md
+      - CITATION.cff
+      - codemeta.json
+      - .zenodo.json
       - dv-ledger.ndjson
       - latest.json
       - schema/sced-observation-v0.json
       - SECURITY.md
       - SUPPORT.md
+      - GOVERNANCE.md
+      - CONTRIBUTING.md
       - .github/ISSUE_TEMPLATE/config.yml
     dependencies: []
     topics:
@@ -709,6 +768,9 @@ repos:
     related_identifiers:
       - identifier: https://hapaxresearch.com
         relation: isSupplementTo
+        scheme: url
+      - identifier: https://github.com/hapax-systems/hapax-constitution
+        relation: isPartOf
         scheme: url
 
   tabbyAPI:
