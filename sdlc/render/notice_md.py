@@ -1,14 +1,33 @@
 """NOTICE.md renderer.
 
-Constitutional disclosure document that ships in every first-party repo
+Constitutional disclosure document that ships in every first-party repository
 plus, gitignored via ``.git/info/exclude``, in the two upstream forks.
-Body text is registry-driven and must not carry personal-owner, manifesto,
-or stale launch-copy assumptions.
+Body text is registry-driven and carries institutional attribution (Hapax
+Research Lab / hrl-han), qualified legal-entity filing facts, contact
+commitments, and HACA-C v0.3.15 outside provenance.
 """
 
 from __future__ import annotations
 
 from sdlc.render.repo_registry import RepoSpec, SurfaceClass, github_repo_url
+
+LEGAL_ENTITY_FILING = (
+    "Legal entity (as filed): Hapax Research LLC, organized in Wyoming on "
+    "2026-05-10, filing ID 2026-001973400"
+)
+
+HACA_C_OUTSIDE_FOOTER = (
+    "*HACA-C v0.3.15, the lab's draft rule for labelling machine-made text, "
+    "not an external certification. No request to a natural person to approve "
+    "the final wording, and no such approval, was found in hrl-han's sending, "
+    "review and coordination records when the text was released. hrl-han "
+    "releases a text once its checking is complete, under a standing rule that "
+    "hrl-han's principal, who is not named in this text, adopted before the "
+    "text was drafted. Review record: https://hapaxresearch.com/review-record/ "
+    "(open to anyone). This label records how the text was made; it does not "
+    "certify that the text is true. An unaltered record can contain false "
+    "claims or miss relevant events.*"
+)
 
 
 def render(repo: RepoSpec) -> str:
@@ -19,9 +38,9 @@ def render(repo: RepoSpec) -> str:
         "\n"
         f"{_opening(repo)}\n"
         "\n"
-        "This repository is part of the Hapax Research Lab portfolio. Public "
-        "metadata, issue affordances, and support boundaries follow the "
-        "registry in `hapax-constitution`.\n"
+        "This repository is published by **Hapax Research Lab** (`hrl-han`, "
+        "https://hapaxresearch.com). Public metadata, issue affordances, and "
+        "support boundaries follow the registry in `hapax-constitution`.\n"
         "\n"
         "## Reader promise\n"
         "\n"
@@ -46,8 +65,11 @@ def render(repo: RepoSpec) -> str:
         f"- {_issue_line(repo)}\n"
         "- First-party public links must use the `hapax-systems` GitHub "
         "organization.\n"
-        "- Public fanout must route through the governed publication bus or a "
-        "documented guarded legacy surface.\n"
+        f"- {LEGAL_ENTITY_FILING}.\n"
+        "- Contact: `hrl-han@hapaxresearch.com` (see `SECURITY.md` and "
+        "https://hapaxresearch.com/about/#contact). The network commits to "
+        "receipt, retention and published correction. It promises no response "
+        "time.\n"
         f"- Governance reference: {github_repo_url('hapax-constitution')}\n"
         "\n"
         "## Portfolio position\n"
@@ -56,10 +78,12 @@ def render(repo: RepoSpec) -> str:
         "\n"
         "---\n"
         "\n"
-        f"This file is rendered from `hapax-constitution/sdlc/render/`. "
-        f"Do not edit by hand; edits will be overwritten on next render. "
-        f"To change content, edit `sdlc/render/repos.yaml` or the renderer "
-        f"templates in `hapax-constitution`.\n"
+        f"{HACA_C_OUTSIDE_FOOTER}\n"
+        "\n"
+        "This file is rendered from `hapax-constitution/sdlc/render/`. "
+        "Do not edit by hand; edits will be overwritten on next render. "
+        "To change content, edit `sdlc/render/repos.yaml` or the renderer "
+        "templates in `hapax-constitution`.\n"
     )
 
 
@@ -70,16 +94,21 @@ def _license_summary(license_class: str) -> str:
         ),
         "BUSL-1.1": (
             "Business Source License 1.1 - source-available; not Open Source until "
-            "the change license/date applies."
+            "the Change Date converts the work to Apache-2.0."
         ),
         "CC-BY-NC-ND-4.0": (
-            "CC BY-NC-ND 4.0 - non-commercial, no derivatives. Specification text, not code."
+            "CC BY-NC-ND 4.0 - non-commercial, no derivatives for specification text; "
+            "runnable hapax-sdlc tooling uses Apache-2.0."
+        ),
+        "CC-BY-4.0": (
+            "CC BY 4.0 for original documentation and metadata (trademarks expressly "
+            "reserved); mirrored third-party assets retain their declared upstream licenses."
         ),
         "CC0-1.0": "CC0 1.0 - public-domain dedication for the declared data/artifact surface.",
         "MIT": "MIT - permissive.",
         "Apache-2.0": "Apache 2.0 - permissive with patent grant.",
         "CC-BY-SA-4.0": (
-            "CC BY-SA 4.0 (existing aesthetic-library asset blend; "
+            "CC BY-SA 4.0 (aesthetic-library asset blend; "
             "BSD-3-Clause for BitchX components preserved)."
         ),
         "upstream": (
@@ -90,9 +119,16 @@ def _license_summary(license_class: str) -> str:
 
 
 def _opening(repo: RepoSpec) -> str:
+    if repo.archived or repo.surface_class is SurfaceClass.HISTORICAL_ARCHIVE:
+        return (
+            f"**[Archived Prototype — Superseded by [hapax-systems/reins]"
+            f"({github_repo_url('reins')})]** `{repo.name}` is an archived early "
+            "prototype in the Hapax Research Lab portfolio retained for "
+            "historical inspection and citation."
+        )
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
-            f"`{repo.name}` is the bounded adoption-commons repository in the "
+            f"`{repo.name}` is a bounded adoption-commons repository in the "
             "Hapax Research Lab portfolio. It is published for inspection and "
             "pilot use without granting rights to the broader Hapax runtime "
             "estate."
@@ -100,7 +136,7 @@ def _opening(repo: RepoSpec) -> str:
     if repo.surface_class is SurfaceClass.PRODUCT_FRONT_DOOR:
         return (
             f"`{repo.name}` is the product front door for the Hapax Research Lab "
-            "portfolio. Public materials must stay within the shipped "
+            "portfolio. Public materials stay within the shipped "
             "read and command-preview claim ceiling."
         )
     if repo.surface_class is SurfaceClass.RUNTIME_MECHANISM:
@@ -128,8 +164,8 @@ def _opening(repo: RepoSpec) -> str:
     if repo.surface_class is SurfaceClass.EVIDENCE_ARTIFACT:
         return (
             f"`{repo.name}` is an evidence-artifact repository in the Hapax Research Lab "
-            "portfolio. It publishes bounded observations or "
-            "metadata, not runtime code authority."
+            "portfolio. It publishes bounded observations and witness records, "
+            "not runtime code authority."
         )
     if repo.surface_class is SurfaceClass.INTERNAL_APPARATUS:
         return (
@@ -138,13 +174,18 @@ def _opening(repo: RepoSpec) -> str:
             "community project unless a separate product boundary is ratified."
         )
     return (
-        f"`{repo.name}` is a constituent of the Hapax operating environment. "
+        f"`{repo.name}` is a constituent repository of **Hapax Research Lab**. "
         "It is research or boundary infrastructure published as an artifact, "
         "not a staffed product or community project."
     )
 
 
 def _issue_line(repo: RepoSpec) -> str:
+    if repo.archived or repo.surface_class is SurfaceClass.HISTORICAL_ARCHIVE:
+        return (
+            f"Repository is archived and read-only; evaluate {github_repo_url('reins')} "
+            "for active governed agent-delivery inspection."
+        )
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return (
             "Issues are redirect-only, support is bounded, and pull requests "

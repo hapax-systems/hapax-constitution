@@ -1,12 +1,12 @@
 """Repo settings enforcer — refusal-shaped UI affordances on GitHub.
 
-The single-operator + full-automation-or-no-engagement axiom set makes
-GitHub's default UI affordances structurally inappropriate. Every
-first-party repo must carry the same Settings policy:
+Hapax Research Lab governs its repositories as a single trust domain without
+external community intake queues. Every first-party repository carries the
+same Settings policy:
 
   has_wiki        = false   (uniform across all first-party repositories)
-  has_projects    = false   (kanban surface assumes multi-contributor sync)
-  has_discussions = false   (single-operator: no community to discuss)
+  has_projects    = false   (kanban surface assumes external contributor sync)
+  has_discussions = false   (no community discussion forum on GitHub)
   has_issues      = true    (kept open as REDIRECT surface; see ISSUE_TEMPLATE/config.yml)
 
 Per drop 3 §3 of the publication-bus refusal-shaped-affordance stance:

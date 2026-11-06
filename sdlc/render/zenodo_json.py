@@ -1,18 +1,11 @@
 """.zenodo.json renderer.
 
 Schema reference: developers.zenodo.org. The ``related_identifiers``
-block carries the DataCite RelatedIdentifier graph that federates the
-constellation into DataCite Commons / ORCID without touching social
-platforms. Per drop 4 (cross-account-promotion), this is the highest-
-leverage academic-spectacle mechanic.
+block carries the DataCite RelatedIdentifier graph across the public
+portfolio and portal surfaces.
 
-The ``creators:`` block uses organization authorship for public repository
-metadata. Operator identity is not emitted by default because first-party
-public surfaces are owned by ``hapax-systems``.
-
-REFUSED-status anti-patterns (Bandcamp/Discogs/RYM, etc.) get registered
-here as DataCite ``IsObsoletedBy`` relations per the
-``xprom-refusal-as-related-identifier`` cc-task.
+The ``creators:`` block uses institutional authorship (Hapax Research Lab)
+for public repository metadata.
 """
 
 from __future__ import annotations
@@ -77,15 +70,22 @@ def _license_notes(license_class: str) -> str | None:
             "(https://polyformproject.org/licenses/strict/1.0.0/)."
         )
     if license_class == "BUSL-1.1":
-        return "Repository license: Business Source License 1.1."
+        return (
+            "Repository license: Business Source License 1.1 (source-available, "
+            "non-Open-Source until the Change Date converts the work to Apache-2.0; "
+            "source inspection is open while competing hosted-service use remains reserved)."
+        )
     return None
 
 
 def _upload_type(repo_type: str) -> str:
     return {
         "runtime": "software",
+        "engine": "software",
+        "app": "software",
         "spec": "publication",
         "library": "software",
+        "data": "dataset",
         "android": "software",
         "wear-os": "software",
         "fork": "software",
@@ -95,7 +95,6 @@ def _upload_type(repo_type: str) -> str:
 def _default_keywords() -> list[str]:
     return [
         "research-software",
-        "single-operator",
         "philosophy-of-science",
         "governance",
         "infrastructure-as-argument",

@@ -84,6 +84,7 @@ def _repo_to_export(repo: RepoSpec) -> dict[str, Any]:
         "dependencies": list(repo.dependencies),
         "topics": list(repo.topics),
         "is_first_party": repo.is_first_party,
+        "archived": repo.archived,
         "zenodo_doi": repo.zenodo_doi,
         "zenodo_concept_doi": repo.zenodo_concept_doi,
         "related_identifiers": list(repo.related_identifiers),
@@ -104,6 +105,8 @@ def support_posture(repo: RepoSpec) -> str:
     """Return the compact support/intake posture for exported frontmatter data."""
     if not repo.is_first_party or repo.surface_class is SurfaceClass.UPSTREAM:
         return "upstream_preserved"
+    if repo.archived or repo.surface_class is SurfaceClass.HISTORICAL_ARCHIVE:
+        return "archived_redirect"
     if repo.surface_class is SurfaceClass.ADOPTION_COMMONS:
         return "bounded_adoption_redirect"
     if repo.visibility is RepoVisibility.PUBLIC:
