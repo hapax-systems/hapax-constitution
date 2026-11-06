@@ -52,7 +52,7 @@ def test_f_const_13_v2_governance_doc_present_and_hygienic() -> None:
     assert "C-384" in text
     assert "D-H3" in text
     assert "CHANC" in text
-    assert "news.ycombinator.com" in text
+    assert "Hacker News" in text
 
 
 def test_constants_and_full_spectrum_actions() -> None:
